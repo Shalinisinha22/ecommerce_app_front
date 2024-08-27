@@ -22,6 +22,14 @@ import { useSelector } from 'react-redux';
 import { useDispatch } from 'react-redux';
 import KycScreen from '../Screens/KycScreen';
 import UpdatePasswordScreen from '../Screens/UpdatePasswordScreen';
+import PackageScreen from '../Screens/PackageScreen';
+import PaymentScreen from '../Screens/PaymentScreen';
+import FundRequestScreen from '../Screens/FundRequestScreen';
+import ActivationScreen from '../Screens/ActivationScreen';
+import FundRequestStatus from '../Screens/FundRequestStatus';
+import SponsorIncome from '../Screens/SponsorIncome';
+import DailyIncome from '../Screens/DailyIncome';
+
 
 const Stack = createStackNavigator();
 const Drawer = createDrawerNavigator();
@@ -29,7 +37,9 @@ const Tab = createBottomTabNavigator();
 
 export const AppNavigator = () => {
     const userInfo = useSelector(state => state.user.userInfo ? state.user.userInfo : null);
-  
+   const shop=   useSelector(state => state.user.shop ? state.user.shop : null);
+   console.log(shop,"shop")
+
     const drawerMenu = [
 
         { id: 0,
@@ -62,8 +72,8 @@ export const AppNavigator = () => {
        { id: 2,
                     name: "Activation",
                     submenu: [
-                      { id: 0, name: "Item 1", url: "coming" },
-                      { id: 1, name: "Item 2", url: "coming" },
+                      { id: 0, name: "Package", url: "healthPackage" },
+                      { id: 1, name: "Activation", url: "activationScreen" },
                 
               
                     ],
@@ -74,8 +84,8 @@ export const AppNavigator = () => {
       { id: 3,
                         name: "Fund Manager",
                         submenu: [
-                          { id: 0, name: "Fund Request", url: "coming" },
-                          { id: 0, name: "Fund Request Status", url: "coming" },
+                          { id: 0, name: "Fund Request", url: "fundRequestScreen" },
+                          { id: 0, name: "Fund Request Status", url: "fundRequestStatus" },
                     
                   
                         ],
@@ -87,11 +97,8 @@ export const AppNavigator = () => {
       { id: 4,
         name: "Income Report",
         submenu: [
-       { id: 1, name: "Self ROI", url: "coming" },
-        { id: 2, name: "Sponsor Income Loan", url: "coming" },
-        { id: 3, name: "Loan Income", url: "coming" },
-        { id: 4, name: "Owner Sponsor Income", url: "coming" },
-        { id: 5, name: "Binary Matching Income", url: "coming" },
+       { id: 1, name: "Sponsor Income", url: "sponsorIncome" },
+        { id: 2, name: "Daily Income", url: "dailyIncome" }
     
         ],
         icon:<AntDesign name="arrowright" size={18} color="#9e0059" /> ,
@@ -103,12 +110,7 @@ url: "",},
 
 
 
-        // { id: 1, name: "Self ROI", url: "coming" },
-        // { id: 2, name: "Sponsor Income Loan", url: "coming" },
-        // { id: 3, name: "Loan Income", url: "coming" },
-        // { id: 4, name: "Owner Sponsor Income", url: "coming" },
-        // { id: 5, name: "Binary Matching Income", url: "coming" },
-        // { id: 6, name: "Logout", url: "" }
+  
     ];
 
 
@@ -133,6 +135,14 @@ url: "",},
                 <Stack.Screen name="productInner" component={ProductInnerScreen} options={{ headerShown: false }} />
                 <Stack.Screen name="kyc" component={KycScreen} options={{ headerShown: false }} />
                 <Stack.Screen name="updatePassword" component={UpdatePasswordScreen} options={{ headerShown: false }} />
+                <Stack.Screen name="healthPackage" component={PackageScreen} options={{ headerShown: false }} />
+                <Stack.Screen name="paymentScreen" component={PaymentScreen} options={{ headerShown: false }} />
+                <Stack.Screen name="fundRequestScreen" component={FundRequestScreen} options={{ headerShown: false }} />
+                <Stack.Screen name="activationScreen" component={ActivationScreen} options={{ headerShown: false }} />
+                <Stack.Screen name="fundRequestStatus" component={FundRequestStatus} options={{ headerShown: false }} />
+                <Stack.Screen name="sponsorIncome" component={SponsorIncome} options={{ headerShown: false }} />
+                <Stack.Screen name="dailyIncome" component={DailyIncome} options={{ headerShown: false }} />
+
             </Stack.Navigator>
         );
     }
@@ -200,7 +210,7 @@ url: "",},
                     tabBarLabel: "Home",
                     tabBarLabelStyle: { color: "#fff", fontSize: 12, fontWeight: 800, letterSpacing: 2 },
                     headerShown: false,
-                    tabBarIcon: ({ focused }) => focused ? <Entypo name="home" size={30} color="#fff" /> : <AntDesign name="home" size={30} color="#D0D0D0" />,
+                    tabBarIcon: ({ focused }) => focused ? <Entypo name="home" size={25} color="#fff" /> : <AntDesign name="home" size={25} color="#D0D0D0" />,
                 }}
             />
             <Tab.Screen
@@ -210,7 +220,7 @@ url: "",},
                     tabBarLabel: "Wallet",
                     tabBarLabelStyle: { color: "#fff", fontSize: 12, fontWeight: 600, letterSpacing: 2 },
                     headerShown: false,
-                    tabBarIcon: ({ focused }) => focused ? <Entypo name="wallet" size={30} color="#fff" /> : <Entypo name="wallet" size={30} color="#D0D0D0" />,
+                    tabBarIcon: ({ focused }) => focused ? <Entypo name="wallet" size={25} color="#fff" /> : <Entypo name="wallet" size={25} color="#D0D0D0" />,
                 }}
             />
             <Tab.Screen
@@ -220,9 +230,34 @@ url: "",},
                     tabBarLabel: "Withdrawal",
                     tabBarLabelStyle: { color: "#fff", fontSize: 12, fontWeight: 600, letterSpacing: 2 },
                     headerShown: false,
-                    tabBarIcon: ({ focused }) => focused ? <MaterialCommunityIcons name="piggy-bank" size={30} color="#fff" /> : <MaterialCommunityIcons name="piggy-bank-outline" size={30} color="#D0D0D0" />,
+                    tabBarIcon: ({ focused }) => focused ? <MaterialCommunityIcons name="piggy-bank" size={25} color="#fff" /> : <MaterialCommunityIcons name="piggy-bank-outline" size={25} color="#D0D0D0" />,
                 }}
             />
+   <Tab.Screen
+        name="shop"
+        component={ProductsScreen}
+        options={({ route }) => ({
+          tabBarLabel: "Shop Now",
+          tabBarLabelStyle: { color: "#fff", fontSize: 12, fontWeight: '600', letterSpacing: 2 },
+          headerShown: false,
+          tabBarIcon: ({ focused }) =>
+            focused ? (
+              <Ionicons name="bag-add" size={25} color="#fff" />
+            ) : (
+              <Ionicons name="bag-add" size={25} color="#D0D0D0" />
+            ),
+        })}
+        listeners={({ navigation }) => ({
+          tabPress: (e) => {
+            // Prevent default action
+            e.preventDefault();
+            // Open the modal
+            navigation.navigate("shop", { modalVisible: true });
+          },
+        })}
+      />
+   
+
             <Tab.Screen
                 name="profile"
                 component={Profile}
@@ -230,7 +265,7 @@ url: "",},
                     tabBarLabel: "Profile",
                     tabBarLabelStyle: { color: "#fff", fontSize: 12, fontWeight: 600, letterSpacing: 2 },
                     headerShown: false,
-                    tabBarIcon: ({ focused }) => focused ? <FontAwesome name="user-circle-o" size={30} color="#fff" /> : <FontAwesome name="user-circle-o" size={30} color="#D0D0D0" />,
+                    tabBarIcon: ({ focused }) => focused ? <FontAwesome name="user-circle-o" size={25} color="#fff" /> : <FontAwesome name="user-circle-o" size={25} color="#D0D0D0" />,
                 }}
             />
         </Tab.Navigator>
@@ -243,7 +278,8 @@ url: "",},
                     <Drawer.Screen name="Home" component={BottomNavigator} options={{ headerShown: false }} />
                 </Drawer.Navigator>
             ) : (
-                <StackNavigator />
+                // <ChooseShopScreen></ChooseShopScreen>
+                <StackNavigator/>
             )}
         </NavigationContainer>
     );

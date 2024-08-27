@@ -5,83 +5,178 @@ import axios from 'axios';
 const width = Dimensions.get('screen').width
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import { useState, useEffect } from 'react';
-import { get } from 'react-hook-form';
+import { useSelector, useDispatch } from 'react-redux';
+import { addToCart, removeFromCart, updateQty ,handleIncrement,handleDecrement} from '../redux/actions/userActions';
+import { imgUrl } from './Image/ImageUrl';
+import { useRoute } from '@react-navigation/native';
+
+
 const Section2 = ({navigation}) => {
+
 
 
   const [shopId, setShopId] = useState('');
   const [products, setProducts] = useState([]);
   const [productId, setProductId] = useState([]);
 
-  const getShopClientId = async () => {
-      try {
-          const res = JSON.parse(await AsyncStorage.getItem('shopDetails'));
-          console.log("Shop Details:", res);
-          if (res?.client_id) {
-              setShopId(res.client_id);
-              await getProductsId(res.client_id);
-          } else {
-              console.error("Client ID not found in shop details.");
-          }
-      } catch (err) {
-          console.log("Error fetching shop client ID:", err.message);
-      }
-  }
+
+  const lmcId = useSelector((state)=>state.user.shop? state.user.shop:null)
+  const [lmc_id,setLmc]= useState(lmcId)
+ 
+  // console.log(lmcId,"26lmcId")
+
+
 
   const getProductsId = async (shop) => {
-      try {
-          const res = await axios.get("http://192.168.0.109:3000/getProductId", {
-              params: { client_id: shop }
-          });
-          console.log("Product IDs:", res.data);
 
+    try {
+        const res = await axios.get("https://mahilamediplex.com/mediplex/getProductId", {
+            params: { client_id: lmcId.client_id }
+        });
+  
+
+        if(res.data.length==0){
+          getDefaultShop()
+        }
+        else{
           const pidArr = res.data.map(item => item.pid);
-          console.log("PID Array:", pidArr);
+          // console.log("PID Array:", pidArr);
 
           setProductId(pidArr);
           await getProducts(pidArr);
-      } catch (err) {
-          console.log("Error fetching product IDs:", err.message);
+  
+        }
+ 
+        
+
+  
+    } catch (err) {
+        console.log("Error fetching product IDs:", err.message);
+    }
+}
+
+const getProducts = async (pidArr) => {
+    try {
+        const productPromises = pidArr.map(pid => 
+            axios.get("https://mahilamediplex.com/mediplex/products", {
+                params: { product_id: pid }
+            })
+        );
+
+        const responses = await Promise.all(productPromises);
+
+        const productArr = responses.map(res => {
+            const data = res.data;
+
+            return data.map(item => {
+                if (item.sale_image) {
+                    item.sale_image = JSON.parse(item.sale_image);
+                }
+                if (item.product_image) {
+                    item.product_image = JSON.parse(item.product_image);
+                }
+                return item;
+            });
+        }).flat(); // Flatten the array if `res.data` contains arrays of products
+
+        // console.log("Final Product Array:", productArr);
+        setProducts(productArr);
+
+    } catch (err) {
+        console.log("Error fetching products:", err.message);
+    }
+}
+
+ 
+
+
+useEffect(()=>{
+  getProductsId()
+},[lmcId])
+
+
+const getDefaultShop = async()=>{
+  try{
+    const res= await axios.get("http://mahilamediplex.com/mediplex/defaultShops")
+    const data= res.data
+
+    if(data[0].client_id){
+      getProductsId(data[0].client_id)
+      await AsyncStorage.setItem("shopDetails",JSON.stringify(data[0]))
+    }
+   
+  }
+  catch(err){
+    console.log(err.message)
+  }
+}
+
+
+
+
+  const [carts,setCarts]= useState([])
+
+
+
+  const cart = useSelector((state) => state.cart.cart);
+// console.log("cart redux",cart)
+  const dispatch = useDispatch();
+
+ 
+
+ 
+
+   const isItemInCart = (id)=>{
+    if(cart){
+      const isPresent=carts.find((product)=>product.pcode==id?true:false )
+      return isPresent
+    }
+  }
+  const getQty = (id) => {
+
+      if(cart){
+        const product = carts.find((product) => product.pcode === id);
+        return product ? product.qty : null;
       }
+
+
+  
+  };
+  
+
+  
+  const handleCart=(item,id)=>{
+  
+    dispatch(addToCart({ item, id: id }));
+  
+  }
+ 
+
+  const removeFromCart=(id)=>{
+
+
   }
 
-  const getProducts = async (pidArr) => {
-      try {
-          const productPromises = pidArr.map(pid => 
-              axios.get("http://192.168.0.109:3000/products", {
-                  params: { product_id: pid }
-              })
-          );
+  const handleIncrementProduct=(id)=>{
+  
+      dispatch(handleIncrement({id:id}))
+   
+    
 
-          const responses = await Promise.all(productPromises);
-
-          const productArr = responses.map(res => {
-              const data = res.data;
-
-              return data.map(item => {
-                  if (item.sale_image) {
-                      item.sale_image = JSON.parse(item.sale_image);
-                  }
-                  if (item.product_image) {
-                      item.product_image = JSON.parse(item.product_image);
-                  }
-                  return item;
-              });
-          }).flat(); // Flatten the array if `res.data` contains arrays of products
-
-          console.log("Final Product Array:", productArr);
-          setProducts(productArr);
-
-      } catch (err) {
-          console.log("Error fetching products:", err.message);
-      }
   }
+  const handleDecrementProduct=(id)=>{
+ 
+      dispatch(handleDecrement({id:id}))
+    }
+   
+    
+ 
+  
 
-  useEffect(() => {
-      getShopClientId();
-  }, []);
-
-
+  useEffect(()=>{
+setCarts(cart)
+  },[cart])
+  
 
   return (
     <View style={{marginTop:0,backgroundColor:"#fff",borderTopLeftRadius:20,borderTopRightRadius:20,borderTopWidth:5,borderColor:"#fff"}}>
@@ -94,88 +189,10 @@ const Section2 = ({navigation}) => {
           </Text>
 </View>
 
-<TouchableOpacity onPress={()=>navigation.navigate("products")} style={{paddingHorizontal:15,paddingVertical:5,marginRight:8}}><Text allowFontScaling={false} style={{fontSize:12,textDecorationLine:"underline",color:"#8ac926",fontWeight:700}}>VIEW ALL</Text></TouchableOpacity>
+{/* <TouchableOpacity onPress={()=>navigation.navigate("products")} style={{paddingHorizontal:15,paddingVertical:5,marginRight:8}}><Text allowFontScaling={false} style={{fontSize:12,textDecorationLine:"underline",color:"#8ac926",fontWeight:700}}>VIEW ALL</Text></TouchableOpacity> */}
 </View>
 
-{/* <Text  allowFontScaling={false}
-            style={{
-              height: 1,
-              borderColor: "#D0D0D0",
-              borderWidth: 2,
-              marginBottom: 18,
-              width:width * 0.5
-            }}
-          /> */}
-
-          {/* <FlatList   
-data={offers}
-horizontal
-showsHorizontalScrollIndicator={false}
-      
-      
-renderItem={({ item, index }) => (
-       
-              <Pressable
-                key={item.id}
-                style={{
-                  alignItems: "center",
-                  justifyContent: "center",
-                  borderWidth:2,
-                  borderRadius:20,
-                  padding:10,
-                  borderColor:"#D0D0D0",
-                  marginLeft:10,
-                  marginTop:10
-                  
-                }}
-                onPress={()=>navigation.navigate("productInner")}
-              >
-                <Image
-              
-                  style={{ width: 120, height: 130, resizeMode: "contain" }}
-                  source={item.image}
-                />
-                <View>
-                  <Text style={{fontWeight:600}}>{item.title}</Text>
-                  <Text  allowFontScaling={false} style={{ textAlign: "center",textDecorationLine:"line-through",color:"gray",fontSize:10 }}>
-                    Rs 200
-                  </Text>
-                  <Text  allowFontScaling={false} style={{ textAlign: "center",fontSize:15 }}>{item.price}</Text>
-                </View>
-
-               
-
-
-
-                <TouchableOpacity
-                  style={{
-                    backgroundColor: "#9e0059",
-                    paddingVertical: 10,
-                     paddingHorizontal:20,
-                    justifyContent: "center",
-                    alignItems: "center",
-                    marginTop: 1,
-                    borderRadius: 6,
-                    marginTop:5,
-                
-                 
-                  }}
-                >
-                  <Text allowFontScaling={false}
-                    style={{
-                      textAlign: "center",
-                      color: "white",
-                      fontSize: 13,
-                      fontWeight: "bold",
-                    }}
-                  ><Entypo name="shopping-cart" size={20} color="white"/>  ADD TO CART
-                  </Text>
-                </TouchableOpacity>
-              </Pressable>
-            )}
->
-            
-</FlatList> */}
+{/* {console.log("products",products)} */}
 
 
 {products.length!=0? <FlatList   
@@ -193,7 +210,7 @@ renderItem={({ item, index }) => (
                   justifyContent: "center",
                   borderWidth:2,
                   borderRadius:20,
-                  padding:10,
+                  padding:12,
                   borderColor:"#D0D0D0",
                   marginLeft:10,
                   marginTop:10
@@ -203,54 +220,65 @@ renderItem={({ item, index }) => (
               >
             {item.sale_image && item.sale_image.length > 0 ? (
   <Image
-    style={{ width: 120, height: 130, resizeMode: "contain" }}
-    source={{ uri: `http://192.168.0.109:3000/upload/eproduct//${item.sale_image[0]}` }}
+    style={{ width: 150, height: 130, resizeMode: "contain" }}
+    source={{ uri: `${imgUrl}/eproduct/${item.sale_image[0]}` }}
   />
 ) : (
   <Image
-    style={{ width: 120, height: 130, resizeMode: "contain" }}
-    source={{ uri: `http://192.168.0.109:3000/upload/eproduct/${item.product_image[0]}` }}
+    style={{ width: 150, height: 130, resizeMode: "contain" }}
+    source={{ uri: `${imgUrl}/eproduct/${item.product_image[0]}` }}
   />
 )}
 
                
-                <View>
+                <View style={{margin:5}}>
                   <Text style={{fontWeight:600}}>{item.name}</Text>
-                  <Text allowFontScaling={false} style={{fontWeight:300,fontSize:10}}>{item.brand_name}</Text>
+                  <Text allowFontScaling={false} style={{fontWeight:300,fontSize:10,textAlign:"center"}}>{item.brand_name}</Text>
                   <Text  allowFontScaling={false} style={{ textAlign: "center",textDecorationLine:"line-through",color:"gray",fontSize:10 }}>
                    Rs {item.mrp}
                   </Text>
-                  <Text  allowFontScaling={false} style={{ textAlign: "center",fontSize:15 }}>Rs {item.price}</Text>
+<View style={{flexDirection:"row",alignItems:"center",marginLeft:15}}>
+  <Text  allowFontScaling={false} style={{ fontSize:12 }}>RS {item.mrp} </Text>
+  <Text  allowFontScaling={false} style={{ fontSize:8,color:"#0a7736" }}>OFFER PRICE</Text>
+</View>
+                  {/* <Text  allowFontScaling={false} style={{ textAlign: "center",fontSize:15 }}>Rs {item.price}</Text> */}
                 </View>
 
                
 
 
+{isItemInCart(item.pcode)? <View style={{flexDirection:"row",width:200,justifyContent:"space-between",marginTop:10}}>
+<TouchableOpacity onPress={()=>handleDecrementProduct(item.pcode)} style={{paddingVertical:2,borderWidth:1,borderColor:"#D0D0D0",paddingHorizontal:15}}><Text style={{fontSize:15}}>-</Text></TouchableOpacity>
+<TouchableOpacity style={{paddingVertical:2,borderWidth:1,borderColor:"#D0D0D0",paddingHorizontal:35}}><Text>{getQty(item.pcode)}</Text></TouchableOpacity>
+<TouchableOpacity onPress={()=>handleIncrementProduct(item.pcode)} style={{paddingVertical:2,borderWidth:1,borderColor:"#D0D0D0",paddingHorizontal:15}}><Text>+</Text></TouchableOpacity>
+</View>:    
+ <TouchableOpacity
 
-                <TouchableOpacity
-                  style={{
-                    backgroundColor: "#9e0059",
-                    paddingVertical: 10,
-                     paddingHorizontal:20,
-                    justifyContent: "center",
-                    alignItems: "center",
-                    marginTop: 1,
-                    borderRadius: 6,
-                    marginTop:5,
-                
-                 
-                  }}
-                >
-                  <Text allowFontScaling={false}
-                    style={{
-                      textAlign: "center",
-                      color: "white",
-                      fontSize: 13,
-                      fontWeight: "bold",
-                    }}
-                  ><Entypo name="shopping-cart" size={20} color="white"/>  ADD TO CART
-                  </Text>
-                </TouchableOpacity>
+onPress={()=>handleCart(item,item.pcode)}
+  style={{
+    backgroundColor: "#9e0059",
+    paddingVertical: 10,
+     paddingHorizontal:20,
+    justifyContent: "center",
+    alignItems: "center",
+    marginTop: 1,
+    borderRadius: 6,
+    marginTop:5,
+
+ 
+  }}
+>
+  <Text allowFontScaling={false}
+    style={{
+      textAlign: "center",
+      color: "white",
+      fontSize: 13,
+      fontWeight: "bold",
+    }}
+  ><Entypo name="shopping-cart" size={20} color="white"/>  ADD TO CART
+  </Text>
+</TouchableOpacity>}
+            
               </Pressable>
             )}
 >

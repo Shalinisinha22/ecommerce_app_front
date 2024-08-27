@@ -19,18 +19,33 @@ import axios from "axios";
 import Toast from "react-native-toast-message";
 import { useSelector } from "react-redux";
 import * as ImagePicker from "expo-image-picker";
-import DateTimePicker from "@react-native-community/datetimepicker";
+// import DateTimePicker from "@react-native-community/datetimepicker";
 import moment from 'moment-timezone';
 import { EvilIcons } from "@expo/vector-icons";
-import CountryPicker from 'react-native-country-picker-modal';
-import { Select } from "native-base";
+// import CountryPicker from 'react-native-country-picker-modal';
+import { Picker } from "@react-native-picker/picker";
+import RNPickerSelect from 'react-native-picker-select';
+// import { Select } from "native-base";
 const ProfileScreen = ({ navigation }) => {
+
+
+  const accountTypes= [{
+    id:0,
+    type:"Current"
+  },
+{id:1,
+  type:"Saving"
+}]
 
   const [countryCode, setCountryCode] = useState('');
   const [editableFullName, setEditableFullName] = useState("");
   const [editableFatherName, setEditableFatherName] = useState("");
   const [editableCity, setEditableCity] = useState("");
   const [editableState, setEditableState] = useState("");
+  const [editableDistrict, setEditableDistrict] = useState("");
+  const [editableSubDivision, setEditableSubDivision] = useState("");
+  const [editableBlock,setEditableBlock]= useState("")
+  const [editablePanchayat,setEditablePanchayat]= useState("")
   const [editableCountry, setEditableCountry] = useState("");
   const [editableEmail, setEditableEmail] = useState("");
   const [editablePincode, setEditablePincode] = useState("");
@@ -59,6 +74,23 @@ const ProfileScreen = ({ navigation }) => {
   const [relation, setRelation] = useState(null)
   const [accountType, setAccountType] = useState(null)
 
+  const [state,setState]= useState(null)
+  const [stateId,setStateId] = useState(null)
+  const [districtValue,setDistrict]= useState(null)
+  const [districtValueId,setDistrictId]= useState(null)
+  const [subDivison,setSubDivision] = useState(null)
+  const [subDivisonId,setSubDivisionId] = useState(null)
+  const [block,setBlock]= useState(null)
+  const [blockId,setBlockId]= useState(null)
+  const [panchayat,setPanchayat]= useState(null)
+
+
+
+  const [allStates,setAllStates] = useState([])
+  const [allDistrict,setAllDistrict]= useState(null)
+  const [allBlock,setAllBlock]= useState(null)
+  const [allPanchayat,setAllPanchayat]= useState(null)
+
 
 
 
@@ -74,11 +106,113 @@ const ProfileScreen = ({ navigation }) => {
 
   const [isPickerVisible, setIsPickerVisible] = useState(false);
   const { control, handleSubmit, setValue, formState: { errors } } = useForm();
+  const [selectedStateId, setSelectedStateId] = useState(null);
 
+  const [stateIdNameMap, setStateIdNameMap] = useState({});
+
+  const getAllState = async () => {
+    try {
+      const res = await axios.get("https://mahilamediplex.com/mediplex/state");
+      const data = res.data;
+  
+      // Create a mapping of state IDs to names
+      const stateMap = {};
+      data.forEach(state => {
+        stateMap[state.id] = state.state;
+      });
+  
+      setAllStates(data);
+      setStateIdNameMap(stateMap);
+    } catch (err) {
+      console.log(err.message);
+    }
+  };
+
+  const [allDistricts, setAllDistricts] = useState([]);
+  const [districtIdNameMap, setDistrictIdNameMap] = useState({});
+  const [selectedDistrictId, setSelectedDistrictId] = useState(null);
+
+
+
+   const getAllDistrict = async (id) => {
+    // console.log(id,"124")
+    
+    try {
+      const res = await axios.get("https://mahilamediplex.com/mediplex/district", {
+        params: {
+          state_id: id
+        },
+      });
+      const data = res.data;
+      // console.log(data)
+  
+      // Create a mapping of district IDs to names
+      const districtMap = {};
+      data.forEach(district => {
+        
+        districtMap[district.district_code] = district.name;
+      });
+      //  console.log("141",districtIdNameMap[364])
+      setAllDistricts(data);
+      setDistrictIdNameMap(districtMap);
+    } catch (err) {
+      console.log(err.message);
+    }
+  };
+
+//   useEffect(()=>{
+// getAllDistrict(selectedStateId)
+//   },[selectedStateId])
+
+
+
+  const [allSubDivision, setAllSubDivision] = useState([]);
+  const [subDivisonIdNameMap, setSubDivisionIdNameMap] = useState({});
+  const [selectedSubDivisionId, setSelectedSubDivisionId] = useState(null);
+
+
+  
+   const getAllSubDivision = async (id) => {
+    console.log(id,"163")
+    
+    try {
+      const res = await axios.get("https://mahilamediplex.com/mediplex/subDivision", {
+        params: {
+          district_id: id.district_code
+        },
+      });
+      const data = res.data;
+      console.log(data)
+  
+      // Create a mapping of district IDs to names
+      const subDivisionMap = {};
+      data.forEach(division => {
+        
+        subDivisionMap[district.district_code] = district.name;
+      });
+      //  console.log("141",districtIdNameMap[364])
+      setAllSubDivision(data);
+      setSubDivisionIdNameMap(subDivisionMap,"184");
+    } catch (err) {
+      console.log(err.message);
+    }
+  };
+
+//   useEffect(()=>{
+// getAllDistrict(selectedStateId)
+//   },[editableState,state])
+
+
+   useEffect(()=>{
+    getAllSubDivision(selectedDistrictId)
+      },[editableDistrict])
+
+
+  
 
   const getAllRelation = async () => {
     try {
-      const res = await axios.get("http://192.168.0.109:3000/relation")
+      const res = await axios.get("https://mahilamediplex.com/mediplex/relation")
       const data = res.data
       setAllrelation(data)
     }
@@ -86,7 +220,10 @@ const ProfileScreen = ({ navigation }) => {
       console.log(err.message, "error")
     }
   }
+
+
   useEffect(() => {
+    getAllState()
     getAllRelation()
   }, [])
   const showDatepicker = () => {
@@ -124,10 +261,12 @@ const ProfileScreen = ({ navigation }) => {
     }
 
   };
-  console.log(userInfo)
+
   const getProfileData = async () => {
+
+
     try {
-      const res = await axios.get("http://192.168.0.109:3000/clientDetails", {
+      const res = await axios.get("https://mahilamediplex.com/mediplex/clientDetails", {
         params: {
           client_id: userInfo,
         },
@@ -135,13 +274,20 @@ const ProfileScreen = ({ navigation }) => {
 
       if (res.data) {
         const initialProfile = res.data[0];
+        districtIdNameMap[initialProfile.district]
+        // console.log(stateIdNameMap[initialProfile.m_state])
         setProfile(initialProfile);
         setEditableFullName(initialProfile.first_name || "");
         setEditableFatherName(initialProfile.m_father_name || "");
         setEditableMobile(initialProfile.m_mobile || "");
         setEditableWhatsapp(initialProfile.whatsapp || "");
         setEditableCity(initialProfile.m_city || "");
-        setEditableState(initialProfile.m_state || "");
+        setEditableState(stateIdNameMap[initialProfile.m_state]);
+        setSelectedStateId(selectedStateId?selectedStateId:initialProfile.m_state || null);
+        setEditableDistrict(districtIdNameMap[initialProfile.district] || "");
+        setSelectedDistrictId(selectedDistrictId?selectedDistrictId:initialProfile.district || null);
+        setEditableSubDivision(subDivisonIdNameMap[initialProfile.sub_division] || "");
+        setSelectedSubDivisionId(initialProfile.sub_division || null);
         setEditableCountry(initialProfile.m_country || "");
         setEditableEmail(initialProfile.m_email || "");
         setEditablePincode(initialProfile.m_pin || "");
@@ -161,6 +307,9 @@ const ProfileScreen = ({ navigation }) => {
         setEditableIFSC(initialProfile.bank_ifsc_code || "")
         setEditablePanNumber(initialProfile.m_pan || "")
       }
+
+   
+
     } catch (error) {
       console.error("Error fetching profile data:", error);
     }
@@ -168,27 +317,42 @@ const ProfileScreen = ({ navigation }) => {
 
   useEffect(() => {
     getProfileData();
-  }, []);
+  }, [stateIdNameMap,districtIdNameMap,subDivisonIdNameMap]);
 
 
-
+  const handleStateChange = (itemValue,id) => {
+    // Find the state ID based on the selected state name
+    // console.log("goa id",id)
+    const selectedId = allStates.find(state => state.state === itemValue)?.id;
+    setSelectedStateId(id);
+    setEditableState(itemValue);
+    setState(itemValue)
+    setStateId(id)
+    if(selectedId){
+      getAllDistrict(id)
+    }
+   
+  };
   const uploadImage = async (imageUri) => {
     const formData = new FormData();
     formData.append('image', {
       uri: imageUri,
       type: 'image/jpeg',
-      name: `Img${userInfo}.jpg`,
+      name:imageName
     });
 
 
     try {
-      const response = await axios.post('http://192.168.0.109:3000/upload', formData, {
+      const response = await axios.post('https://mahilamediplex.com/mediplex/uploadImage', formData, {
         headers: {
-          'Content-Type': 'multipart/form-data',
+           'Content-Type': 'multipart/form-data',
         },
-      });
+        params: {
+          imgName: "photo",
+        }, });
+     
 
-      console.log('Upload success:', response.data);
+      // console.log('Upload success:', response.data);
       setImage(`Img${userInfo}.jpg`)
     } catch (error) {
       console.error('Upload failed:', error);
@@ -197,7 +361,7 @@ const ProfileScreen = ({ navigation }) => {
 
 
   const onSubmit = async (data) => {
-    console.log(data, editableDob, editableCountry, photo)
+    // console.log(data, editableDob, editableCountry, photo)
 
     if (photo) {
       await uploadImage(photo)
@@ -205,16 +369,18 @@ const ProfileScreen = ({ navigation }) => {
 
 
 
-    console.log(imageName)
+    console.log("299",selectedStateId,selectedDistrictId,state,stateId)
 
-    const res = await axios.post("http://192.168.0.109:3000/updateProfile", {
+    const res = await axios.post("https://mahilamediplex.com/mediplex/updateProfile", {
 
       first_name: data.fullname ? data.fullname : editableFullName,
       m_dob: dob ? moment(dob).format('YYYY-MM-DD') : moment(editableDob).format('YYYY-MM-DD'),
       m_father_name: data.fathername ? data.fathername : editableFatherName,
       m_address: data.address ? data.address : editableAddress,
       m_city: data.city ? data.city : editableCity,
-      m_state: data.state ? data.state : editableState,
+      m_state: stateId ? stateId : selectedStateId,
+      district:districtValueId?districtValueId:selectedDistrictId.district_code ,
+      sub_division: selectedSubDivisionId.sub_div_id || editableSubDivision,
       m_pin: data.pincode ? data.pincode : editablePincode,
       m_country: countryName ? countryName : editableCountry,
       m_mobile: data.phone ? data.phone : editableMobile,
@@ -249,14 +415,48 @@ const ProfileScreen = ({ navigation }) => {
     });
   };
 
+
+  const handleDistrictChange =(itemValue) => {
+   
+       
+    // Find the district ID based on the selected district name
+    const selectedId =allDistricts.find(district => district.name == itemValue);
+    setSelectedDistrictId(selectedId);
+    setDistrictId(selectedId?.district_code)
+    setDistrict(itemValue)
+    setEditableDistrict(itemValue);
+
+    // console.log(selectedDistrictId)
+    getAllSubDivision(selectedDistrictId)
+  };
+
+  const handleSubDivisionChange =(itemValue) => {
+   
+       
+    // Find the district ID based on the selected district name
+    const selectedId =allSubDivision.find(division => division.name == itemValue);
+    setSelectedSubDivisionId(selectedId);
+    setEditableSubDivision(itemValue);
+  };
+
+
   return (
     <SafeAreaView style={{ backgroundColor: "white", paddingBottom: 0 }}>
     
       <ScrollView>
         <View style={styles.safeArea}>
           <KeyboardAvoidingView>
-            <View style={{ alignItems: "center", marginTop: 5 }}>
-              <Text allowFontScaling={false} style={{ color: "gray", fontSize: 15,letterSpacing:2 }}>
+          <Text
+        allowFontScaling={false}
+        style={{
+          height: 1,
+          borderColor: "whitesmoke",
+          borderWidth: 2,
+          marginBottm:10
+        }}
+      />
+            <View style={{ alignItems: "center", marginTop: 10 }}>
+              <Text allowFontScaling={false} style={{ color: "#9e0059", fontSize: 15,letterSpacing:2 }}>
                EDIT DETAILS
               </Text>
             </View>
@@ -425,7 +625,7 @@ const ProfileScreen = ({ navigation }) => {
             </View>
 
 
-            <View style={styles.inputCont}>
+            {/* <View style={styles.inputCont}>
               <Text style={{ fontWeight: 500, fontSize: 16 }}>Date of birth</Text>
               <Pressable style={[styles.inputBoxCont, { padding: 20 }]} onPress={showDatepicker}>
                 <Text style={{ margin: 10 }}>
@@ -443,7 +643,7 @@ const ProfileScreen = ({ navigation }) => {
 
                 <Text style={{ color: "#fff", fontSize: 16 }}>{editableDob ? moment(editableDob).format('YYYY-MM-DD') : dob ? moment(dob).format('YYYY-MM-DD') : null}</Text>
               </Pressable>
-            </View>
+            </View> */}
 
             <View style={styles.inputCont}>
               <Text allowFontScaling={false}>Address</Text>
@@ -506,7 +706,107 @@ const ProfileScreen = ({ navigation }) => {
               </View>
             </View>
 
+            {/* state */}
             <View style={styles.inputCont}>
+    <Text style={{ fontWeight: '500', fontSize: 16 }}>State</Text>
+    <RNPickerSelect
+      style={{
+        inputIOS: { backgroundColor: "#17842b", color: "white", fontSize: 18 },
+        inputAndroid: { backgroundColor: "#17842b", color: "white", fontSize: 18 },
+      }}
+      placeholder={{
+        label: "Select a state",
+        value: null,
+        color: "#9EA0A4",
+      }}
+      value={state?state:editableState}
+      onValueChange={(itemValue,id)=>handleStateChange(itemValue,id)}
+      items={allStates.map((item) => ({
+        label: item.state,
+        value: item.state,
+        key: item.id,
+      }))}
+    />
+  </View>
+
+  {/* district */}
+
+
+   {allDistricts.length!=0 && 
+  <View style={styles.inputCont}>
+    <Text style={{ fontWeight: '500', fontSize: 16 }}>District </Text>
+    <RNPickerSelect
+      style={{
+        inputIOS: { backgroundColor: "#17842b", color: "white", fontSize: 18 },
+        inputAndroid: { backgroundColor: "#17842b", color: "white", fontSize: 18 },
+      }}
+      placeholder={{
+        label: "Select a District",
+        value: null,
+        color: "#9EA0A4",
+      }}
+      value={districtValue?districtValue:editableDistrict}
+      onValueChange={(itemValue)=>handleDistrictChange(itemValue)}
+      items={allDistricts.map((item) => ({
+        label: item.name,
+        value: item.name,
+        key: item.name,
+      }))}
+    />
+  </View>} 
+
+
+  {/* subDivision */}
+
+  {allSubDivision.length!=0 && 
+  <View style={styles.inputCont}>
+    <Text style={{ fontWeight: '500', fontSize: 16 }}>SubDivision</Text>
+    <RNPickerSelect
+      style={{
+        inputIOS: { backgroundColor: "#17842b", color: "white", fontSize: 18 },
+        inputAndroid: { backgroundColor: "#17842b", color: "white", fontSize: 18 },
+      }}
+      placeholder={{
+        label: "Select a SubDivision",
+        value: null,
+        color: "#9EA0A4",
+      }}
+      value={subdivsionValue?subdivsionValue:editableSubDivision}
+      onValueChange={(itemValue)=>handleSubDivisionChange(itemValue)}
+      items={allSubDivision.map((item) => ({
+        label: item.name,
+        value: item.name,
+        key: item.name,
+      }))}
+    />
+  </View>} 
+
+
+ {/* {allBlock.length!=0 && 
+  <View style={styles.inputCont}>
+    <Text style={{ fontWeight: '500', fontSize: 16 }}>Block</Text>
+    <RNPickerSelect
+      style={{
+        inputIOS: { backgroundColor: "#17842b", color: "white", fontSize: 18 },
+        inputAndroid: { backgroundColor: "#17842b", color: "white", fontSize: 18 },
+      }}
+      placeholder={{
+        label: "Select a Block",
+        value: null,
+        color: "#9EA0A4",
+      }}
+      value={editableBlock}
+      onValueChange={(itemValue)=>setEditableBlock(itemValue)}
+      items={allBlock.map((item) => ({
+        label: item.name,
+        value: item.name,
+        key: item.name,
+      }))}
+    />
+  </View>}   */}
+
+
+            {/* <View style={styles.inputCont}>
               <Text allowFontScaling={false}>State</Text>
               <View style={styles.inputBoxCont}>
                 <Controller
@@ -533,9 +833,9 @@ const ProfileScreen = ({ navigation }) => {
                   name="state"
                 />
               </View>
-            </View>
+            </View> */}
 
-             <View style={styles.inputCont}>
+          {/* <View style={styles.inputCont}>
               <Text allowFontScaling={false}>Country</Text>
               <TouchableOpacity onPress={() => setIsPickerVisible(true)} style={[styles.inputBoxCont, { paddingVertical: 15 }]}>
                 {console.log(editableCountry)}
@@ -556,9 +856,8 @@ const ProfileScreen = ({ navigation }) => {
                   />
                 }
 
-               {/* {<Text style={{ fontSize: 16 }}>{editableCountry ? editableCountry : ""}</Text> } */}
-              </TouchableOpacity>
-            </View>
+              {/* </TouchableOpacity>
+            </View>  */} 
 
 
 
@@ -597,7 +896,7 @@ const ProfileScreen = ({ navigation }) => {
             <View style={styles.inputCont}>
               <Text allowFontScaling={false}>Upload Photo</Text>
               <View style={[styles.inputBoxCont, { backgroundColor: "white" }]}>
-                {editableProfileImage ? <Image source={{ uri: `http://192.168.0.109:3000/uploads/${editableProfileImage}` }} style={{ width: 100, height: 100, borderRadius: 100, marginRight: 20 }} /> : photo && <Image source={{ uri: photo }} style={{ width: 100, height: 100, borderRadius: 100, marginRight: 20 }} />}
+                {editableProfileImage ? <Image source={{ uri: `https://mahilamediplex.com/upload/photo/${editableProfileImage}` }} style={{ width: 100, height: 100, borderRadius: 100, marginRight: 20 }} /> : photo && <Image source={{ uri: photo }} style={{ width: 100, height: 100, borderRadius: 100, marginRight: 20 }} />}
                 <Button title="Choose File" color="#9e0059" onPress={pickImage} />
               </View>
             </View>
@@ -674,22 +973,18 @@ const ProfileScreen = ({ navigation }) => {
             {/* relation */}
        <View style={styles.inputCont}>
               <Text style={{ fontWeight: 500, fontSize: 16 }}>Relation </Text>
-              <Select style={{ backgroundColor: "#17842b",color:"white",fontSize:18 }} selectedValue={editableNomineeRelation} minWidth="200" accessibilityLabel="Select Relation" placeholder="Select Relation" _selectedItem={{
-                        bg: "#D0D0D0"
-                        // endIcon: <CheckIcon size="5"/>
-                    }} mt={1} onValueChange={(itemValue) => 
-                        {
-                           setRelation(itemValue)
-                           setEditableNomineeRelation(itemValue)
-                        }
-                   }>
-
-                {allRelation != null && allRelation.map((item) => (
-                  <Select.Item key={item.id} label={item.name} value={item.name} />
-                ))}
-
-
-              </Select>
+         <Picker
+  style={{ backgroundColor: "#17842b", color: "white", fontSize: 18 }}
+  selectedValue={editableNomineeRelation}
+  onValueChange={(itemValue) => {
+    setRelation(itemValue);
+    setEditableNomineeRelation(itemValue);
+  }}
+>
+  {allRelation != null && allRelation.map((item) => (
+    <Picker.Item key={item.id} label={item.name} value={item.name} />
+  ))}
+</Picker>
             </View>
 
 
@@ -920,23 +1215,30 @@ const ProfileScreen = ({ navigation }) => {
 
             {/* Account Type */}
             <View style={styles.inputCont}>
-              <Text style={{ fontWeight: 500, fontSize: 16 }}>Account Type </Text>
-              <Select style={{ backgroundColor: "#17842b",color:"white",fontSize:18 }} selectedValue={editableAccountType ?editableAccountType:accountType} minWidth="200"  placeholder="Select Account Type" _selectedItem={{
+              <Text style={{ fontWeight: 500, fontSize: 16 }}>Account Type  </Text>
+              <Picker  style={{ backgroundColor: "#17842b",color:"white",fontSize:18 }} selectedValue={editableAccountType} minWidth="200"  placeholder="Select Account Type" _selectedItem={{
                         bg: "#D0D0D0"
                         // endIcon: <CheckIcon size="5"/>
                     }} mt={1}
                      onValueChange={(itemValue) => 
                         {
-                           console.log(itemValue)
-                           setAccountType(itemValue)
-                           setEditableAccountType(itemValue)
+                          //  console.log(itemValue)
+                           setAccountType(itemValue);
+                           setEditableAccountType(itemValue); 
                         }
                    }>
-                <Select.Item label="Current" value="Current" />
-                <Select.Item label="Saving" value="Saving" />
+
+                    {
+                      accountTypes.map((item)=>(
+                        
+                <Picker.Item key={item.id} label={item.type} value={item.type} />
+                      ))
+                    }
+
+            
 
 
-              </Select>
+              </Picker>
             </View>
 
 

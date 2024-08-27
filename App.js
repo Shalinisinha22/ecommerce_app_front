@@ -4,7 +4,7 @@ import { AppNavigator } from './navigation/AppNavigator';
 import { Provider } from 'react-redux';
 import { PersistGate } from 'redux-persist/integration/react';
 import { store, persistor } from '././redux/store';
-import { NativeBaseProvider } from 'native-base';
+// import { NativeBaseProvider } from 'native-base';
 import { useSelector } from 'react-redux';
 import axios from 'axios';
 import { Picker } from '@react-native-picker/picker';
@@ -14,27 +14,32 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export default function App() {
 
- 
 
 const [shopType,setShopType]= useState(null)
 const [modalVisible, setModalVisible] = useState(true);
 const [selectedShopType, setSelectedShopType] = useState('');
 const [selectedShopClientId,setselectedShopClientId]= useState('');
 const getShop= async()=>{
-  try{
-    const res= await axios.get("http://192.168.0.109:3000/allShops")
-    const data= res.data
+  const res = JSON.parse(await AsyncStorage.getItem('shopDetails'));
+  // console.log("Shop Details APP:", res);
+  if(res.client_id){
 
-    let shopArr=[]
-    for(let i=0;i<data.length;i++){
-     shopArr.push({business_name:data[i].business_name,client_id:data[i].client_id})
+  }
+  else{
+    try{
+      const res= await axios.get("http://mahilamediplex.com/mediplex/defaultShops")
+      const data= res.data
+  
+      // console.log(data[0].client_id,"27 app")
+      await AsyncStorage.setItem("shopDetails",JSON.stringify(data[0]))
     }
-    console.log(shopArr)
-    setShopType(shopArr)
+    catch(err){
+      console.log(err.message)
+    }
   }
-  catch(err){
-    console.log(err.message)
-  }
+
+
+
 }
 useEffect(()=>{
   getShop()
@@ -44,7 +49,7 @@ useEffect(()=>{
 const handleSelectShopType = async() => {
 
   if (selectedShopType) {
-console.log("selectedshop",selectedShopType)
+// console.log("selectedshop",selectedShopType)
 await AsyncStorage.setItem("shopDetails",JSON.stringify(selectedShopType))
     setModalVisible(false);
   }
@@ -53,13 +58,13 @@ await AsyncStorage.setItem("shopDetails",JSON.stringify(selectedShopType))
 
   return (
 
-<NativeBaseProvider>
+
 <Provider store={store}>
         <PersistGate persistor={persistor}>
         <View style={styles.container}>
 
 
-        <Modal
+        {/* <Modal
               animationType="slide"
               transparent={true}
               visible={modalVisible}
@@ -89,7 +94,8 @@ await AsyncStorage.setItem("shopDetails",JSON.stringify(selectedShopType))
             </Modal>
   
 
-  {selectedShopType!="" && !modalVisible &&    <AppNavigator></AppNavigator> }
+  {selectedShopType!="" && !modalVisible &&    <AppNavigator></AppNavigator> } */}
+   <AppNavigator></AppNavigator>
    
       <StatusBar
         backgroundColor='white'
@@ -102,7 +108,6 @@ await AsyncStorage.setItem("shopDetails",JSON.stringify(selectedShopType))
         </PersistGate>
         </Provider>
 
-</NativeBaseProvider>
 
 
  

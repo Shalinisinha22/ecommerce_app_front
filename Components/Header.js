@@ -2,15 +2,18 @@ import { View, Text,Dimensions,TouchableOpacity,FlatList,Pressable,Image, Scroll
 import React from 'react'
 import { Entypo,FontAwesome5,Ionicons,Foundation ,Feather} from '@expo/vector-icons'
 import SearchBar from './SearchBar'
+import { useSelector } from 'react-redux'
 
 const width = Dimensions.get('screen').width
 
 const Header = ({navigation}) => {
+
+  const cart = useSelector((state) => state.cart.cart);
   return (
 <View style={{width:width ,flexDirection:"row",borderColor:"gray",justifyContent:"space-around",alignItems:"center",marginTop:15,gap:10}}>
 <TouchableOpacity onPress={() => navigation.openDrawer()} style={{ paddingTop: 5 }}>
               <Entypo name="menu" size={40} color="#155d27" />
-            </TouchableOpacity>
+</TouchableOpacity>
 
 <View style={{flexDirection:"row",justifyContent:"space-around"}}>
     {/* <TouchableOpacity onPress={()=>navigation.navigate("Search")}>
@@ -34,7 +37,7 @@ const Header = ({navigation}) => {
 
 <TouchableOpacity style={{ alignItems: "center", marginTop: 8 }} onPress={() => navigation.navigate("cart")}>
     <FontAwesome5 name="shopping-cart" size={25} color="#b6306d" />
-    <Text style={{ color: "#0a7736", position: "absolute", top: -12, fontWeight: '700' }}>0</Text>
+    <Text style={{ color: "#0a7736", position: "absolute", top: -12, fontWeight: '700' }}>{cart.length}</Text>
   </TouchableOpacity>
 </View>
 

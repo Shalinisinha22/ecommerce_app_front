@@ -60,7 +60,7 @@ const LoginScreen = ({ navigation }) => {
   const verifyUser = async () => {
     let errors = {};
 
-    const res = await axios.get("http://192.168.0.109:3000/login", {
+    const res = await axios.get("https://mahilamediplex.com/mediplex/login", {
       params: {
         userId: id,
         password: password
@@ -158,7 +158,7 @@ const LoginScreen = ({ navigation }) => {
 
               <TouchableOpacity style={styles.button}
                 onPress={handleSubmit}
-              >
+               >
                 <Text
                   style={{
                     textAlign: "center",
@@ -171,14 +171,14 @@ const LoginScreen = ({ navigation }) => {
                 </Text>
               </TouchableOpacity>
 
-              <TouchableOpacity
+              {/* <TouchableOpacity
                 onPress={() => navigation.navigate("RegisterScreen")}
                 style={{ marginTop: 15 }}
               >
                 <Text style={{ textAlign: "center", color: "black", fontSize: 16, fontWeight: 800 }}>
                   Don't have an account? Sign Up
                 </Text>
-              </TouchableOpacity>
+              </TouchableOpacity> */}
             </View>
           </KeyboardAvoidingView>
         </ScrollView>

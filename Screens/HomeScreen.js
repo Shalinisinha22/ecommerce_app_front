@@ -1,6 +1,7 @@
 import { View, Text, Dimensions, Image, ImageBackground, TouchableOpacity, ScrollView, Animated } from 'react-native';
 import React, { useRef } from 'react';
 import { Entypo, FontAwesome5 } from '@expo/vector-icons';
+import { useSelector } from 'react-redux';
 import SearchBar from '../Components/SearchBar';
 import Section1 from '../Components/Section1';
 import Section2 from '../Components/Section2';
@@ -21,10 +22,12 @@ const HomeScreen = ({ navigation }) => {
   });
 
   const searchBarOpacity = scrollY.interpolate({
-    inputRange: [0, 1],
+    inputRange: [0, 80],
     outputRange: [1, 0],
     extrapolate: 'clamp',
   });
+
+  const cart = useSelector((state) => state.cart.cart);
 
   return (
     <ImageBackground style={{ width: width, flex: 1, backgroundColor: "#fff", opacity: 1 }}>
@@ -44,7 +47,7 @@ const HomeScreen = ({ navigation }) => {
               </TouchableOpacity>
               <TouchableOpacity style={{ alignItems: "center", marginLeft: 10, marginTop: 5 }} onPress={() => navigation.navigate("cart")}>
                 <FontAwesome5 name="shopping-cart" size={28} color="#b6306d" />
-                <Text style={{ color: "#0a7736", position: "absolute", top: -10, fontWeight: '700' }}>0</Text>
+                <Text style={{ color: "#0a7736", position: "absolute", top: -10, fontWeight: '700' }}>{cart.length}</Text>
               </TouchableOpacity>
             </View>
           </View>
@@ -58,7 +61,7 @@ const HomeScreen = ({ navigation }) => {
       <Animated.ScrollView
         onScroll={Animated.event(
           [{ nativeEvent: { contentOffset: { y: scrollY } } }],
-          { useNativeDriver: false } // Use false for layout properties like height
+          { useNativeDriver: false } // Keep false for height and opacity
         )}
         scrollEventThrottle={16}
       >
@@ -71,5 +74,6 @@ const HomeScreen = ({ navigation }) => {
     </ImageBackground>
   );
 };
+
 
 export default HomeScreen;

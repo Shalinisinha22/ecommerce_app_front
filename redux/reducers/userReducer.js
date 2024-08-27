@@ -1,23 +1,28 @@
-// userReducer.js
-
-// ... (other imports and initialState)
 const initialState = {
-    userInfo: null,
-    shop:''
-  };
-  const userReducer = (state = initialState, action) => {
-    switch (action.type) {
-      case 'SET_USER_INFO':
-        return { ...state, userInfo: action.payload};
-      case 'CLEAR_USER_INFO':
-        return { ...state, userInfo: null };
+  cart: [],
+  userInfo: null,
+  shop: ''
 
-        case 'SET_SHOP_TYPE':
-          return { ...state, shop: action.payload };  
-      default:
-        return state;
-    }
-  };
+};
+
+const userReducer = (state = initialState, action) => {
+  switch (action.type) {
+    case 'SET_USER_INFO':
+      return { ...state, userInfo: action.payload, cart: state.cart || [] };
+
+    case 'CLEAR_USER_INFO':
+      return { ...state, userInfo: null };
+
+    case 'SET_SHOP_TYPE':
+      return { ...state, shop: action.payload };
+
   
-  export default userReducer;
-  
+
+ 
+
+    default:
+      return state;
+  }
+};
+
+export default userReducer;
