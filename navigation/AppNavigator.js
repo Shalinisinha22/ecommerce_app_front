@@ -29,6 +29,8 @@ import ActivationScreen from '../Screens/ActivationScreen';
 import FundRequestStatus from '../Screens/FundRequestStatus';
 import SponsorIncome from '../Screens/SponsorIncome';
 import DailyIncome from '../Screens/DailyIncome';
+import GenealogyScreen from '../Screens/GenealogyScreen';
+import DirectMemberScreen from '../Screens/DirectMemberScreen';
 
 
 const Stack = createStackNavigator();
@@ -58,8 +60,8 @@ export const AppNavigator = () => {
        { id: 1,
                 name: "My Network",
                 submenu: [
-                  { id: 0, name: "Genealogy Tree", url: "coming" },
-                  { id: 1, name: "Direct member", url: "coming" },
+                  { id: 0, name: "Genealogy Tree", url: "genealogy" },
+                  { id: 1, name: "Direct member", url: "directMember" },
                   { id: 2, name: "Downline list", url: "coming" },
                   { id: 2, name: "Active Member", url: "coming" },
           
@@ -71,6 +73,7 @@ export const AppNavigator = () => {
 
        { id: 2,
                     name: "Activation",
+
                     submenu: [
                       { id: 0, name: "Package", url: "healthPackage" },
                       { id: 1, name: "Activation", url: "activationScreen" },
@@ -142,6 +145,9 @@ url: "",},
                 <Stack.Screen name="fundRequestStatus" component={FundRequestStatus} options={{ headerShown: false }} />
                 <Stack.Screen name="sponsorIncome" component={SponsorIncome} options={{ headerShown: false }} />
                 <Stack.Screen name="dailyIncome" component={DailyIncome} options={{ headerShown: false }} />
+                <Stack.Screen name="genealogy" component={GenealogyScreen} options={{ headerShown: false }} />
+                <Stack.Screen name="directMember" component={DirectMemberScreen} options={{ headerShown: false }} />
+
 
             </Stack.Navigator>
         );

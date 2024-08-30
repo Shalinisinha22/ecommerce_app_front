@@ -185,7 +185,33 @@ const ActivationScreen = ({ navigation }) => {
   return (
     <View style={{ flex: 1, backgroundColor: "white" }}>
       {/* <Header navigation={navigation}></Header> */}
-
+      <View style={{}}>
+       
+       <Text
+     allowFontScaling={false}
+     style={{
+       height: 1,
+       borderColor: "whitesmoke",
+       borderWidth: 2,
+       marginBottm:10
+     }}
+   />
+         <View style={{ alignItems: "center", marginTop: 10 }}>
+           <Text allowFontScaling={false} style={{ color: "#9e0059", fontSize: 15,letterSpacing:2 }}>
+         ACTIVATE USER
+           </Text>
+         </View>
+         <Text
+     allowFontScaling={false}
+     style={{
+       height: 1,
+       borderColor: "whitesmoke",
+       borderWidth: 2,
+       marginTop: 15,
+     }}
+   />
+ 
+</View>
       <View style={{ marginTop: 40, padding: 15 }}>
         <View style={{ marginTop: 0 }}>
           <Text allowFontScaling={false}>Main Wallet Balance</Text>
