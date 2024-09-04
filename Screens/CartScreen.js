@@ -61,7 +61,7 @@ const CartPage = ({ navigation }) => {
 
 const makeOrder = async (item, lmcId) => {
   try {
-    const res = await axios.post("https://mahilamediplex.com/mediplex/orderDetails", {
+    const res = await axios.post("http://192.168.0.109:3002/mediplex/orderDetails", {
       uid: userInfo,
       lmc_id: lmc_id ? lmc_id : lmcId, // Fallback to passed lmcId if local lmc_id is not set
       pid: item.sale_id,
@@ -122,17 +122,19 @@ setCarts(cart)
   />
 )}
       <View style={styles.itemDetails}>
-        <Text style={styles.itemName}>{item.name}</Text>
+        <Text allowFontScaling={false}   style={styles.itemName}>{item.name}</Text>
         <View style={styles.quantityContainer}>
           <TouchableOpacity onPress={() => handleDecrementProduct(item.pcode)}>
             <Icon name="remove-circle-outline" size={24} color="black" />
           </TouchableOpacity>
-          <Text style={styles.quantity}>{item.qty}</Text>
+          <Text allowFontScaling={false}  style={styles.quantity}>{item.qty}</Text>
           <TouchableOpacity onPress={() => handleIncrementProduct(item.pcode)}>
             <Icon name="add-circle-outline" size={24} color="black" />
           </TouchableOpacity>
         </View>
-        <Text style={styles.itemPrice}>RS {item.price * item.qty}</Text>
+        <Text allowFontScaling={false} style={styles.itemPrice}>
+  RS {item.price * item.qty}
+</Text>
       </View>
       <TouchableOpacity onPress={() => dispatch(removeFromCart(item.pcode))}>
         <Icon name="trash-outline" size={24} color="red" />
@@ -144,7 +146,7 @@ setCarts(cart)
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Your Cart</Text>
+      <Text allowFontScaling={false}  style={styles.title}>Your Cart</Text>
       <ScrollView>
       <FlatList
         data={cart}
@@ -158,7 +160,7 @@ setCarts(cart)
             />
       {
         cart.length!=0 &&   <TouchableOpacity style={styles.checkoutButton} onPress={()=>handleCheckOut()}>
-        <Text style={styles.checkoutText}>Proceed to Checkout</Text>
+        <Text allowFontScaling={false}  style={styles.checkoutText}>Proceed to Checkout</Text>
       </TouchableOpacity>
       }
      
@@ -200,7 +202,7 @@ const styles = StyleSheet.create({
     marginLeft: 16,
   },
   itemName: {
-    fontSize: 16,
+    fontSize: 10,
     fontWeight: 'bold',
     letterSpacing:1.5
   },
@@ -212,15 +214,19 @@ const styles = StyleSheet.create({
   quantity: {
     fontSize: 16,
     marginHorizontal: 8,
+  
   },
   itemPrice: {
-    fontSize: 16,
+    fontSize: 15,
     fontWeight: 'bold',
     color: '#155d27',
+    marginTop:5
+
   },
   checkoutButton: {
     backgroundColor: '#155d27',
-    padding: 16,
+    paddingHorizontal: 12,
+    paddingVertical: 10,
     borderRadius: 8,
     alignItems: 'center',
     marginTop: 16,
@@ -229,6 +235,7 @@ const styles = StyleSheet.create({
     color: 'white',
     fontSize: 18,
     fontWeight: 'bold',
+    letterSpacing:2
   },
   emptyText: {
     textAlign: 'center',

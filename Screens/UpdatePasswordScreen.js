@@ -28,7 +28,7 @@ const UpdatePasswordScreen = () => {
 
     if (data.newPass == data.rTypePass) {
       try {
-        const res = await axios.post("https://mahilamediplex.com/mediplex/change-password",
+        const res = await axios.post("http://192.168.0.109:3002/mediplex/change-password",
           { oldPassword: oldPass, newPassword: newPass, client_id: userInfo })
 
         console.log(res.status)

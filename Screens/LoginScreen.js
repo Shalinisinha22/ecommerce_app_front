@@ -60,7 +60,7 @@ const LoginScreen = ({ navigation }) => {
   const verifyUser = async () => {
     let errors = {};
 
-    const res = await axios.get("https://mahilamediplex.com/mediplex/login", {
+    const res = await axios.get("http://192.168.0.109:3002/mediplex/login", {
       params: {
         userId: id,
         password: password
@@ -102,8 +102,8 @@ const LoginScreen = ({ navigation }) => {
 
           <KeyboardAvoidingView>
             <View style={{ alignItems: "center" }}>
-              <Text style={styles.heading}>Login to your Account</Text>
-              {error.message && <Text style={{ color: "red", marginTop: 10 }}>{error.message}</Text>}
+              <Text allowFontScaling={false}  style={styles.heading}>Login to your Account</Text>
+              {error.message && <Text allowFontScaling={false}  style={{ color: "red", marginTop: 10 }}>{error.message}</Text>}
             </View>
 
             <View style={{ width: width, alignItems: "center" }}>
@@ -124,7 +124,7 @@ const LoginScreen = ({ navigation }) => {
                     placeholder="Enter your ID"
                   />
                 </View>
-                {error.id && flag && <Text style={{ color: "red" }}>{error.id}</Text>}
+                {error.id && flag && <Text allowFontScaling={false}  style={{ color: "red" }}>{error.id}</Text>}
               </View>
 
               <View>
@@ -149,7 +149,7 @@ const LoginScreen = ({ navigation }) => {
                     
                   />
                 </View>
-                {error.password && flag && <Text style={{ color: "red" }}>{error.password}</Text>}
+                {error.password && flag && <Text allowFontScaling={false}  style={{ color: "red" }}>{error.password}</Text>}
               </View>
 
             
@@ -159,7 +159,7 @@ const LoginScreen = ({ navigation }) => {
               <TouchableOpacity style={styles.button}
                 onPress={handleSubmit}
                >
-                <Text
+                <Text allowFontScaling={false} 
                   style={{
                     textAlign: "center",
                     color: "white",
@@ -175,7 +175,7 @@ const LoginScreen = ({ navigation }) => {
                 onPress={() => navigation.navigate("RegisterScreen")}
                 style={{ marginTop: 15 }}
               >
-                <Text style={{ textAlign: "center", color: "black", fontSize: 16, fontWeight: 800 }}>
+                <Text allowFontScaling={false}  style={{ textAlign: "center", color: "black", fontSize: 16, fontWeight: 800 }}>
                   Don't have an account? Sign Up
                 </Text>
               </TouchableOpacity> */}

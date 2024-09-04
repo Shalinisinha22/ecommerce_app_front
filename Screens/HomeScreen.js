@@ -29,32 +29,34 @@ const HomeScreen = ({ navigation }) => {
 
   const cart = useSelector((state) => state.cart.cart);
 
+  const user=useSelector((state)=>state.user.userInfo?state.user.userInfo:null)
+
   return (
     <ImageBackground style={{ width: width, flex: 1, backgroundColor: "#fff", opacity: 1 }}>
       <ImageBackground source={require("../assets/bg5.png")} style={{ width: width, backgroundColor: "#d8f3dc", opacity: 0.9 }}>
         <View style={{ backgroundColor: "#fffffc", borderRadius: 0, borderBottomLeftRadius: 20, borderBottomRightRadius: 20, borderBottomWidth: 5, borderColor: "#fff" }}>
           <View style={{ width: width, borderRadius: 30, borderWidth: 0, borderColor: "#a11463", flexDirection: "row", paddingTop: 10, justifyContent: "space-evenly" }}>
-            <TouchableOpacity onPress={() => navigation.openDrawer()} style={{ paddingTop: 5 }}>
+            <TouchableOpacity onPress={() => navigation.openDrawer()} style={{ paddingTop: 7}}>
               <Entypo name="menu" size={44} color="#155d27" />
             </TouchableOpacity>
             <View>
               <Image source={require("../assets/logo.png")} style={{ height: 65, width: 110, resizeMode: "contain" }} />
             </View>
-            <View style={{ flexDirection: "row", marginLeft: 10 }}>
+            <View style={{ flexDirection: "row", alignItems:"center" }}>
               <TouchableOpacity style={{ flexDirection: "row", justifyContent: "space-around", borderWidth: 1, borderColor: "gray", height: 35, borderRadius: 15, paddingHorizontal: 15, alignItems: "center" }} onPress={() => navigation.navigate("wallet")}>
                 <FontAwesome5 name="wallet" size={22} color="#0a7736" />
-                <Text style={{ color: "#a11463", fontSize: 15, fontWeight: '700' }}>  Rs 100.00</Text>
+                <Text numberOfLines={2} allowFontScaling={false}style={{ color: "#a11463", fontSize: 12, fontWeight: '700' }}>  Rs {user.mani_wallet}</Text>
               </TouchableOpacity>
-              <TouchableOpacity style={{ alignItems: "center", marginLeft: 10, marginTop: 5 }} onPress={() => navigation.navigate("cart")}>
+              <TouchableOpacity style={{ alignItems: "center", marginLeft: 8, marginTop: 5 }} onPress={() => navigation.navigate("cart")}>
                 <FontAwesome5 name="shopping-cart" size={28} color="#b6306d" />
-                <Text style={{ color: "#0a7736", position: "absolute", top: -10, fontWeight: '700' }}>{cart.length}</Text>
+                <Text allowFontScaling={false}style={{ color: "#0a7736", position: "absolute", top: -10, fontWeight: '700' }}>{cart.length}</Text>
               </TouchableOpacity>
             </View>
           </View>
 
-          <Animated.View style={{ height: searchBarHeight, opacity: searchBarOpacity }}>
+          {/* <Animated.View style={{ height: searchBarHeight, opacity: searchBarOpacity }}> */}
             <SearchBar navigation={navigation} />
-          </Animated.View>
+          {/* </Animated.View> */}
         </View>
       </ImageBackground>
 

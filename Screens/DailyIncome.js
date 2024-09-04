@@ -11,7 +11,7 @@ const DailyIncome= () => {
   const [modalVisible, setModalVisible] = useState(false);
   const getAllDailyIncome= async()=>{
     try{
-       const res = await axios.get("https://mahilamediplex.com/mediplex/dailyIncome",{
+       const res = await axios.get("http://192.168.0.109:3002/mediplex/dailyIncome",{
         params:{
           client_id:userInfo.client_id
         }
@@ -41,14 +41,14 @@ const DailyIncome= () => {
 
       <>
       <View style={styles.row}>
-        <Text style={[styles.cell, styles.dateCell]}>{item.cdate}</Text>
-        <Text style={[styles.cell,{fontWeight:"bold"}]}>Rs {item.amount}</Text>
+        <Text allowFontScaling={false} style={[styles.cell, styles.dateCell]}>{item.cdate}</Text>
+        <Text allowFontScaling={false} style={[styles.cell,{fontWeight:"bold"}]}>Rs {item.amount}</Text>
   
-        <Text style={[styles.cell,{fontWeight:"bold"}]}>Rs {item.tds}</Text>
-        <Text style={[styles.cell,{fontWeight:"bold"}]}>Rs {item.admin}</Text>
+        <Text allowFontScaling={false} style={[styles.cell,{fontWeight:"bold"}]}>Rs {item.tds}</Text>
+        <Text allowFontScaling={false} style={[styles.cell,{fontWeight:"bold"}]}>Rs {item.admin}</Text>
 
   
-        <Text style={[styles.cell,{fontWeight:"bold"}]}>Rs {item.payable}</Text>
+        <Text allowFontScaling={false} style={[styles.cell,{fontWeight:"bold"}]}>Rs {item.payable}</Text>
       </View>
 
 {modalVisible && <ImageModal 
@@ -73,7 +73,7 @@ const DailyIncome= () => {
             <View style={styles.modalContent}>
               <Image source={imageSource} style={styles.image} />
               <TouchableOpacity onPress={onClose} style={styles.closeButton}>
-                <Text style={styles.closeButtonText}>Close</Text>
+                <Text allowFontScaling={false} style={styles.closeButtonText}>Close</Text>
               </TouchableOpacity>
             </View>
           </View>
@@ -119,11 +119,11 @@ const DailyIncome= () => {
 <View style={styles.table}>
         {/* Table Header */}
         <View style={styles.header}>
-          <Text style={[styles.headerCell, styles.dateCell]}>Date</Text>
-          <Text style={styles.headerCell}>Amount</Text>
-          <Text style={styles.headerCell}>TDS</Text>
-          <Text style={styles.headerCell}>Admin</Text>
-          <Text style={[styles.headerCell, styles.remarksCell]}>Credit Amount</Text>
+          <Text allowFontScaling={false} style={[styles.headerCell, styles.dateCell]}>Date</Text>
+          <Text allowFontScaling={false} style={styles.headerCell}>Amount</Text>
+          <Text allowFontScaling={false} style={styles.headerCell}>TDS</Text>
+          <Text allowFontScaling={false} style={styles.headerCell}>Admin</Text>
+          <Text allowFontScaling={false} style={[styles.headerCell, styles.remarksCell]}>Credit Amount</Text>
         </View>
 
         {/* Table Rows */}
@@ -133,7 +133,7 @@ const DailyIncome= () => {
           keyExtractor={(item, index) => index.toString()}
           contentContainerStyle={styles.tableContent}
         />
-        :<Text style={{textAlign:"center",marginTop:20}}>No Data Available</Text>
+        :<Text allowFontScaling={false} style={{textAlign:"center",marginTop:20}}>No Data Available</Text>
 }
       </View>
 

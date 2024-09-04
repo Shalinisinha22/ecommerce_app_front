@@ -30,7 +30,7 @@ const Section2 = ({navigation}) => {
   const getProductsId = async (shop) => {
 
     try {
-        const res = await axios.get("https://mahilamediplex.com/mediplex/getProductId", {
+        const res = await axios.get("http://192.168.0.109:3002/mediplex/getProductId", {
             params: { client_id: lmcId.client_id }
         });
   
@@ -58,7 +58,7 @@ const Section2 = ({navigation}) => {
 const getProducts = async (pidArr) => {
     try {
         const productPromises = pidArr.map(pid => 
-            axios.get("https://mahilamediplex.com/mediplex/products", {
+            axios.get("http://192.168.0.109:3002/mediplex/products", {
                 params: { product_id: pid }
             })
         );
@@ -232,13 +232,13 @@ renderItem={({ item, index }) => (
 
                
                 <View style={{margin:5}}>
-                  <Text style={{fontWeight:600}}>{item.name}</Text>
+                  <Text allowFontScaling={false} style={{fontWeight:600}}>{item.name}</Text>
                   <Text allowFontScaling={false} style={{fontWeight:300,fontSize:10,textAlign:"center"}}>{item.brand_name}</Text>
                   <Text  allowFontScaling={false} style={{ textAlign: "center",textDecorationLine:"line-through",color:"gray",fontSize:10 }}>
                    Rs {item.mrp}
                   </Text>
 <View style={{flexDirection:"row",alignItems:"center",marginLeft:15}}>
-  <Text  allowFontScaling={false} style={{ fontSize:12 }}>RS {item.mrp} </Text>
+  <Text  allowFontScaling={false} style={{ fontSize:12 }}>RS {item.price} </Text>
   <Text  allowFontScaling={false} style={{ fontSize:8,color:"#0a7736" }}>OFFER PRICE</Text>
 </View>
                   {/* <Text  allowFontScaling={false} style={{ textAlign: "center",fontSize:15 }}>Rs {item.price}</Text> */}
@@ -248,9 +248,9 @@ renderItem={({ item, index }) => (
 
 
 {isItemInCart(item.pcode)? <View style={{flexDirection:"row",width:200,justifyContent:"space-between",marginTop:10}}>
-<TouchableOpacity onPress={()=>handleDecrementProduct(item.pcode)} style={{paddingVertical:2,borderWidth:1,borderColor:"#D0D0D0",paddingHorizontal:15}}><Text style={{fontSize:15}}>-</Text></TouchableOpacity>
+<TouchableOpacity onPress={()=>handleDecrementProduct(item.pcode)} style={{paddingVertical:2,borderWidth:1,borderColor:"#D0D0D0",paddingHorizontal:15}}><Text allowFontScaling={false} style={{fontSize:15}}>-</Text></TouchableOpacity>
 <TouchableOpacity style={{paddingVertical:2,borderWidth:1,borderColor:"#D0D0D0",paddingHorizontal:35}}><Text>{getQty(item.pcode)}</Text></TouchableOpacity>
-<TouchableOpacity onPress={()=>handleIncrementProduct(item.pcode)} style={{paddingVertical:2,borderWidth:1,borderColor:"#D0D0D0",paddingHorizontal:15}}><Text>+</Text></TouchableOpacity>
+<TouchableOpacity onPress={()=>handleIncrementProduct(item.pcode)} style={{paddingVertical:2,borderWidth:1,borderColor:"#D0D0D0",paddingHorizontal:15}}><Text allowFontScaling={false} >+</Text></TouchableOpacity>
 </View>:    
  <TouchableOpacity
 
@@ -284,7 +284,7 @@ onPress={()=>handleCart(item,item.pcode)}
 >
             
 </FlatList>:
-<Text style={{textAlign:"center",letterSpacing:2,marginTop:20,marginBottom:20}}>No Products</Text>}
+<Text allowFontScaling={false} style={{textAlign:"center",letterSpacing:2,marginTop:20,marginBottom:20}}>No Products</Text>}
 
     </View>
   )

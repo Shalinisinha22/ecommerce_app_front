@@ -20,7 +20,7 @@ const Node = ({ node, data, level = 0, maxLevel = 2, type,name }) => {
   useEffect(() => {
     const fetchClientNames = async () => {
       try {
-        const res = await axios.get("https://mahilamediplex.com/mediplex/clientName", {
+        const res = await axios.get("http://192.168.0.109:3002/mediplex/clientName", {
           params: {
             root: node,
             left: data[node]?.left || null,
@@ -73,8 +73,8 @@ const Node = ({ node, data, level = 0, maxLevel = 2, type,name }) => {
           ) : (
             <Image source={require("../assets/red.png")} style={styles.image} />
           )}
-          <Text style={styles.nodeText}>{node}</Text>
-          <Text style={styles.nameText}>{name}</Text>
+          <Text allowFontScaling={false} style={styles.nodeText}>{node}</Text>
+          <Text allowFontScaling={false} style={styles.nameText}>{name}</Text>
 
         {level!= maxLevel &&  <Image source={require("../assets/line.gif")} style={{height:10,width:120,resizeMode:"contain"}}></Image>} 
         </View>
@@ -96,7 +96,7 @@ const Node = ({ node, data, level = 0, maxLevel = 2, type,name }) => {
             ) : (
               <View style={styles.cell}>
                 <Image source={require("../assets/no_node.png")} style={[styles.image,{marginTop:20}]} />
-                <Text style={[styles.nodeText,{paddingHorizontal:15}]}>No Node</Text>
+                <Text allowFontScaling={false} style={[styles.nodeText,{paddingHorizontal:15}]}>No Node</Text>
               </View>
             )}
           </View>
@@ -113,7 +113,7 @@ const Node = ({ node, data, level = 0, maxLevel = 2, type,name }) => {
             ) : (
               <View style={styles.cell}>
                 <Image source={require("../assets/no_node.png")} style={[styles.image,{marginTop:20}]} />
-                <Text style={[styles.nodeText,{paddingHorizontal:15}]}>No Node</Text>
+                <Text allowFontScaling={false} style={[styles.nodeText,{paddingHorizontal:15}]}>No Node</Text>
               </View>
             )}
           </View>

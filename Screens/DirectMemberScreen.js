@@ -13,9 +13,9 @@ const DirectMemberScreen = () => {
 
   const getDirectMemberData = async () => {
     try {
-      const res = await axios.get('https://mahilamediplex.com/mediplex/clientAccountLog');
+      const res = await axios.get('http://192.168.0.109:3002/mediplex/clientAccountLog');
       const network = JSON.parse(res.data[0].network);
-      const res1 = await axios.get('https://mahilamediplex.com/mediplex/directMemberData', {
+      const res1 = await axios.get('http://192.168.0.109:3002/mediplex/directMemberData', {
         params: {
           parent_id: userInfo.client_id,
         },
@@ -61,7 +61,7 @@ const DirectMemberScreen = () => {
   const renderTable = (data, title, searchValue, setSearchValue) => {
     return (
       <View style={{ marginBottom: 20, marginTop: 30 }}>
-        <Text style={{ fontWeight: 'bold', fontSize: 18, marginBottom: 10, marginLeft: 10 }}>{title}</Text>
+        <Text allowFontScaling={false} style={{ fontWeight: 'bold', fontSize: 18, marginBottom: 10, marginLeft: 10 }}>{title}</Text>
         <TextInput
           style={styles.searchInput}
           placeholder={`Search USER ID`}
@@ -69,29 +69,29 @@ const DirectMemberScreen = () => {
           onChangeText={setSearchValue}
         />
         <View style={{ flexDirection: 'row', borderBottomWidth: 1, borderColor: 'gray' }}>
-          <Text style={styles.columnHeader}>Client ID</Text>
-          <Text style={styles.columnHeader}>Name</Text>
-          <Text style={styles.columnHeader}>Package</Text>
-          <Text style={styles.columnHeader}>Reg Date</Text>
-          <Text style={styles.columnHeader}>Act Date</Text>
-          <Text style={styles.columnHeader}>Status</Text>
+          <Text allowFontScaling={false} style={styles.columnHeader}>Client ID</Text>
+          <Text allowFontScaling={false} style={styles.columnHeader}>Name</Text>
+          <Text allowFontScaling={false} style={styles.columnHeader}>Package</Text>
+          <Text allowFontScaling={false} style={styles.columnHeader}>Reg Date</Text>
+          <Text allowFontScaling={false} style={styles.columnHeader}>Act Date</Text>
+          <Text allowFontScaling={false} style={styles.columnHeader}>Status</Text>
         </View>
         {data.length != 0 ? data.map((item, index) => (
           <View key={item.client_id} style={{ flexDirection: 'row', borderBottomWidth: 1, borderColor: 'lightgray' }}>
-            <Text style={styles.columnData}>{item.client_id}</Text>
-            <Text style={styles.columnData}>{item.client_name}</Text>
-            <Text style={styles.columnData}>{item.package_name}</Text>
-            <Text style={styles.columnData}>{item.join_date}</Text>
-            <Text style={styles.columnData}>{item.activation_date}</Text>
+            <Text allowFontScaling={false} style={styles.columnData}>{item.client_id}</Text>
+            <Text allowFontScaling={false} style={styles.columnData}>{item.client_name}</Text>
+            <Text allowFontScaling={false} style={styles.columnData}>{item.package_name}</Text>
+            <Text allowFontScaling={false} style={styles.columnData}>{item.join_date}</Text>
+            <Text allowFontScaling={false} style={styles.columnData}>{item.activation_date}</Text>
             {item.activation_status == 1 ?
               <Pressable style={[styles.statusButton, { backgroundColor: "green" }]}>
-                <Text style={styles.statusText}>Active</Text>
+                <Text allowFontScaling={false} style={styles.statusText}>Active</Text>
               </Pressable> :
               <Pressable style={[styles.statusButton, { backgroundColor: "red" }]}>
-                <Text style={styles.statusText}>De-Active</Text>
+                <Text allowFontScaling={false} style={styles.statusText}>De-Active</Text>
               </Pressable>}
           </View>
-        )) : <Text style={{ textAlign: "center" }}>No Data Available In Table</Text>}
+        )) : <Text allowFontScaling={false} style={{ textAlign: "center" }}>No Data Available In Table</Text>}
       </View>
     );
   };
@@ -139,6 +139,15 @@ const DirectMemberScreen = () => {
       /> */}
 
       {renderTable(filteredLeftUsers, 'Left', leftSearch, setLeftSearch)}
+      <Text
+          allowFontScaling={false}
+          style={{
+            height: 1,
+            borderColor: "whitesmoke",
+            borderWidth: 2,
+            marginTop: 15,
+          }}
+        />
       {renderTable(filteredRightUsers, 'Right', rightSearch, setRightSearch)}
     </ScrollView>
   );

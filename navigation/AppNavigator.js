@@ -31,6 +31,9 @@ import SponsorIncome from '../Screens/SponsorIncome';
 import DailyIncome from '../Screens/DailyIncome';
 import GenealogyScreen from '../Screens/GenealogyScreen';
 import DirectMemberScreen from '../Screens/DirectMemberScreen';
+import DownlineListScreen from '../Screens/DownlineListScreen';
+import ActiveMemberScreen from '../Screens/ActiveMemberScreen';
+import MyDashboard from '../Screens/MyDashboard';
 
 
 const Stack = createStackNavigator();
@@ -44,7 +47,12 @@ export const AppNavigator = () => {
 
     const drawerMenu = [
 
+
         { id: 0,
+            name: "My Dashboard",
+            url: "dashboard"
+        },
+        { id: 1,
             name: "My Info",
             submenu: [
               { id: 0, name: "Update Profile", url: "profile" },
@@ -57,13 +65,13 @@ export const AppNavigator = () => {
             url: ""
         },
 
-       { id: 1,
+       { id: 2,
                 name: "My Network",
                 submenu: [
                   { id: 0, name: "Genealogy Tree", url: "genealogy" },
                   { id: 1, name: "Direct member", url: "directMember" },
-                  { id: 2, name: "Downline list", url: "coming" },
-                  { id: 2, name: "Active Member", url: "coming" },
+                  { id: 2, name: "Downline list", url: "Downline" },
+                  { id: 2, name: "Active Member", url: "ActiveMember" },
           
                 ],
                 icon:<AntDesign name="arrowright" size={18} color="#9e0059" /> ,
@@ -71,7 +79,7 @@ export const AppNavigator = () => {
                 url: "",},
 
 
-       { id: 2,
+       { id: 3,
                     name: "Activation",
 
                     submenu: [
@@ -84,7 +92,7 @@ export const AppNavigator = () => {
                     dropdownIcon: <AntDesign name="down" size={15} color="white" />,
          url: "",},
 
-      { id: 3,
+      { id: 4,
                         name: "Fund Manager",
                         submenu: [
                           { id: 0, name: "Fund Request", url: "fundRequestScreen" },
@@ -97,7 +105,7 @@ export const AppNavigator = () => {
         url: "",},
 
         
-      { id: 4,
+      { id: 5,
         name: "Income Report",
         submenu: [
        { id: 1, name: "Sponsor Income", url: "sponsorIncome" },
@@ -108,7 +116,7 @@ export const AppNavigator = () => {
         dropdownIcon: <AntDesign name="down" size={15} color="white" />,
 url: "",},
 
- { id: 5, name: "Logout", url: "" }
+ { id: 6, name: "Logout", url: "" }
 
 
 
@@ -147,6 +155,9 @@ url: "",},
                 <Stack.Screen name="dailyIncome" component={DailyIncome} options={{ headerShown: false }} />
                 <Stack.Screen name="genealogy" component={GenealogyScreen} options={{ headerShown: false }} />
                 <Stack.Screen name="directMember" component={DirectMemberScreen} options={{ headerShown: false }} />
+                <Stack.Screen name="Downline" component={DownlineListScreen} options={{ headerShown: false }} />
+                <Stack.Screen name="ActiveMember" component={ActiveMemberScreen} options={{ headerShown: false }} />
+                <Stack.Screen name="dashboard" component={MyDashboard} options={{ headerShown: false }} />
 
 
             </Stack.Navigator>

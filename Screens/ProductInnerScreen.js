@@ -138,7 +138,7 @@ const route=useRoute()
             </View>
 
             <ScrollView>
-            <Text style={{marginLeft:15,marginTop:20}}>PRODUCT DETAILS</Text>
+            <Text allowFontScaling={false}style={{marginLeft:15,marginTop:20}}>PRODUCT DETAILS</Text>
 
 
 

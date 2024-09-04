@@ -82,7 +82,7 @@ const KycScreen = () => {
 
     try {
       const response = await axios.post(
-        'https://mahilamediplex.com/mediplex/uploadImage',
+        'http://192.168.0.109:3002/mediplex/uploadImage',
         formData,
         {
           headers: {
@@ -120,7 +120,7 @@ const KycScreen = () => {
         bankProofName,
       });
 
-      const res = await axios.post("https://mahilamediplex.com/mediplex/updateKyc", {
+      const res = await axios.post("http://192.168.0.109:3002/mediplex/updateKyc", {
         aadhar_front: aadharFrontDetail? aadharFrontDetail :af,
         aadhar_back: aadharBackDetail?aadharBackDetail:ab,
         pan_card:panCardDetail?panCardDetail:pan,
@@ -140,7 +140,7 @@ const KycScreen = () => {
   const getKYCData = async () => {
     console.log(userInfo);
     try {
-      const res = await axios.get("https://mahilamediplex.com/mediplex/getKYCData", {
+      const res = await axios.get("http://192.168.0.109:3002/mediplex/getKYCData", {
         params: { client_id: userInfo },
       });
       console.log(res.data);
@@ -186,76 +186,76 @@ const KycScreen = () => {
         <View style={{ width: width, alignItems: "center" }}>
           {/* Aadhar proof front */}
           <View style={styles.inputCont}>
-            <Text style={{ fontSize: 22, letterSpacing: 2 }}>AADHAR PROOF (front)</Text>
-            <Text style={{ fontSize: 20, color: "gray", marginTop: 20 }} allowFontScaling={false}>
+            <Text allowFontScaling={false}style={{ fontSize: 22, letterSpacing: 2 }}>AADHAR PROOF (front)</Text>
+            <Text allowFontScaling={false}style={{ fontSize: 20, color: "gray", marginTop: 20 }}>
               <FontAwesome5 name="file-upload" size={24} color="#17842b" /> Upload Photo
             </Text>
             <View style={[styles.inputBoxCont, { backgroundColor: "white", alignItems: "center" }]}>
               {aadharFront ? (
                 <Image source={{ uri: aadharFront }} style={{ width: 150, height: 150, resizeMode: "contain" }} />
               ) : af ? (
-                <Image source={{ uri: `https://mahilamediplex.com/upload/aadhaar/front/${af}` }} style={{ width: 150, height: 150, resizeMode: "contain" }} />
+                <Image source={{ uri: `http://192.168.0.109:3002/upload/aadhaar/front/${af}` }} style={{ width: 150, height: 150, resizeMode: "contain" }} />
               ) : (
-                <Text>No image selected</Text>
+                <Text allowFontScaling={false}>No image selected</Text>
               )}
-              <Text style={{ marginTop: 10, marginBottom: 5 }}>{aadharFrontName}</Text>
+              <Text allowFontScaling={false}style={{ marginTop: 10, marginBottom: 5 }}>{aadharFrontName}</Text>
               <Button style={{ marginTop: 10 }} title="Choose File" color="#9e0059" onPress={() => pickImage("aadhaarFront")} />
             </View>
           </View>
 
           {/* Aadhar proof back */}
           <View style={styles.inputCont}>
-            <Text style={{ fontSize: 22, letterSpacing: 2 }}>AADHAR PROOF (back)</Text>
-            <Text style={{ fontSize: 20, color: "gray", marginTop: 20 }} allowFontScaling={false}>
+            <Text allowFontScaling={false}style={{ fontSize: 22, letterSpacing: 2 }}>AADHAR PROOF (back)</Text>
+            <Text allowFontScaling={false}style={{ fontSize: 20, color: "gray", marginTop: 20 }} >
               <FontAwesome5 name="file-upload" size={24} color="#17842b" /> Upload Photo
             </Text>
             <View style={[styles.inputBoxCont, { backgroundColor: "white", alignItems: "center" }]}>
               {aadharBack ? (
                 <Image source={{ uri: aadharBack }} style={{ width: 150, height: 150, resizeMode: "contain" }} />
               ) : ab ? (
-                <Image source={{ uri: `https://mahilamediplex.com/upload/aadhaar/back/${ab}` }} style={{ width: 150, height: 150, resizeMode: "contain" }} />
+                <Image source={{ uri: `http://192.168.0.109:3002/upload/aadhaar/back/${ab}` }} style={{ width: 150, height: 150, resizeMode: "contain" }} />
               ) : (
-                <Text>No image selected</Text>
+                <Text allowFontScaling={false}>No image selected</Text>
               )}
-              <Text style={{ marginTop: 10, marginBottom: 5 }}>{aadharBackName}</Text>
+              <Text allowFontScaling={false}style={{ marginTop: 10, marginBottom: 5 }}>{aadharBackName}</Text>
               <Button style={{ marginTop: 10 }} title="Choose File" color="#9e0059" onPress={() => pickImage("aadhaarBack")} />
             </View>
           </View>
 
           {/* PAN card proof */}
           <View style={styles.inputCont}>
-            <Text style={{ fontSize: 22, letterSpacing: 2 }}>PAN Card Proof</Text>
-            <Text style={{ fontSize: 20, color: "gray", marginTop: 20 }} allowFontScaling={false}>
+            <Text allowFontScaling={false}style={{ fontSize: 22, letterSpacing: 2 }}>PAN Card Proof</Text>
+            <Text allowFontScaling={false}style={{ fontSize: 20, color: "gray", marginTop: 20 }} >
               <FontAwesome5 name="file-upload" size={24} color="#17842b" /> Upload Photo
             </Text>
             <View style={[styles.inputBoxCont, { backgroundColor: "white", alignItems: "center" }]}>
               {panCard ? (
                 <Image source={{ uri: panCard }} style={{ width: 150, height: 150, resizeMode: "contain" }} />
               ) : pan ? (
-                <Image source={{ uri: `https://mahilamediplex.com/upload/pan/${pan}` }} style={{ width: 150, height: 150, resizeMode: "contain" }} />
+                <Image source={{ uri: `http://192.168.0.109:3002/upload/pan/${pan}` }} style={{ width: 150, height: 150, resizeMode: "contain" }} />
               ) : (
-                <Text>No image selected</Text>
+                <Text allowFontScaling={false}>No image selected</Text>
               )}
-              <Text style={{ marginTop: 10, marginBottom: 5 }}>{panCardName}</Text>
+              <Text allowFontScaling={false}style={{ marginTop: 10, marginBottom: 5 }}>{panCardName}</Text>
               <Button style={{ marginTop: 10 }} title="Choose File" color="#9e0059" onPress={() => pickImage("pan")} />
             </View>
           </View>
 
           {/* Bank proof */}
           <View style={styles.inputCont}>
-            <Text style={{ fontSize: 22, letterSpacing: 2 }}>Bank Proof</Text>
-            <Text style={{ fontSize: 20, color: "gray", marginTop: 20 }} allowFontScaling={false}>
+            <Text allowFontScaling={false}style={{ fontSize: 22, letterSpacing: 2 }}>Bank Proof</Text>
+            <Text allowFontScaling={false}style={{ fontSize: 20, color: "gray", marginTop: 20 }} >
               <FontAwesome5 name="file-upload" size={24} color="#17842b" /> Upload Photo
             </Text>
             <View style={[styles.inputBoxCont, { backgroundColor: "white", alignItems: "center" }]}>
               {bankProof ? (
                 <Image source={{ uri: bankProof }} style={{ width: 150, height: 150, resizeMode: "contain" }} />
               ) : bank ? (
-                <Image source={{ uri: `https://mahilamediplex.com/upload/cheque/${bank}` }} style={{ width: 150, height: 150, resizeMode: "contain" }} />
+                <Image source={{ uri: `http://192.168.0.109:3002/upload/cheque/${bank}` }} style={{ width: 150, height: 150, resizeMode: "contain" }} />
               ) : (
-                <Text>No image selected</Text>
+                <Text allowFontScaling={false}>No image selected</Text>
               )}
-              <Text style={{ marginTop: 10, marginBottom: 5 }}>{bankProofName}</Text>
+              <Text allowFontScaling={false}style={{ marginTop: 10, marginBottom: 5 }}>{bankProofName}</Text>
               <Button style={{ marginTop: 10 }} title="Choose File" color="#9e0059" onPress={() => pickImage("cheque")} />
             </View>
           </View>
@@ -263,7 +263,7 @@ const KycScreen = () => {
           {/* Submit Button */}
           <View style={{ alignItems: "center", marginTop: 20 }}>
             <TouchableOpacity onPress={handleSubmit} style={{ backgroundColor: "#9e0059", borderRadius: 5, padding: 15,paddingHorizontal:75 }}>
-              <Text style={{ color: "white", fontSize: 18 }}>Update Profile</Text>
+              <Text allowFontScaling={false}style={{ color: "white", fontSize: 18 }}>Update Profile</Text>
             </TouchableOpacity>
           </View>
         </View>

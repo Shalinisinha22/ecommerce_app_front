@@ -13,6 +13,7 @@ export default function SearchBar({navigation})  {
                 <Feather name="search" size={20} color="#b6306d" style={{ marginLeft: 1 }} />
 
                 <TextInput
+                allowFontScaling={false} 
                     style={styles.input}
                     placeholder="Search"
                     onPress={()=>navigation.navigate("Search")}

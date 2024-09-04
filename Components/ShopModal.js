@@ -36,7 +36,7 @@ const ShopModal = () => {
                 // Prevent modal from closing without selection
               }}>
               <View style={styles.modalView}>
-                <Text style={styles.modalText}>Select Business Type</Text>
+                <Text allowFontScaling={false} style={styles.modalText}>Select Business Type</Text>
                 <Picker
                   selectedValue={selectedShopType}
                   style={{ height: 50, width: 250 }}

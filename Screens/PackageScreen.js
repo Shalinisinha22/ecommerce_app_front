@@ -13,7 +13,7 @@ const PackageScreen = ({navigation}) => {
 
     const getHealthPackageProducts= async()=>{
         try{
-           const res= await axios.get("https://mahilamediplex.com/mediplex/healthPackage")
+           const res= await axios.get("http://192.168.0.109:3002/mediplex/healthPackage")
            const data = res.data
            setHealthPackageProducts(data)
         }
@@ -87,7 +87,7 @@ source={{ uri: `${imgUrl}/product/${item.image}` }}
 
        
         <View style={{margin:5}}>
-          <Text style={{fontWeight:600,textAlign:"center"}}>{item.name}</Text>
+          <Text allowFontScaling={false}style={{fontWeight:600,textAlign:"center"}}>{item.name}</Text>
           <Text  allowFontScaling={false} style={{ textAlign: "center",textDecorationLine:"line-through",color:"gray",fontSize:10 }}>
            Rs {item.mrp}
           </Text>

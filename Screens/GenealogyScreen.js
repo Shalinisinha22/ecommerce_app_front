@@ -17,7 +17,7 @@ const userInfo = useSelector((state) => (state.user.userInfo ? state.user.userIn
 
   const getClients = async () => {
     try {
-      const res = await axios.get('https://mahilamediplex.com/mediplex/clientAccountLog');
+      const res = await axios.get('http://192.168.0.109:3002/mediplex/clientAccountLog');
       const network = JSON.parse(res.data[0].network);
       console.log(network,"13");
 
@@ -65,7 +65,7 @@ const getClientName= async(name)=>{
   console.log(name,"name")
 
 try{
-    const res= await axios.get("https://mahilamediplex.com/mediplex/clientName",{
+    const res= await axios.get("http://192.168.0.109:3002/mediplex/clientName",{
         params:{
             root:name,
             leftChild:"",

@@ -11,7 +11,7 @@ const FundRequestStatus = () => {
   const [modalVisible, setModalVisible] = useState(false);
   const getAllFundRequests= async()=>{
     try{
-       const res = await axios.get("https://mahilamediplex.com/mediplex/fund-request-status",{
+       const res = await axios.get("http://192.168.0.109:3002/mediplex/fund-request-status",{
         params:{
           client_id:userInfo.client_id
         }
@@ -41,30 +41,30 @@ const FundRequestStatus = () => {
 
       <>
       <View style={styles.row}>
-        <Text style={[styles.cell, styles.dateCell]}>{item.created_at}</Text>
-        <Text style={[styles.cell,{fontWeight:"bold"}]}>Rs {item.paid_amt}</Text>
+        <Text allowFontScaling={false} style={[styles.cell, styles.dateCell]}>{item.created_at}</Text>
+        <Text allowFontScaling={false}style={[styles.cell,{fontWeight:"bold"}]}>Rs {item.paid_amt}</Text>
   
         {/* Button to View Image */}
         <Pressable style={styles.imageButton} onPress={() => handleViewImage(item.slip)}>
-          <Text style={styles.buttonText}>View Image</Text>
+          <Text allowFontScaling={false}style={styles.buttonText}>View Image</Text>
         </Pressable>
   
         {/* Button for Status */}
         {item.status === "Pending" ? (
           <Pressable style={[styles.statusButton, { backgroundColor: "#ffb703" }]}>
-            <Text style={styles.statusText}>Pending</Text>
+            <Text allowFontScaling={false} style={styles.statusText}>Pending</Text>
           </Pressable>
         ) : item.status === "Approved" ? (
           <Pressable style={[styles.statusButton, { backgroundColor: "green" }]}>
-            <Text style={styles.statusText}>Approved</Text>
+            <Text allowFontScaling={false}style={styles.statusText}>Approved</Text>
           </Pressable>
         ) : (
           <Pressable style={[styles.statusButton, { backgroundColor: "red" }]}>
-            <Text style={styles.statusText}>Rejected</Text>
+            <Text allowFontScaling={false}style={styles.statusText}>Rejected</Text>
           </Pressable>
         )}
   
-        <Text style={[styles.cell, styles.remarksCell]}>{item.remarks}</Text>
+        <Text allowFontScaling={false}style={[styles.cell, styles.remarksCell]}>{item.remarks}</Text>
       </View>
 
 {modalVisible && <ImageModal 
@@ -89,7 +89,7 @@ const FundRequestStatus = () => {
             <View style={styles.modalContent}>
               <Image source={imageSource} style={styles.image} />
               <TouchableOpacity onPress={onClose} style={styles.closeButton}>
-                <Text style={styles.closeButtonText}>Close</Text>
+                <Text allowFontScaling={false}style={styles.closeButtonText}>Close</Text>
               </TouchableOpacity>
             </View>
           </View>
@@ -135,11 +135,11 @@ const FundRequestStatus = () => {
 <View style={styles.table}>
         {/* Table Header */}
         <View style={styles.header}>
-          <Text style={[styles.headerCell, styles.dateCell]}>Date</Text>
-          <Text style={styles.headerCell}>Amount</Text>
-          <Text style={styles.headerCell}>Slip</Text>
-          <Text style={styles.headerCell}>Status</Text>
-          <Text style={[styles.headerCell, styles.remarksCell]}>Remarks</Text>
+          <Text allowFontScaling={false}style={[styles.headerCell, styles.dateCell]}>Date</Text>
+          <Text allowFontScaling={false}style={styles.headerCell}>Amount</Text>
+          <Text allowFontScaling={false}style={styles.headerCell}>Slip</Text>
+          <Text allowFontScaling={false}style={styles.headerCell}>Status</Text>
+          <Text allowFontScaling={false}style={[styles.headerCell, styles.remarksCell]}>Remarks</Text>
         </View>
 
         {/* Table Rows */}
@@ -148,7 +148,7 @@ const FundRequestStatus = () => {
           renderItem={renderItem}
           keyExtractor={(item, index) => index.toString()}
           contentContainerStyle={styles.tableContent}
-        />  :<Text style={{textAlign:"center",marginTop:20}}>No Data Available</Text>
+        />  :<Text allowFontScaling={false}style={{textAlign:"center",marginTop:20}}>No Data Available</Text>
 }
       </View>
 
@@ -187,6 +187,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     borderBottomWidth: 1,
     borderBottomColor: '#ccc',
+    alignItems:"center"
   },
   cell: {
     flex: 1,
@@ -200,22 +201,29 @@ const styles = StyleSheet.create({
     paddingVertical: 2,
     paddingHorizontal: 10,
     borderRadius: 5,
-    justifyContent:"center"
+    justifyContent:"center",
+    marginTop:10,
+    marginBottom:10
+
   },
   buttonText: {
     color: 'white',
     textAlign: 'center',
+    fontSize:10
   },
   statusButton: {
     paddingVertical: 5,
     paddingHorizontal: 10,
     borderRadius: 5,
     marginHorizontal: 5,
-     justifyContent:"center"
+     justifyContent:"center",
+     marginTop:10,
+     marginBottom:10
   },
   statusText: {
     color: 'white',
     textAlign: 'center',
+    fontSize:10
   },
   modalContainer: {
     flex: 1,

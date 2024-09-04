@@ -22,7 +22,7 @@ const PaymentScreen = () => {
     const [err,setErr]= useState("")
     const getBankDetails = async () => {
         try {
-            const res = await axios.get("https://mahilamediplex.com/mediplex/bankDetails")
+            const res = await axios.get("http://192.168.0.109:3002/mediplex/bankDetails")
             const data = res.data
 
             console.log(data)
@@ -71,7 +71,7 @@ const PaymentScreen = () => {
     
     
         try {
-          const response = await axios.post('https://mahilamediplex.com/mediplex/uploadImage', formData, {
+          const response = await axios.post('http://192.168.0.109:3002/mediplex/uploadImage', formData, {
             headers: {
                'Content-Type': 'multipart/form-data',
             },
@@ -107,7 +107,7 @@ const PaymentScreen = () => {
             console.log(transaction_id)
     
             try {
-                const res = await axios.post("https://mahilamediplex.com/mediplex/fund-request", {
+                const res = await axios.post("http://192.168.0.109:3002/mediplex/fund-request", {
                     name: userInfo.first_name,
                     mobile_no: userInfo.mobile,
                     client_id: userInfo.client_id,
@@ -168,19 +168,19 @@ const PaymentScreen = () => {
                         bankDetails != null &&
                         <>
                             <View style={{ width: width * 0.95, backgroundColor: "#D0D0D0", paddingVertical: 14, paddingHorizontal: 5, flexDirection: "row", gap: 15 }}>
-                                <Text style={{ color: "gray" }}>Wallet Name :</Text>
-                                <Text style={{ fontWeight: 'bold' }}>{bankDetails[0].bank_name}</Text>
+                                <Text allowFontScaling={false}style={{ color: "gray" }}>Wallet Name :</Text>
+                                <Text allowFontScaling={false}style={{ fontWeight: 'bold' }}>{bankDetails[0].bank_name}</Text>
                             </View>
 
                             <View style={{ width: width * 0.95, backgroundColor: "#f0f0f0", paddingVertical: 14, paddingHorizontal: 5, flexDirection: "row", gap: 15, marginTop: 0 }}>
-                                <Text style={{ color: "gray" }}>Wallet Holder :</Text>
-                                <Text style={{ fontWeight: 'bold' }}>{bankDetails[0].bank_acc_holder}</Text>
+                                <Text allowFontScaling={false}style={{ color: "gray" }}>Wallet Holder :</Text>
+                                <Text allowFontScaling={false}style={{ fontWeight: 'bold' }}>{bankDetails[0].bank_acc_holder}</Text>
                             </View>
 
 
                             <View style={{ width: width * 0.95, backgroundColor: "#D0D0D0", paddingVertical: 14, paddingHorizontal: 5, flexDirection: "row", gap: 15 }}>
-                                <Text style={{ color: "gray" }}>Wallet No. :</Text>
-                                <Text style={{ fontWeight: 'bold' }}>{bankDetails[0].bank_ac_no}</Text>
+                                <Text allowFontScaling={false}style={{ color: "gray" }}>Wallet No. :</Text>
+                                <Text allowFontScaling={false}style={{ fontWeight: 'bold' }}>{bankDetails[0].bank_ac_no}</Text>
                             </View>
 
 
@@ -194,7 +194,7 @@ const PaymentScreen = () => {
                 {bankDetails != null &&
                     <>
                         <View style={{ width: width, marginTop: 10, alignItems: "center" }}>
-                            <Text style={{ fontWeight: "bold", marginBottom: 10 }}>QR Code</Text>
+                            <Text allowFontScaling={false}style={{ fontWeight: "bold", marginBottom: 10 }}>QR Code</Text>
 
                             <Image source={{ uri: `${imgUrl}/wqrcode/${bankDetails[0]?.bank_qr_code}` }} style={{ height: 280, width: 350, resizeMode: "contain" }} ></Image>
 
@@ -203,8 +203,8 @@ const PaymentScreen = () => {
 
                         <View style={{ width: width, marginTop: 10, padding: 10 }}>
                             <View style={{ width: width * 0.95, backgroundColor: "#f0f0f0", paddingVertical: 14, paddingHorizontal: 5, flexDirection: "row", gap: 15 }}>
-                                <Text style={{ color: "gray" }}>UPI :</Text>
-                                <Text style={{ fontWeight: 'bold' }}>{bankDetails[0].bank_upi_id}</Text>
+                                <Text allowFontScaling={false}style={{ color: "gray" }}>UPI :</Text>
+                                <Text allowFontScaling={false}style={{ fontWeight: 'bold' }}>{bankDetails[0].bank_upi_id}</Text>
                             </View>
                         </View>
 
@@ -215,27 +215,27 @@ const PaymentScreen = () => {
                 {userInfo != null &&
                     <View style={{ width: width, marginTop: 0, padding: 10 }}>
                         <View style={{ width: width * 0.95, backgroundColor: "#D0D0D0", paddingVertical: 14, paddingHorizontal: 5, flexDirection: "row", gap: 15 }}>
-                            <Text style={{ color: "gray" }}>Full Name :</Text>
-                            <Text style={{ fontWeight: 'bold' }}>{userInfo.first_name}</Text>
+                            <Text allowFontScaling={false}style={{ color: "gray" }}>Full Name :</Text>
+                            <Text allowFontScaling={false}style={{ fontWeight: 'bold' }}>{userInfo.first_name}</Text>
                         </View>
 
                         <View style={{ width: width * 0.95, backgroundColor: "#f0f0f0", paddingVertical: 14, paddingHorizontal: 5, flexDirection: "row", gap: 15, marginTop: 0 }}>
-                            <Text style={{ color: "gray" }}>Mobile :</Text>
-                            <Text style={{ fontWeight: 'bold' }}>{userInfo.mobile}</Text>
+                            <Text allowFontScaling={false}style={{ color: "gray" }}>Mobile :</Text>
+                            <Text allowFontScaling={false}style={{ fontWeight: 'bold' }}>{userInfo.mobile}</Text>
                         </View>
 
                         <View style={{ width: width * 0.95, backgroundColor: "#D0D0D0", paddingVertical: 14, paddingHorizontal: 5, flexDirection: "row", gap: 15 }}>
-                            <Text style={{ color: "gray" }}>Client_id :</Text>
-                            <Text style={{ fontWeight: 'bold' }}>{userInfo.client_id}</Text>
+                            <Text allowFontScaling={false}style={{ color: "gray" }}>Client_id :</Text>
+                            <Text allowFontScaling={false}style={{ fontWeight: 'bold' }}>{userInfo.client_id}</Text>
                         </View>
 
                         <View style={{ width: width * 0.95, backgroundColor: "#f0f0f0", paddingVertical: 14, paddingHorizontal: 5, flexDirection: "row", gap: 15, marginTop: 0 }}>
-                            <Text style={{ color: "gray" }}>Paid Amt. :</Text>
-                            <Text style={{ fontWeight: 'bold' }}>{route.params.price}</Text>
+                            <Text allowFontScaling={false}style={{ color: "gray" }}>Paid Amt. :</Text>
+                            <Text allowFontScaling={false}style={{ fontWeight: 'bold' }}>{route.params.price}</Text>
                         </View>
 
                         <View style={{ width: width * 0.95, backgroundColor: "#D0D0D0", paddingVertical: 14, paddingHorizontal: 5, flexDirection: "row", gap: 15, alignItems: "center",flexWrap:"wrap" }}>
-                            <Text style={{ color: "gray" }}>Transaction_id :</Text>
+                            <Text allowFontScaling={false}style={{ color: "gray" }}>Transaction_id :</Text>
                             <TextInput style={{
                                 marginVertical: 5,
                                 width: 150,
@@ -243,16 +243,16 @@ const PaymentScreen = () => {
                                 fontWeight:"bold"
                             }} value={transaction_id} onChangeText={(text) => setTransaction_id(text)} ></TextInput>
                         </View>
-                        {err.transaction_id && <Text style={{color:"red",fontSize:10,marginBottom:5}}>{err.transaction_id}</Text>}
+                        {err.transaction_id && <Text allowFontScaling={false}style={{color:"red",fontSize:10,marginBottom:5}}>{err.transaction_id}</Text>}
                         <View style={{ width: width * 0.95, backgroundColor: "#f0f0f0", paddingVertical: 14, paddingHorizontal: 5, flexDirection: "row", gap: 15, alignItems: "center",flexWrap:"wrap" }}>
-                            <Text style={{ color: "gray" }}>Payment Slip :</Text>
+                            <Text allowFontScaling={false}style={{ color: "gray" }}>Payment Slip :</Text>
                         
                             <View >
                                 {paymentSlip && <Image source={{ uri: paymentSlip }} style={{ width: 200, height: 200 }} />}
                                 <Button title="Choose File" color="#155d27" onPress={pickImage} />
                             </View>
                         </View>
-                        {err.paymentSlip && <Text style={{color:"red",fontSize:10,marginBottom:5}}>{err.paymentSlip}</Text>}
+                        {err.paymentSlip && <Text allowFontScaling={false}style={{color:"red",fontSize:10,marginBottom:5}}>{err.paymentSlip}</Text>}
 
                     </View>
                 }

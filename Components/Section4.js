@@ -38,7 +38,7 @@ const Section4 = ({navigation}) => {
   const getProductsId = async (shop) => {
 
     try {
-        const res = await axios.get("https://mahilamediplex.com/mediplex/getProductId", {
+        const res = await axios.get("http://192.168.0.109:3002/mediplex/getProductId", {
             params: { client_id: lmcId.client_id }
         });
   
@@ -66,7 +66,7 @@ const Section4 = ({navigation}) => {
 const getProducts = async (pidArr) => {
     try {
         const productPromises = pidArr.map(pid => 
-            axios.get("https://mahilamediplex.com/mediplex/products", {
+            axios.get("http://192.168.0.109:3002/mediplex/products", {
                 params: { product_id: pid }
             })
         );
@@ -97,7 +97,7 @@ const getProducts = async (pidArr) => {
 
 // const getDefaultProducts= async()=>{
 //   try{
-//     const defaultRes= await axios.get("https://mahilamediplex.com/mediplex/defaultShops")
+//     const defaultRes= await axios.get("http://192.168.0.109:3002/mediplex/defaultShops")
 //     // console.log(defaultRes.data[0].client_id)
 //     if(defaultRes.data[0]?.client_id){
 //       await AsyncStorage.setItem("shopDetails", JSON.stringify(defaultRes.data[0]));
@@ -111,7 +111,7 @@ const getProducts = async (pidArr) => {
 // }
 // const getDefaultProductsId= async(shop)=>{
 //   try {
-//     const res = await axios.get("https://mahilamediplex.com/mediplex/getProductId", {
+//     const res = await axios.get("http://192.168.0.109:3002/mediplex/getProductId", {
 //         params: { client_id: shop }
 //     });
  
@@ -133,7 +133,7 @@ const getProducts = async (pidArr) => {
 // const getDefaultProductsValue = async (pidArr) => {
 //   try {
 //       const productPromises = pidArr.map(pid => 
-//           axios.get("https://mahilamediplex.com/mediplex/products", {
+//           axios.get("http://192.168.0.109:3002/mediplex/products", {
 //               params: { product_id: pid }
 //           })
 //       );
@@ -280,7 +280,7 @@ renderItem={({ item, index }) => (
 
                
                 <View style={{margin:5}}>
-                  <Text style={{fontWeight:600}}>{item.name}</Text>
+                  <Text allowFontScaling={false} style={{fontWeight:600}}>{item.name}</Text>
                   <Text allowFontScaling={false} style={{fontWeight:300,fontSize:10,textAlign:"center"}}>{item.brand_name}</Text>
                   <Text  allowFontScaling={false} style={{ textAlign: "center",textDecorationLine:"line-through",color:"gray",fontSize:10 }}>
                    Rs {item.mrp}
@@ -327,7 +327,7 @@ onPress={()=>handleCart(item,item.pcode)}
 >
             
 </FlatList>:
-<Text style={{textAlign:"center",letterSpacing:2,marginTop:20,marginBottom:20}}>No Products</Text>}
+<Text allowFontScaling={false} style={{textAlign:"center",letterSpacing:2,marginTop:20,marginBottom:20}}>No Products</Text>}
 
     </View>
   )

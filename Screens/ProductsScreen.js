@@ -25,7 +25,7 @@ const ProductsScreen = ({ navigation }) => {
 
   const getShop = async () => {
     try {
-      const res = await axios.get("https://mahilamediplex.com/mediplex/allShops");
+      const res = await axios.get("http://192.168.0.109:3002/mediplex/allShops");
       const data = res.data;
       const shopArr = data.map(item => ({ business_name: item.business_name, client_id: item.client_id }));
       setShopTypes(shopArr);
@@ -62,7 +62,7 @@ const ProductsScreen = ({ navigation }) => {
 
   const getProductsId = async (shop) => {
     try {
-        const res = await axios.get("https://mahilamediplex.com/mediplex/getProductId", {
+        const res = await axios.get("http://192.168.0.109:3002/mediplex/getProductId", {
             params: { client_id: shop }
         });
         // console.log("Product IDs:", res.data);
@@ -80,7 +80,7 @@ const ProductsScreen = ({ navigation }) => {
   const getProducts = async (pidArr) => {
     try {
         const productPromises = pidArr.map(pid => 
-            axios.get("https://mahilamediplex.com/mediplex/products", {
+            axios.get("http://192.168.0.109:3002/mediplex/products", {
                 params: { product_id: pid }
             })
         );
@@ -245,13 +245,13 @@ setCarts(cart)
                   {isItemInCart(item.pcode) ? (
                     <View style={{ flexDirection: "row", justifyContent: "space-between", marginTop: 10 }}>
                       <TouchableOpacity onPress={() => handleDecrementProduct(item.pcode)} style={{ paddingVertical: 2, borderWidth: 1, borderColor: "#D0D0D0", paddingHorizontal: 10 }}>
-                        <Text style={{ fontSize: 15 }}>-</Text>
+                        <Text allowFontScaling={false} style={{ fontSize: 15 }}>-</Text>
                       </TouchableOpacity>
                       <TouchableOpacity style={{ paddingVertical: 2, borderWidth: 1, borderColor: "#D0D0D0", paddingHorizontal: 35 }}>
-                        <Text>{getQty(item.pcode)}</Text>
+                        <Text allowFontScaling={false}>{getQty(item.pcode)}</Text>
                       </TouchableOpacity>
                       <TouchableOpacity onPress={() => handleIncrementProduct(item.pcode)} style={{ paddingVertical: 2, borderWidth: 1, borderColor: "#D0D0D0", paddingHorizontal: 15 }}>
-                        <Text>+</Text>
+                        <Text allowFontScaling={false}>+</Text>
                       </TouchableOpacity>
                     </View>
                   ) : (
@@ -284,7 +284,7 @@ setCarts(cart)
               )}
             />
           ) : (
-            <Text style={{ textAlign: "center", letterSpacing: 2, marginTop: 20, marginBottom: 20 }}>No Products</Text>
+            <Text allowFontScaling={false} style={{ textAlign: "center", letterSpacing: 2, marginTop: 20, marginBottom: 20 }}>No Products</Text>
           )}
         </View>
 
@@ -303,7 +303,7 @@ setCarts(cart)
               style={styles.modalView}
               onPress={handleModalPress}
             >
-              <Text style={styles.modalText}>Select Shop name</Text>
+              <Text allowFontScaling={false} style={styles.modalText}>Select Shop name</Text>
               <View style={{ paddingHorizontal: 20, borderWidth: 1, borderColor: "#D0D0D0", borderRadius: 20 }}>
                 <Picker
                   selectedValue={selectedShopType}
@@ -318,7 +318,7 @@ setCarts(cart)
               </View>
               <View style={{ marginTop: 20 }}></View>
               <TouchableOpacity style={{ paddingHorizontal: 40, backgroundColor: "#f01c8b", borderRadius: 10, paddingVertical: 10 }} onPress={handleSelectShopType}>
-                <Text style={{ color: "white", fontSize: 15, letterSpacing: 2 }}>Confirm</Text>
+                <Text allowFontScaling={false} style={{ color: "white", fontSize: 15, letterSpacing: 2 }}>Confirm</Text>
               </TouchableOpacity>
             </Pressable>
           </Pressable>
