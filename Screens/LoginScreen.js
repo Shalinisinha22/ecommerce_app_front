@@ -60,7 +60,7 @@ const LoginScreen = ({ navigation }) => {
   const verifyUser = async () => {
     let errors = {};
 
-    const res = await axios.get("http://192.168.0.109:3002/mediplex/login", {
+    const res = await axios.get("https://mahilamediplex.com/mediplex/login", {
       params: {
         userId: id,
         password: password

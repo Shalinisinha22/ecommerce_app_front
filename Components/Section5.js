@@ -23,7 +23,7 @@ const Section5 = ({navigation}) => {
   const getProductsId = async (shop) => {
 
     try {
-        const res = await axios.get("http://192.168.0.109:3002/mediplex/getProductId", {
+        const res = await axios.get("https://mahilamediplex.com/mediplex/getProductId", {
             params: { client_id: lmcId.client_id }
         });
   
@@ -51,7 +51,7 @@ const Section5 = ({navigation}) => {
 const getProducts = async (pidArr) => {
     try {
         const productPromises = pidArr.map(pid => 
-            axios.get("http://192.168.0.109:3002/mediplex/products", {
+            axios.get("https://mahilamediplex.com/mediplex/products", {
                 params: { product_id: pid }
             })
         );

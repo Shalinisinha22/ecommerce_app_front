@@ -41,7 +41,7 @@ const Wallet = () => {
     <ScrollView>
       <View style={{ width: width, alignItems: "center", marginTop: 40 }}>
         <Text style={{ fontWeight: "bold", fontSize: 18, letterSpacing: 1.2 }}>Total Amount:</Text>
-        <Text style={{ fontSize: 18, marginTop: 5 }}>Rs {user.mani_wallet}</Text>
+        <Text style={{ fontSize: 18, marginTop: 5 }}>Rs {user.mani_wallet?user.mani_wallet:"0"}</Text>
         <Text
           allowFontScaling={false}
           style={{

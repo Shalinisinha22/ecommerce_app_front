@@ -22,7 +22,7 @@ const WithdrawalScreen = () => {
           
 
           try{
-            const res= await axios.post("http://192.168.0.109:3002/mediplex/addWithdrawDetails",{
+            const res= await axios.post("https://mahilamediplex.com/mediplex/addWithdrawDetails",{
               user_id:user.client_id,
               total:amt
             })
@@ -50,7 +50,7 @@ const WithdrawalScreen = () => {
 
   const getWithdrawData= async()=>{
     try{
-      const withdrawRes= await axios.get("http://192.168.0.109:3002/mediplex/getWithdrawData",{
+      const withdrawRes= await axios.get("https://mahilamediplex.com/mediplex/getWithdrawData",{
         params:{
           client_id:user.client_id
         }
@@ -95,7 +95,7 @@ const WithdrawalScreen = () => {
     <ScrollView>
       <View style={{ width: width, alignItems: "center", marginTop: 40 }}>
         <Text style={{ fontWeight: "bold", fontSize: 18, letterSpacing: 1.2 }}>Available Amount:</Text>
-        <Text style={{ fontSize: 18, marginTop: 5 }}>Rs {user.mani_wallet}</Text>
+        <Text style={{ fontSize: 18, marginTop: 5 }}>Rs {user.mani_wallet?user.mani_wallet:"0"}</Text>
 
         <View style={{ marginTop: 0, paddingTop: 20 }}>
           <View style={{

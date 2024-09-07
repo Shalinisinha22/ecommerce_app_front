@@ -61,7 +61,7 @@ const CartPage = ({ navigation }) => {
 
 const makeOrder = async (item, lmcId) => {
   try {
-    const res = await axios.post("http://192.168.0.109:3002/mediplex/orderDetails", {
+    const res = await axios.post("https://mahilamediplex.com/mediplex/orderDetails", {
       uid: userInfo,
       lmc_id: lmc_id ? lmc_id : lmcId, // Fallback to passed lmcId if local lmc_id is not set
       pid: item.sale_id,
@@ -133,7 +133,7 @@ setCarts(cart)
           </TouchableOpacity>
         </View>
         <Text allowFontScaling={false} style={styles.itemPrice}>
-  RS {item.price * item.qty}
+  RS {Math.round(item.price * item.qty)}
 </Text>
       </View>
       <TouchableOpacity onPress={() => dispatch(removeFromCart(item.pcode))}>

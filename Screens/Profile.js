@@ -31,10 +31,10 @@ const ProfileScreen = ({ navigation }) => {
 
   const accountTypes= [{
     id:0,
-    type:"Current"
+    type:"current"
   },
 {id:1,
-  type:"Saving"
+  type:"saving"
 }]
 
   const [countryCode, setCountryCode] = useState('');
@@ -69,10 +69,10 @@ const ProfileScreen = ({ navigation }) => {
   const [editablePanNumber, setEditablePanNumber] = useState("")
   const [editableAadharNumber, setEditableAadharNumber] = useState("")
   const [editableAccountType, setEditableAccountType] = useState("")
-
+  const [accountType, setAccountType] = useState("")
   const [allRelation, setAllrelation] = useState(null)
   const [relation, setRelation] = useState(null)
-  const [accountType, setAccountType] = useState(null)
+
 
   const [state,setState]= useState(null)
   const [stateId,setStateId] = useState(null)
@@ -112,7 +112,7 @@ const ProfileScreen = ({ navigation }) => {
 
   const getAllState = async () => {
     try {
-      const res = await axios.get("http://192.168.0.109:3002/mediplex/state");
+      const res = await axios.get("https://mahilamediplex.com/mediplex/state");
       const data = res.data;
   
       // Create a mapping of state IDs to names
@@ -138,7 +138,7 @@ const ProfileScreen = ({ navigation }) => {
     // console.log(id,"124")
     
     try {
-      const res = await axios.get("http://192.168.0.109:3002/mediplex/district", {
+      const res = await axios.get("https://mahilamediplex.com/mediplex/district", {
         params: {
           state_id: id
         },
@@ -176,7 +176,7 @@ const ProfileScreen = ({ navigation }) => {
     console.log(id,"163")
     
     try {
-      const res = await axios.get("http://192.168.0.109:3002/mediplex/subDivision", {
+      const res = await axios.get("https://mahilamediplex.com/mediplex/subDivision", {
         params: {
           district_id: id.district_code
         },
@@ -212,7 +212,7 @@ const ProfileScreen = ({ navigation }) => {
 
   const getAllRelation = async () => {
     try {
-      const res = await axios.get("http://192.168.0.109:3002/mediplex/relation")
+      const res = await axios.get("https://mahilamediplex.com/mediplex/relation")
       const data = res.data
       setAllrelation(data)
     }
@@ -266,7 +266,7 @@ const ProfileScreen = ({ navigation }) => {
 
 
     try {
-      const res = await axios.get("http://192.168.0.109:3002/mediplex/clientDetails", {
+      const res = await axios.get("https://mahilamediplex.com/mediplex/clientDetails", {
         params: {
           client_id: userInfo,
         },
@@ -343,7 +343,7 @@ const ProfileScreen = ({ navigation }) => {
 
 
     try {
-      const response = await axios.post('http://192.168.0.109:3002/mediplex/uploadImage', formData, {
+      const response = await axios.post('https://mahilamediplex.com/mediplex/uploadImage', formData, {
         headers: {
            'Content-Type': 'multipart/form-data',
         },
@@ -371,7 +371,7 @@ const ProfileScreen = ({ navigation }) => {
 
     console.log("299",selectedStateId,selectedDistrictId,state,stateId,data.bankName)
 
-    const res = await axios.post("http://192.168.0.109:3002/mediplex/updateProfile", {
+    const res = await axios.post("https://mahilamediplex.com/mediplex/updateProfile", {
 
       first_name: data.fullname ? data.fullname : editableFullName,
       m_dob: dob ? moment(dob).format('YYYY-MM-DD') : moment(editableDob).format('YYYY-MM-DD'),
@@ -897,7 +897,7 @@ const ProfileScreen = ({ navigation }) => {
             <View style={styles.inputCont}>
               <Text allowFontScaling={false}>Upload Photo</Text>
               <View style={[styles.inputBoxCont, { backgroundColor: "white" }]}>
-                {editableProfileImage ? <Image source={{ uri: `http://192.168.0.109:3002/upload/photo/${editableProfileImage}` }} style={{ width: 100, height: 100, borderRadius: 100, marginRight: 20 }} /> : photo && <Image source={{ uri: photo }} style={{ width: 100, height: 100, borderRadius: 100, marginRight: 20 }} />}
+                {editableProfileImage ? <Image source={{ uri: `https://mahilamediplex.com/upload/photo/${editableProfileImage}` }} style={{ width: 100, height: 100, borderRadius: 100, marginRight: 20 }} /> : photo && <Image source={{ uri: photo }} style={{ width: 100, height: 100, borderRadius: 100, marginRight: 20 }} />}
                 <Button title="Choose File" color="#9e0059" onPress={pickImage} />
               </View>
             </View>
@@ -1216,32 +1216,25 @@ const ProfileScreen = ({ navigation }) => {
 
             {/* Account Type */}
             <View style={styles.inputCont}>
-              <Text allowFontScaling={false} style={{ fontWeight: 500, fontSize: 16 }}>Account Type  </Text>
-              <Picker  style={{ backgroundColor: "#17842b",color:"white",fontSize:18 }} selectedValue={editableAccountType} minWidth="200"  placeholder="Select Account Type" _selectedItem={{
-                        bg: "#D0D0D0"
-                        // endIcon: <CheckIcon size="5"/>
-                    }} mt={1}
-                     onValueChange={(itemValue) => 
-                        {
-                          //  console.log(itemValue)
-                           setAccountType(itemValue);
-                           setEditableAccountType(itemValue); 
-                        }
-                   }>
-
-                    {
-                      accountTypes.map((item)=>(
-                        
-                <Picker.Item key={item.id} label={item.type} value={item.type} />
-                      ))
-                    }
-
-            
-
-
-              </Picker>
-            </View>
-
+      <Text allowFontScaling={false} style={{ fontWeight: '500', fontSize: 16 }}>
+        Account Type 
+      </Text>
+   
+        <Picker
+          style={{ backgroundColor: "#17842b", color: "white", fontSize: 18 }}
+          selectedValue={editableAccountType} // Use the state variable
+          onValueChange={(itemValue) => {
+            console.log(itemValue, "Selected Account Type");
+            setEditableAccountType(itemValue); // Update editable account type
+            setAccountType(itemValue); // Sync with accountType
+          }}
+        >
+          {accountTypes.map((item) => (
+            <Picker.Item key={item.id} label={item.type} value={item.type} />
+          ))}
+        </Picker>
+   
+    </View>
 
             <View style={{ marginTop: 30 }} />
 

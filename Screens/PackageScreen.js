@@ -13,7 +13,7 @@ const PackageScreen = ({navigation}) => {
 
     const getHealthPackageProducts= async()=>{
         try{
-           const res= await axios.get("http://192.168.0.109:3002/mediplex/healthPackage")
+           const res= await axios.get("https://mahilamediplex.com/mediplex/healthPackage")
            const data = res.data
            setHealthPackageProducts(data)
         }

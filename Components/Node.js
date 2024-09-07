@@ -20,7 +20,7 @@ const Node = ({ node, data, level = 0, maxLevel = 2, type,name }) => {
   useEffect(() => {
     const fetchClientNames = async () => {
       try {
-        const res = await axios.get("http://192.168.0.109:3002/mediplex/clientName", {
+        const res = await axios.get("https://mahilamediplex.com/mediplex/clientName", {
           params: {
             root: node,
             left: data[node]?.left || null,
@@ -32,6 +32,9 @@ const Node = ({ node, data, level = 0, maxLevel = 2, type,name }) => {
           acc[item.client_id] = item;
           return acc;
         }, {});
+
+
+        console.log(names,"37")
 
         setRootName(names[node]?.first_name || '');
         setLeftChildName(names[data[node]?.left]?.first_name || 'No Node');

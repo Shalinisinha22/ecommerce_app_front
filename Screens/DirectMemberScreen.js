@@ -13,9 +13,9 @@ const DirectMemberScreen = () => {
 
   const getDirectMemberData = async () => {
     try {
-      const res = await axios.get('http://192.168.0.109:3002/mediplex/clientAccountLog');
+      const res = await axios.get('https://mahilamediplex.com/mediplex/clientAccountLog');
       const network = JSON.parse(res.data[0].network);
-      const res1 = await axios.get('http://192.168.0.109:3002/mediplex/directMemberData', {
+      const res1 = await axios.get('https://mahilamediplex.com/mediplex/directMemberData', {
         params: {
           parent_id: userInfo.client_id,
         },
@@ -68,6 +68,9 @@ const DirectMemberScreen = () => {
           value={searchValue}
           onChangeText={setSearchValue}
         />
+
+
+        
         <View style={{ flexDirection: 'row', borderBottomWidth: 1, borderColor: 'gray' }}>
           <Text allowFontScaling={false} style={styles.columnHeader}>Client ID</Text>
           <Text allowFontScaling={false} style={styles.columnHeader}>Name</Text>

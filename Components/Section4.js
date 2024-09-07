@@ -38,7 +38,7 @@ const Section4 = ({navigation}) => {
   const getProductsId = async (shop) => {
 
     try {
-        const res = await axios.get("http://192.168.0.109:3002/mediplex/getProductId", {
+        const res = await axios.get("https://mahilamediplex.com/mediplex/getProductId", {
             params: { client_id: lmcId.client_id }
         });
   
@@ -66,7 +66,7 @@ const Section4 = ({navigation}) => {
 const getProducts = async (pidArr) => {
     try {
         const productPromises = pidArr.map(pid => 
-            axios.get("http://192.168.0.109:3002/mediplex/products", {
+            axios.get("https://mahilamediplex.com/mediplex/products", {
                 params: { product_id: pid }
             })
         );
@@ -97,7 +97,7 @@ const getProducts = async (pidArr) => {
 
 // const getDefaultProducts= async()=>{
 //   try{
-//     const defaultRes= await axios.get("http://192.168.0.109:3002/mediplex/defaultShops")
+//     const defaultRes= await axios.get("https://mahilamediplex.com/mediplex/defaultShops")
 //     // console.log(defaultRes.data[0].client_id)
 //     if(defaultRes.data[0]?.client_id){
 //       await AsyncStorage.setItem("shopDetails", JSON.stringify(defaultRes.data[0]));
@@ -111,7 +111,7 @@ const getProducts = async (pidArr) => {
 // }
 // const getDefaultProductsId= async(shop)=>{
 //   try {
-//     const res = await axios.get("http://192.168.0.109:3002/mediplex/getProductId", {
+//     const res = await axios.get("https://mahilamediplex.com/mediplex/getProductId", {
 //         params: { client_id: shop }
 //     });
  
@@ -133,7 +133,7 @@ const getProducts = async (pidArr) => {
 // const getDefaultProductsValue = async (pidArr) => {
 //   try {
 //       const productPromises = pidArr.map(pid => 
-//           axios.get("http://192.168.0.109:3002/mediplex/products", {
+//           axios.get("https://mahilamediplex.com/mediplex/products", {
 //               params: { product_id: pid }
 //           })
 //       );

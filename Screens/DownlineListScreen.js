@@ -13,7 +13,7 @@ const DownlineListScreen = () => {
 
   const getDirectMemberData = async () => {
     try {
-      const res = await axios.get('http://192.168.0.109:3002/mediplex/clientAccountLog');
+      const res = await axios.get('https://mahilamediplex.com/mediplex/clientAccountLog');
       const treeData = JSON.parse(res.data[0].network);
   
       const leftArray = [];
@@ -44,7 +44,7 @@ const DownlineListScreen = () => {
   
       // Fetch data for left users
       const leftUserPromises = leftArray.map(item => 
-        axios.get("http://192.168.0.109:3002/mediplex/downlineList", {
+        axios.get("https://mahilamediplex.com/mediplex/downlineList", {
           params: { client_id:item }
         })
         .then(response => {
@@ -63,7 +63,7 @@ const DownlineListScreen = () => {
   
       // Fetch data for right users
       const rightUserPromises = rightArray.map(item => 
-        axios.get("http://192.168.0.109:3002/mediplex/downlineList", {
+        axios.get("https://mahilamediplex.com/mediplex/downlineList", {
           params: { client_id: item }
         })
         .then(response => {

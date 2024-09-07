@@ -11,7 +11,7 @@ const FundRequestStatus = () => {
   const [modalVisible, setModalVisible] = useState(false);
   const getAllFundRequests= async()=>{
     try{
-       const res = await axios.get("http://192.168.0.109:3002/mediplex/fund-request-status",{
+       const res = await axios.get("https://mahilamediplex.com/mediplex/fund-request-status",{
         params:{
           client_id:userInfo.client_id
         }

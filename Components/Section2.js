@@ -23,14 +23,14 @@ const Section2 = ({navigation}) => {
   const lmcId = useSelector((state)=>state.user.shop? state.user.shop:null)
   const [lmc_id,setLmc]= useState(lmcId)
  
-  // console.log(lmcId,"26lmcId")
+  console.log(lmcId,"26lmcId")
 
 
 
   const getProductsId = async (shop) => {
 
     try {
-        const res = await axios.get("http://192.168.0.109:3002/mediplex/getProductId", {
+        const res = await axios.get("https://mahilamediplex.com/mediplex/getProductId", {
             params: { client_id: lmcId.client_id }
         });
   
@@ -58,7 +58,7 @@ const Section2 = ({navigation}) => {
 const getProducts = async (pidArr) => {
     try {
         const productPromises = pidArr.map(pid => 
-            axios.get("http://192.168.0.109:3002/mediplex/products", {
+            axios.get("https://mahilamediplex.com/mediplex/products", {
                 params: { product_id: pid }
             })
         );

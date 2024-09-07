@@ -35,17 +35,17 @@ const HomeScreen = ({ navigation }) => {
     <ImageBackground style={{ width: width, flex: 1, backgroundColor: "#fff", opacity: 1 }}>
       <ImageBackground source={require("../assets/bg5.png")} style={{ width: width, backgroundColor: "#d8f3dc", opacity: 0.9 }}>
         <View style={{ backgroundColor: "#fffffc", borderRadius: 0, borderBottomLeftRadius: 20, borderBottomRightRadius: 20, borderBottomWidth: 5, borderColor: "#fff" }}>
-          <View style={{ width: width, borderRadius: 30, borderWidth: 0, borderColor: "#a11463", flexDirection: "row", paddingTop: 10, justifyContent: "space-evenly" }}>
+          <View style={{ width: width, borderRadius: 30, borderWidth: 0, borderColor: "#a11463", flexDirection: "row", paddingTop: 10, justifyContent: "space-around" }}>
             <TouchableOpacity onPress={() => navigation.openDrawer()} style={{ paddingTop: 7}}>
               <Entypo name="menu" size={44} color="#155d27" />
             </TouchableOpacity>
             <View>
-              <Image source={require("../assets/logo.png")} style={{ height: 65, width: 110, resizeMode: "contain" }} />
+              <Image source={require("../assets/logo.png")} style={{ height: 65, width: 105, resizeMode: "contain" }} />
             </View>
             <View style={{ flexDirection: "row", alignItems:"center" }}>
               <TouchableOpacity style={{ flexDirection: "row", justifyContent: "space-around", borderWidth: 1, borderColor: "gray", height: 35, borderRadius: 15, paddingHorizontal: 15, alignItems: "center" }} onPress={() => navigation.navigate("wallet")}>
                 <FontAwesome5 name="wallet" size={22} color="#0a7736" />
-                <Text numberOfLines={2} allowFontScaling={false}style={{ color: "#a11463", fontSize: 12, fontWeight: '700' }}>  Rs {user.mani_wallet}</Text>
+                <Text numberOfLines={2} allowFontScaling={false}style={{ color: "#a11463", fontSize: 12, fontWeight: '700' }}>  Rs {user.mani_wallet?user.mani_wallet:"0"}</Text>
               </TouchableOpacity>
               <TouchableOpacity style={{ alignItems: "center", marginLeft: 8, marginTop: 5 }} onPress={() => navigation.navigate("cart")}>
                 <FontAwesome5 name="shopping-cart" size={28} color="#b6306d" />

@@ -22,7 +22,7 @@ const PaymentScreen = () => {
     const [err,setErr]= useState("")
     const getBankDetails = async () => {
         try {
-            const res = await axios.get("http://192.168.0.109:3002/mediplex/bankDetails")
+            const res = await axios.get("https://mahilamediplex.com/mediplex/bankDetails")
             const data = res.data
 
             console.log(data)
@@ -71,7 +71,7 @@ const PaymentScreen = () => {
     
     
         try {
-          const response = await axios.post('http://192.168.0.109:3002/mediplex/uploadImage', formData, {
+          const response = await axios.post('https://mahilamediplex.com/mediplex/uploadImage', formData, {
             headers: {
                'Content-Type': 'multipart/form-data',
             },
@@ -107,7 +107,7 @@ const PaymentScreen = () => {
             console.log(transaction_id)
     
             try {
-                const res = await axios.post("http://192.168.0.109:3002/mediplex/fund-request", {
+                const res = await axios.post("https://mahilamediplex.com/mediplex/fund-request", {
                     name: userInfo.first_name,
                     mobile_no: userInfo.mobile,
                     client_id: userInfo.client_id,

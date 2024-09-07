@@ -22,7 +22,7 @@ const ActivationScreen = ({ navigation }) => {
 
   const getValidUsers = async () => {
     try {
-      const res = await axios.get("http://192.168.0.109:3002/mediplex/activeUser")
+      const res = await axios.get("https://mahilamediplex.com/mediplex/activeUser")
       setValidUsers(res.data)
     }
     catch (err) {
@@ -42,7 +42,7 @@ const ActivationScreen = ({ navigation }) => {
 
   const getAllPlans = async () => {
     try {
-      const res = await axios.get("http://192.168.0.109:3002/mediplex/plans", {
+      const res = await axios.get("https://mahilamediplex.com/mediplex/plans", {
         params: {
           balance: mainWallet
         }
@@ -88,7 +88,7 @@ const ActivationScreen = ({ navigation }) => {
 
   const updateMainWallet = async () => {
     try {
-      const res = await axios.get("http://192.168.0.109:3002/mediplex/updateMainWallet", {
+      const res = await axios.get("https://mahilamediplex.com/mediplex/updateMainWallet", {
         params:{
           newBalance: mainWallet - plan.price,
           client_id: userInfo.client_id
@@ -109,7 +109,7 @@ const ActivationScreen = ({ navigation }) => {
 
   const UpdateMainWalletLog = async()=>{
     try{
-       const res = await axios.post("http://192.168.0.109:3002/mediplex/mainWalletLog",{
+       const res = await axios.post("https://mahilamediplex.com/mediplex/mainWalletLog",{
          client_id:userInfo.client_id,
          user_id:userId,
          amount:plan.price
@@ -124,7 +124,7 @@ const ActivationScreen = ({ navigation }) => {
 
   const updateClientProfileAccount= async()=>{
     try{
-        const res= await axios.post("http://192.168.0.109:3002/mediplex/updateClientProfileAccount",{
+        const res= await axios.post("https://mahilamediplex.com/mediplex/updateClientProfileAccount",{
           shopping_wallet:plan.shopping_wallet_cashback,
           activate_package_id:plan.package_id,
           client_id:userInfo.client_id
@@ -143,7 +143,7 @@ const ActivationScreen = ({ navigation }) => {
 
   const getParentId= async()=>{
      try{
-        const res= await axios.get("http://192.168.0.109:3002/mediplex/getParentId",{
+        const res= await axios.get("https://mahilamediplex.com/mediplex/getParentId",{
           params:{
             userId:userId
           }
@@ -160,7 +160,7 @@ const ActivationScreen = ({ navigation }) => {
   const updateClientPayout= async()=>{
      const pid= await getParentId()
     try{
-        const res= await axios.post("http://192.168.0.109:3002/mediplex/client_payout",{
+        const res= await axios.post("https://mahilamediplex.com/mediplex/client_payout",{
           income_type:'sponsor',
           user_id:pid,
           ref_user_id:userId,

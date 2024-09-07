@@ -25,7 +25,7 @@ const ProductsScreen = ({ navigation }) => {
 
   const getShop = async () => {
     try {
-      const res = await axios.get("http://192.168.0.109:3002/mediplex/allShops");
+      const res = await axios.get("https://mahilamediplex.com/mediplex/allShops");
       const data = res.data;
       const shopArr = data.map(item => ({ business_name: item.business_name, client_id: item.client_id }));
       setShopTypes(shopArr);
@@ -62,7 +62,7 @@ const ProductsScreen = ({ navigation }) => {
 
   const getProductsId = async (shop) => {
     try {
-        const res = await axios.get("http://192.168.0.109:3002/mediplex/getProductId", {
+        const res = await axios.get("https://mahilamediplex.com/mediplex/getProductId", {
             params: { client_id: shop }
         });
         // console.log("Product IDs:", res.data);
@@ -80,7 +80,7 @@ const ProductsScreen = ({ navigation }) => {
   const getProducts = async (pidArr) => {
     try {
         const productPromises = pidArr.map(pid => 
-            axios.get("http://192.168.0.109:3002/mediplex/products", {
+            axios.get("https://mahilamediplex.com/mediplex/products", {
                 params: { product_id: pid }
             })
         );

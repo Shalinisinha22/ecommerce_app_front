@@ -82,7 +82,7 @@ const KycScreen = () => {
 
     try {
       const response = await axios.post(
-        'http://192.168.0.109:3002/mediplex/uploadImage',
+        'https://mahilamediplex.com/mediplex/uploadImage',
         formData,
         {
           headers: {
@@ -120,7 +120,7 @@ const KycScreen = () => {
         bankProofName,
       });
 
-      const res = await axios.post("http://192.168.0.109:3002/mediplex/updateKyc", {
+      const res = await axios.post("https://mahilamediplex.com/mediplex/updateKyc", {
         aadhar_front: aadharFrontDetail? aadharFrontDetail :af,
         aadhar_back: aadharBackDetail?aadharBackDetail:ab,
         pan_card:panCardDetail?panCardDetail:pan,
@@ -140,7 +140,7 @@ const KycScreen = () => {
   const getKYCData = async () => {
     console.log(userInfo);
     try {
-      const res = await axios.get("http://192.168.0.109:3002/mediplex/getKYCData", {
+      const res = await axios.get("https://mahilamediplex.com/mediplex/getKYCData", {
         params: { client_id: userInfo },
       });
       console.log(res.data);
@@ -194,7 +194,7 @@ const KycScreen = () => {
               {aadharFront ? (
                 <Image source={{ uri: aadharFront }} style={{ width: 150, height: 150, resizeMode: "contain" }} />
               ) : af ? (
-                <Image source={{ uri: `http://192.168.0.109:3002/upload/aadhaar/front/${af}` }} style={{ width: 150, height: 150, resizeMode: "contain" }} />
+                <Image source={{ uri: `https://mahilamediplex.com/upload/aadhaar/front/${af}` }} style={{ width: 150, height: 150, resizeMode: "contain" }} />
               ) : (
                 <Text allowFontScaling={false}>No image selected</Text>
               )}
@@ -213,7 +213,7 @@ const KycScreen = () => {
               {aadharBack ? (
                 <Image source={{ uri: aadharBack }} style={{ width: 150, height: 150, resizeMode: "contain" }} />
               ) : ab ? (
-                <Image source={{ uri: `http://192.168.0.109:3002/upload/aadhaar/back/${ab}` }} style={{ width: 150, height: 150, resizeMode: "contain" }} />
+                <Image source={{ uri: `https://mahilamediplex.com/upload/aadhaar/back/${ab}` }} style={{ width: 150, height: 150, resizeMode: "contain" }} />
               ) : (
                 <Text allowFontScaling={false}>No image selected</Text>
               )}
@@ -232,7 +232,7 @@ const KycScreen = () => {
               {panCard ? (
                 <Image source={{ uri: panCard }} style={{ width: 150, height: 150, resizeMode: "contain" }} />
               ) : pan ? (
-                <Image source={{ uri: `http://192.168.0.109:3002/upload/pan/${pan}` }} style={{ width: 150, height: 150, resizeMode: "contain" }} />
+                <Image source={{ uri: `https://mahilamediplex.com/upload/pan/${pan}` }} style={{ width: 150, height: 150, resizeMode: "contain" }} />
               ) : (
                 <Text allowFontScaling={false}>No image selected</Text>
               )}
@@ -251,7 +251,7 @@ const KycScreen = () => {
               {bankProof ? (
                 <Image source={{ uri: bankProof }} style={{ width: 150, height: 150, resizeMode: "contain" }} />
               ) : bank ? (
-                <Image source={{ uri: `http://192.168.0.109:3002/upload/cheque/${bank}` }} style={{ width: 150, height: 150, resizeMode: "contain" }} />
+                <Image source={{ uri: `https://mahilamediplex.com/upload/cheque/${bank}` }} style={{ width: 150, height: 150, resizeMode: "contain" }} />
               ) : (
                 <Text allowFontScaling={false}>No image selected</Text>
               )}

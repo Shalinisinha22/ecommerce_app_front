@@ -17,7 +17,7 @@ const userInfo = useSelector((state) => (state.user.userInfo ? state.user.userIn
 
   const getClients = async () => {
     try {
-      const res = await axios.get('http://192.168.0.109:3002/mediplex/clientAccountLog');
+      const res = await axios.get('https://mahilamediplex.com/mediplex/clientAccountLog');
       const network = JSON.parse(res.data[0].network);
       console.log(network,"13");
 
@@ -39,7 +39,7 @@ const userInfo = useSelector((state) => (state.user.userInfo ? state.user.userIn
       let rootNode = null;
       for (let key in network) {
         if (!children.has(key)) {
-          rootNode = key;
+          rootNode = key
           break; // Exit the loop after finding the first root node
         }
       }
@@ -65,7 +65,7 @@ const getClientName= async(name)=>{
   console.log(name,"name")
 
 try{
-    const res= await axios.get("http://192.168.0.109:3002/mediplex/clientName",{
+    const res= await axios.get("https://mahilamediplex.com/mediplex/clientName",{
         params:{
             root:name,
             leftChild:"",

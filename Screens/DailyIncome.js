@@ -11,7 +11,7 @@ const DailyIncome= () => {
   const [modalVisible, setModalVisible] = useState(false);
   const getAllDailyIncome= async()=>{
     try{
-       const res = await axios.get("http://192.168.0.109:3002/mediplex/dailyIncome",{
+       const res = await axios.get("https://mahilamediplex.com/mediplex/dailyIncome",{
         params:{
           client_id:userInfo.client_id
         }

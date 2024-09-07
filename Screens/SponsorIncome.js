@@ -11,7 +11,7 @@ const SponsorIncome= () => {
   const [modalVisible, setModalVisible] = useState(false);
   const getAllSponsorIncome= async()=>{
     try{
-       const res = await axios.get("http://192.168.0.109:3002/mediplex/sponsorIncome",{
+       const res = await axios.get("https://mahilamediplex.com/mediplex/sponsorIncome",{
         params:{
           client_id:userInfo.client_id
         }
