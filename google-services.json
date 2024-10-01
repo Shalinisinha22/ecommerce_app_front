@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "807436999930",
+    "project_id": "mahilamediplex-2cbc9",
+    "storage_bucket": "mahilamediplex-2cbc9.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:807436999930:android:b6faa1a3b06bc32b03bd43",
+        "android_client_info": {
+          "package_name": "com.zenwebmaniasolutions.MahilaMediplex"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBatCjQl6iTg-nF6G_prn49Ci4FCMYr_CY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

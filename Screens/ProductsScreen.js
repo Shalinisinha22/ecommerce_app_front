@@ -16,7 +16,7 @@ const ProductsScreen = ({ navigation }) => {
   const [shopType, setShopTypes] = useState(null);
   const [modalVisible, setModalVisible] = useState(true);
   const [selectedShopType, setSelectedShopType] = useState('');
-
+const [isSelect,setSelect]= useState(false)
   const [shopId, setShopId] = useState('');
   const [products, setProducts] = useState([]);
   const [productId, setProductId] = useState([]);
@@ -36,8 +36,9 @@ const ProductsScreen = ({ navigation }) => {
 
   const handleSelectShopType = async () => {
     if (selectedShopType) {
-      // console.log(selectedShopType)
-
+      console.log(selectedShopType)
+      setSelect(true)
+      setModalVisible(false);
       await AsyncStorage.setItem("shopDetails", JSON.stringify(selectedShopType));
       dispatch(setShopType(selectedShopType))
       
@@ -52,8 +53,9 @@ const ProductsScreen = ({ navigation }) => {
         if (res?.client_id) {
             setShopId(res.client_id);
             await getProductsId(res.client_id);
+            // setModalVisible(false)
         } else {
-        
+        // setModalVisible(true)
         }
     } catch (err) {
         console.log("Error fetching shop client ID:", err.message);
@@ -101,7 +103,7 @@ const ProductsScreen = ({ navigation }) => {
             });
         }).flat(); // Flatten the array if res.data contains arrays of products
 
-        // console.log("Final Product Array:", productArr);
+        console.log("Final Product Array:", productArr);
         setProducts(productArr);
 
     } catch (err) {
@@ -117,6 +119,7 @@ const ProductsScreen = ({ navigation }) => {
   useFocusEffect(
     useCallback(() => {
       setModalVisible(true);
+      setSelectedShopType('')
     }, [])
   );
 
@@ -196,7 +199,7 @@ setCarts(cart)
   
 
   return (
-    <View style={{ flex: 1, backgroundColor: "#fff", paddingTop: 20 }}>
+    <View style={{ flex: 1, backgroundColor: "#fff", paddingTop: 0 }}>
       <Header navigation={navigation} />
       <ScrollView>
         <View style={{ width: '100%', marginTop: 20, paddingBottom: 10, alignItems: "center" }}>
@@ -288,7 +291,12 @@ setCarts(cart)
           )}
         </View>
 
-        <Modal
+
+      </ScrollView>
+
+
+<View>
+  {selectedShopType==""  && <Modal
           animationType="slide"
           transparent={true}
           visible={modalVisible}
@@ -317,13 +325,16 @@ setCarts(cart)
                 </Picker>
               </View>
               <View style={{ marginTop: 20 }}></View>
-              <TouchableOpacity style={{ paddingHorizontal: 40, backgroundColor: "#f01c8b", borderRadius: 10, paddingVertical: 10 }} onPress={handleSelectShopType}>
-                <Text allowFontScaling={false} style={{ color: "white", fontSize: 15, letterSpacing: 2 }}>Confirm</Text>
+              <TouchableOpacity style={{ paddingHorizontal: 40, backgroundColor: "#f01c8b", borderRadius: 10, paddingVertical: 10 }} onPress={()=>handleSelectShopType()}>
+                <Text allowFontScaling={false} style={{ color: "white", fontSize: 15, letterSpacing: 2 }}>Close</Text>
               </TouchableOpacity>
             </Pressable>
           </Pressable>
-        </Modal>
-      </ScrollView>
+        </Modal> }
+
+</View>
+      
+   
     </View>);
 };
 
@@ -358,4 +369,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default ProductsScreen;
+export default ProductsScreen; 

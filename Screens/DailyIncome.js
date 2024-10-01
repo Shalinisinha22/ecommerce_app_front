@@ -90,13 +90,14 @@ const DailyIncome= () => {
         <View style={{}}>
        
           <Text
-        allowFontScaling={false}
-        style={{
-          height: 1,
-          borderColor: "whitesmoke",
-          borderWidth: 2,
-          marginBottm:10
-        }}
+          allowFontScaling={false}
+          style={{
+            height: 1,
+            borderColor: "whitesmoke",
+            borderWidth: 2,
+            marginBottm:10
+          }}
+     
       />
             <View style={{ alignItems: "center", marginTop: 10 }}>
               <Text allowFontScaling={false} style={{ color: "#9e0059", fontSize: 15,letterSpacing:2 }}>
@@ -111,7 +112,7 @@ const DailyIncome= () => {
           borderWidth: 2,
           marginTop: 15,
         }}
-      />
+      />     
     
 </View>
 

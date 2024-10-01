@@ -3,6 +3,12 @@ export const setUser = (userInfo) => ({
   payload: userInfo,
 });
 
+
+export const setUserImage = (userImg) => ({
+  type: 'SET_USER_IMAGE',
+  payload: userImg,
+});
+
 export const clearUserInfo = () => ({
   type: 'CLEAR_USER_INFO',
 });

@@ -3,10 +3,9 @@ import React from 'react'
 const width= Dimensions.get('screen').width
 const Section3 = () => {
   return (
-    <View style={{width:width,alignItems:"flex-start",marginTop:15,backgroundColor:"#fff"}}>
-  <Image source={require("../assets/n2.png")} style={{width:width,height:250}} imageStyle={{borderRadius:20,resizeMode:"contain"}}>
-</Image>
-    </View>
+  <ImageBackground source={require("../assets/n2.png")} style={{width:width,height:200,marginTop:30}} imageStyle={{resizeMode:"cover"}}>
+</ImageBackground>
+
 
   )
 }

@@ -34,6 +34,7 @@ import DirectMemberScreen from '../Screens/DirectMemberScreen';
 import DownlineListScreen from '../Screens/DownlineListScreen';
 import ActiveMemberScreen from '../Screens/ActiveMemberScreen';
 import MyDashboard from '../Screens/MyDashboard';
+import OrderHistory from '../Screens/OrderHistory';
 
 
 const Stack = createStackNavigator();
@@ -116,7 +117,9 @@ export const AppNavigator = () => {
         dropdownIcon: <AntDesign name="down" size={15} color="white" />,
 url: "",},
 
- { id: 6, name: "Logout", url: "" }
+{ id: 6, name: "Order History", url: "orderHistory" },
+
+ { id: 7, name: "Logout", url: "" }
 
 
 
@@ -158,6 +161,7 @@ url: "",},
                 <Stack.Screen name="Downline" component={DownlineListScreen} options={{ headerShown: false }} />
                 <Stack.Screen name="ActiveMember" component={ActiveMemberScreen} options={{ headerShown: false }} />
                 <Stack.Screen name="dashboard" component={MyDashboard} options={{ headerShown: false }} />
+                <Stack.Screen name="orderHistory" component={OrderHistory} options={{ headerShown: false }} />
 
 
             </Stack.Navigator>
@@ -225,9 +229,11 @@ url: "",},
                 component={StackNavigator}
                 options={{
                     tabBarLabel: "Home",
-                    tabBarLabelStyle: { color: "#fff", fontSize: 12, fontWeight: 800, letterSpacing: 2 },
+                    tabBarLabelStyle: { color: "#fff", fontSize: 10, fontWeight: 800, letterSpacing: 2 },
                     headerShown: false,
                     tabBarIcon: ({ focused }) => focused ? <Entypo name="home" size={25} color="#fff" /> : <AntDesign name="home" size={25} color="#D0D0D0" />,
+                    tabBarAllowFontScaling:false,
+
                 }}
             />
             <Tab.Screen
@@ -235,9 +241,11 @@ url: "",},
                 component={Wallet}
                 options={{
                     tabBarLabel: "Wallet",
-                    tabBarLabelStyle: { color: "#fff", fontSize: 12, fontWeight: 600, letterSpacing: 2 },
+                    tabBarLabelStyle: { color: "#fff", fontSize: 10, fontWeight: 600, letterSpacing: 2 },
                     headerShown: false,
                     tabBarIcon: ({ focused }) => focused ? <Entypo name="wallet" size={25} color="#fff" /> : <Entypo name="wallet" size={25} color="#D0D0D0" />,
+                    tabBarAllowFontScaling:false,
+
                 }}
             />
             <Tab.Screen
@@ -245,9 +253,11 @@ url: "",},
                 component={WithdrawalScreen}
                 options={{
                     tabBarLabel: "Withdrawal",
-                    tabBarLabelStyle: { color: "#fff", fontSize: 12, fontWeight: 600, letterSpacing: 2 },
+                    tabBarLabelStyle: { color: "#fff", fontSize: 10, fontWeight: 600, letterSpacing: 2 },
                     headerShown: false,
                     tabBarIcon: ({ focused }) => focused ? <MaterialCommunityIcons name="piggy-bank" size={25} color="#fff" /> : <MaterialCommunityIcons name="piggy-bank-outline" size={25} color="#D0D0D0" />,
+                    tabBarAllowFontScaling:false,
+
                 }}
             />
    <Tab.Screen
@@ -255,8 +265,9 @@ url: "",},
         component={ProductsScreen}
         options={({ route }) => ({
           tabBarLabel: "Shop Now",
-          tabBarLabelStyle: { color: "#fff", fontSize: 12, fontWeight: '600', letterSpacing: 2 },
+          tabBarLabelStyle: { color: "#fff", fontSize: 10, fontWeight: '600', letterSpacing: 2 },
           headerShown: false,
+          tabBarAllowFontScaling:false,
           tabBarIcon: ({ focused }) =>
             focused ? (
               <Ionicons name="bag-add" size={25} color="#fff" />
@@ -264,6 +275,7 @@ url: "",},
               <Ionicons name="bag-add" size={25} color="#D0D0D0" />
             ),
         })}
+        
         listeners={({ navigation }) => ({
           tabPress: (e) => {
             // Prevent default action
@@ -279,8 +291,10 @@ url: "",},
                 name="profile"
                 component={Profile}
                 options={{
+
+                    tabBarAllowFontScaling:false,
                     tabBarLabel: "Profile",
-                    tabBarLabelStyle: { color: "#fff", fontSize: 12, fontWeight: 600, letterSpacing: 2 },
+                    tabBarLabelStyle: { color: "#fff", fontSize: 10, fontWeight: 600, letterSpacing: 2 },
                     headerShown: false,
                     tabBarIcon: ({ focused }) => focused ? <FontAwesome name="user-circle-o" size={25} color="#fff" /> : <FontAwesome name="user-circle-o" size={25} color="#D0D0D0" />,
                 }}

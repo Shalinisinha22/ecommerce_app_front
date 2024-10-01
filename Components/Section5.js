@@ -73,7 +73,11 @@ const getProducts = async (pidArr) => {
         }).flat(); // Flatten the array if `res.data` contains arrays of products
 
         // console.log("Final Product Array:", productArr);
-        setProducts(productArr);
+        let filterProduct=[]
+        filterProduct= productArr.filter((item)=>item.category_name=="Franchise")
+        console.log("Final Product Array:", filterProduct);
+
+        setProducts(filterProduct);
 
     } catch (err) {
         console.log("Error fetching products:", err.message);
@@ -208,7 +212,10 @@ renderItem={({ item, index }) => (
                   <Text  allowFontScaling={false} style={{ textAlign: "center",textDecorationLine:"line-through",color:"gray",fontSize:10 }}>
                    Rs {item.mrp}
                   </Text>
-                  <Text  allowFontScaling={false} style={{ textAlign: "center",fontSize:15 }}>Rs {item.price}</Text>
+                  <View style={{flexDirection:"row",alignItems:"center",marginLeft:15}}>
+  <Text  allowFontScaling={false} style={{ fontSize:12 }}>RS {item.price} </Text>
+  <Text  allowFontScaling={false} style={{ fontSize:8,color:"#0a7736" }}>OFFER PRICE</Text>
+</View>
                 </View>
 
                

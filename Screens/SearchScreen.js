@@ -118,7 +118,7 @@ export default function SearchBar({ navigation }) {
     };
 
     return (
-        <View style={{ flex: 1, backgroundColor: "#fff" }}>
+        <View style={{ flex: 1, backgroundColor: "#fff",paddingTop:10 }}>
             <View style={styles.container}>
                 <View style={styles.searchBar__unclicked}>
                     <Feather name="search" size={20} color="black" style={{ marginLeft: 1 }} />
@@ -142,7 +142,7 @@ export default function SearchBar({ navigation }) {
                 </View>
                 <TouchableOpacity style={{ alignItems: "center", marginLeft: 10 }} onPress={() => navigation.navigate("cart")}>
                     <FontAwesome5 name="shopping-cart" size={28} color="#b6306d" />
-                    <Text allowFontScaling={false} style={{ color: "#0a7736", position: "absolute", top: -10, fontWeight: 700, fontSize: 15 }}>{cart.length}</Text>
+                    <Text allowFontScaling={false} style={{ color: "#0a7736", position: "absolute", top: -15, fontWeight: 700, fontSize: 15 }}>{cart.length}</Text>
                 </TouchableOpacity>
             </View>
 

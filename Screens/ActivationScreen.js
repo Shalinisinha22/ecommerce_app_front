@@ -48,7 +48,7 @@ const ActivationScreen = ({ navigation }) => {
         }
       })
 
-      console.log("32", res.data)
+      // console.log("32", res.data)
       if (res.data.length != 0) {
         setAllPlans(res.data)
       }

@@ -1,7 +1,8 @@
 const initialState = {
   cart: [],
   userInfo: null,
-  shop: ''
+  shop: '',
+  userImg:null
 
 };
 
@@ -15,6 +16,9 @@ const userReducer = (state = initialState, action) => {
 
     case 'SET_SHOP_TYPE':
       return { ...state, shop: action.payload };
+
+   case 'SET_USER_IMAGE':
+        return {...state,userImg:action.payload};
 
   
 

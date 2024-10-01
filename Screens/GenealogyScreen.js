@@ -57,7 +57,7 @@ const userInfo = useSelector((state) => (state.user.userInfo ? state.user.userIn
 
   useEffect(() => {
     getClients();
-  }, []);
+  }, [userRootnode]);
 
 
 const getClientName= async(name)=>{

@@ -9,12 +9,13 @@ import { useSelector, useDispatch } from 'react-redux';
 import { addToCart, removeFromCart, updateQty ,handleIncrement,handleDecrement} from '../redux/actions/userActions';
 import { imgUrl } from '../Components/Image/ImageUrl';
 const width = Dimensions.get('screen').width
+import Carousel from 'react-native-reanimated-carousel';
+import axios from 'axios';
+
+
 const ProductInnerScreen = ({navigation}) => {
 const route=useRoute()  
-
-
-
-    const [bannerImage, setBanner] = useState([])
+const [bannerImage, setBanner] = useState([])
 
   
 
@@ -24,26 +25,25 @@ const route=useRoute()
 
 
     const getImage = async () => {
-      console.log("43", route.params.item.product_image);
-      console.log("43", route.params.item.sale_image);
+
     
       let imgArr = [];
     
       // Check if `image` exists and has elements
       if (route.params.item.product_image && route.params.item.product_image.length > 0) {
         for (let i = 0; i < route.params.item.product_image.length; i++) {
-          console.log("image");
+          // console.log("image");
           imgArr.push({
             image: `${imgUrl}/eproduct/${route.params.item.product_image[i]}`,
             id: i
           });
-          console.log(imgArr);
+          // console.log(imgArr);
         }
       }
       // Check if `sale_image` exists and has elements
       else if (route.params.item.sale_image && route.params.item.sale_image.length > 0) {
         for (let i = 0; i < route.params.item.sale_image.length; i++) {
-          console.log("sale_image");
+          // console.log("sale_image");
           imgArr.push({
             image: `${imgUrl}/eproduct/${route.params.item.sale_image[i]}`,
             id: i
@@ -135,36 +135,68 @@ const route=useRoute()
 
             <View style={{width:width,alignItems:"center"}}>
             <Header navigation={navigation}></Header>
+            {/* <Section1 navigation={navigation}></Section1> */}
             </View>
 
             <ScrollView>
             <Text allowFontScaling={false}style={{marginLeft:15,marginTop:20}}>PRODUCT DETAILS</Text>
 
+            <View style={{marginTop:40}}>
+      <Carousel
+        loop
+        width={width}
+        height={width/2}
+        autoPlay
+        data={bannerImage}
+        scrollAnimationDuration={1000}
+        renderItem={({ item }) => (
+          <Image
+            style={{  resizeMode: "contain", width: width,height:"100%" }}
+            source={{ uri: item.image }}
+          />
+        )}
+      />
+    </View>
 
-
-<View style={{marginTop:20}}>
+{/* <View style={{marginTop:20}}>
 
   {console.log(bannerImage)}
 
 {
                 bannerImage.length !== 0 ?
-                    <FlatListSlider
+                    // <FlatListSlider
                  
-                        data={bannerImage}
-                         height={300}
-                        indicatorActiveColor={'#0a7736'}
-                        indicatorActiveWidth={30}
-                        onPress={(item) => handleImagePress(item)}
+                    //     data={bannerImage}
+                    //      height={400}
+                    //     indicatorActiveColor={'#0a7736'}
+                    //     indicatorActiveWidth={30}
+                    //     onPress={(item) => handleImagePress(item)}
                       
                       
-                    />
+                    // />
+                    <Carousel
+    loop
+    width={width}
+    height={width / 2}
+    autoPlay={true}
+    data={bannerImage}
+    scrollAnimationDuration={1000}
+    // onSnapToItem={(index) => console.log('current index:', index)}
+    renderItem={({ item }) => (
+      // console.log(item,"171")
+      
+           <Image style={{height:200,resizeMode:"contain",width:width}}     source={{ uri: item.image}}> </Image>
+    
+    )}
+/>
+
                     :
                     <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
                         <ActivityIndicator color={"#f08080"} size={"large"} />
                     </View>
             }
 
-</View>
+</View> */}
 <View style={{marginTop:15,paddingLeft:20,width:width*0.9}}>
 <Text allowFontScaling={false} style={{fontSize:16,fontWeight:700}}>{route.params.item.name}</Text>
 
@@ -190,7 +222,7 @@ const route=useRoute()
 
 
 
-<Section5 navigation={navigation}></Section5>
+{/* <Section5 navigation={navigation}></Section5> */}
             </ScrollView>
 
     

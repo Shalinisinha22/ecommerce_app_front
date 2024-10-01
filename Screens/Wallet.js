@@ -1,6 +1,7 @@
 import { View, Text,Dimensions,TouchableOpacity, ScrollView,StyleSheet,Pressable } from 'react-native'
 import React, {useState,useEffect} from 'react'
 import axios from 'axios'
+import { FontAwesome5 } from "@expo/vector-icons";
 import { useSelector } from 'react-redux'
 import { TextInput } from 'react-native-gesture-handler'
 import { useForm, Controller } from "react-hook-form";
@@ -24,9 +25,10 @@ const Wallet = () => {
       }}
     />
     <View style={{ alignItems: "center", marginTop: 10 }}>
-      <Text allowFontScaling={false} style={{ color: "#9e0059", fontSize: 15, letterSpacing: 2 }}>
+      <Text allowFontScaling={false} style={{ color: "#9e0059", fontSize: 18, letterSpacing: 2 }}>
       YOUR WALLET
       </Text>
+      <FontAwesome5 name="wallet" size={40} color="#0a7736" style={{marginTop:5}} />
     </View>
     <Text
       allowFontScaling={false}
@@ -42,7 +44,7 @@ const Wallet = () => {
       <View style={{ width: width, alignItems: "center", marginTop: 40 }}>
         <Text style={{ fontWeight: "bold", fontSize: 18, letterSpacing: 1.2 }}>Total Amount:</Text>
         <Text style={{ fontSize: 18, marginTop: 5 }}>Rs {user.mani_wallet?user.mani_wallet:"0"}</Text>
-        <Text
+        {/* <Text
           allowFontScaling={false}
           style={{
             height: 1,
@@ -51,7 +53,7 @@ const Wallet = () => {
             marginTop: 20,
             width: Dimensions.get('screen').width
           }}
-        />
+        /> */}
       </View>
 
    

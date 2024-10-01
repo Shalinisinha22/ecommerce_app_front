@@ -1,4 +1,4 @@
-import { View, Text,Dimensions,TouchableOpacity,ScrollView } from 'react-native'
+import { View, Text,Dimensions,TouchableOpacity,ScrollView,Image } from 'react-native'
 import React,{useState,useEffect} from 'react'
 import { useSelector } from 'react-redux'
 import { Entypo,Fontisto,AntDesign } from '@expo/vector-icons'
@@ -85,8 +85,9 @@ const MyDashboard = ({navigation}) => {
     {
         dashboard.map((item)=>(
 <View key={item.id} style={{width:300,alignItems:"center",backgroundColor:"#9e0059",paddingHorizontal:20,borderRadius:8,paddingTop:15,marginTop:10,elevation:2}}>
-  <View style={{width:220,alignItems:"flex-end"}}>
-    {item.icon}
+  <View style={{width:300,alignItems:"center"}}>
+    {/* {item.icon} */}
+    <Image style={{height:60,width:60,resizeMode:"contain"}} source={require("../assets/bank.jpeg")}></Image>
   </View>
     
                     <View >

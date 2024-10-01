@@ -1,6 +1,7 @@
 import React,{useState,useEffect} from 'react';
-import { View, Text, FlatList, Image, TouchableOpacity, StyleSheet, ScrollView,Alert } from 'react-native';
+import { View, Text, FlatList, Image, TouchableOpacity, StyleSheet, ScrollView,Alert,Dimensions } from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
+const width= Dimensions.get('screen').width
 import axios from 'axios';
 import { addToCart, removeFromCart, updateQty ,handleIncrement,handleDecrement} from '../redux/actions/userActions';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -146,7 +147,34 @@ setCarts(cart)
 
   return (
     <View style={styles.container}>
-      <Text allowFontScaling={false}  style={styles.title}>Your Cart</Text>
+      
+<Text
+          allowFontScaling={false}
+          style={{
+            height: 1,
+            borderColor: "whitesmoke",
+            borderWidth: 2,
+            marginTop: 15,
+            width: width,
+            marginBottom:10
+          }}
+        />
+        <View style={{width:width,alignItems:"center"}}>
+        <Text allowFontScaling={false}  style={styles.title}>Your Cart</Text>
+        </View>
+   
+
+      <Text
+          allowFontScaling={false}
+          style={{
+            height: 1,
+            borderColor: "whitesmoke",
+            borderWidth: 2,
+            marginTop: 10,
+            width: width,
+            marginBottom:25
+          }}
+        />
       <ScrollView>
       <FlatList
         data={cart}
@@ -174,13 +202,13 @@ export default CartPage;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 16,
-    backgroundColor: '#f5f5f5',
+    // padding: 16,
+    backgroundColor: '#fff',
   },
   title: {
     fontSize: 20,
     fontWeight: 'bold',
-    marginBottom: 16,
+    // marginBottom: 16,
     letterSpacing:2
   },
   cartItem: {
@@ -188,9 +216,11 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     padding: 16,
     backgroundColor: 'white',
+    margin:10,
     marginBottom: 16,
     borderRadius: 8,
     elevation: 2,
+
   },
   image: {
     width: 80,
@@ -227,9 +257,10 @@ const styles = StyleSheet.create({
     backgroundColor: '#155d27',
     paddingHorizontal: 12,
     paddingVertical: 10,
-    borderRadius: 8,
+    borderRadius: 15,
     alignItems: 'center',
     marginTop: 16,
+    margin:20
   },
   checkoutText: {
     color: 'white',

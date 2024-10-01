@@ -17,7 +17,7 @@ import {
 import { useForm, Controller } from "react-hook-form";
 import axios from "axios";
 import Toast from "react-native-toast-message";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import * as ImagePicker from "expo-image-picker";
 // import DateTimePicker from "@react-native-community/datetimepicker";
 import moment from 'moment-timezone';
@@ -36,6 +36,8 @@ const ProfileScreen = ({ navigation }) => {
 {id:1,
   type:"saving"
 }]
+
+const dispatch= useDispatch()
 
   const [countryCode, setCountryCode] = useState('');
   const [editableFullName, setEditableFullName] = useState("");
@@ -182,7 +184,7 @@ const ProfileScreen = ({ navigation }) => {
         },
       });
       const data = res.data;
-      console.log(data)
+      console.log(data,"187")
   
       // Create a mapping of district IDs to names
       const subDivisionMap = {};
@@ -361,7 +363,7 @@ const ProfileScreen = ({ navigation }) => {
 
 
   const onSubmit = async (data) => {
-    // console.log(data, editableDob, editableCountry, photo)
+    console.log(data, editableDob, editableCountry, photo)
 
     if (photo) {
       await uploadImage(photo)
@@ -371,7 +373,7 @@ const ProfileScreen = ({ navigation }) => {
 
     console.log("299",selectedStateId,selectedDistrictId,state,stateId,data.bankName)
 
-    const res = await axios.post("https://mahilamediplex.com/mediplex/updateProfile", {
+    const res = await axios.post("http://192.168.0.108:3002/mediplex/updateProfile", {
 
       first_name: data.fullname ? data.fullname : editableFullName,
       m_dob: dob ? moment(dob).format('YYYY-MM-DD') : moment(editableDob).format('YYYY-MM-DD'),
@@ -379,7 +381,7 @@ const ProfileScreen = ({ navigation }) => {
       m_address: data.address ? data.address : editableAddress,
       m_city: data.city ? data.city : editableCity,
       m_state: stateId ? stateId : selectedStateId,
-      district:districtValueId?districtValueId:selectedDistrictId.district_code ,
+      district:districtValueId?districtValueId:selectedDistrictId.district_code,
       sub_division: selectedSubDivisionId.sub_div_id || editableSubDivision,
       m_pin: data.pincode ? data.pincode : editablePincode,
       m_country: countryName ? countryName : editableCountry,
@@ -393,7 +395,7 @@ const ProfileScreen = ({ navigation }) => {
       nominee_mobile: data.nomineePhone ? data.nomineePhone : editableNomineeMobile,
       bank_ac_holder: data.accountholderName ? data.accountHolderName : editableAccountHolderName,
       bank_branch: data.branchName? data.branchName: editableBranchName,
-      bank_account_type: accountType? accountType: "",
+      bank_account_type: accountType? accountType: "current",
       bank_ifsc_code: data.ifsc?data.ifsc:editableIFSC,
       bank_account_number:data.bankAccountNumber?data.bankAccountNumber:editableBankAccountNumber,
       bank_name: data.bankName? data.bankName: editableBankName,
@@ -403,7 +405,14 @@ const ProfileScreen = ({ navigation }) => {
     });
 
     if (res.data.message === "Updation successful") {
-      getProfileData();
+     await getProfileData();
+    //  console.log(imageName,editableProfileImage)
+    }
+
+    if(editableProfileImage){
+      // console.log(imageName,editableProfileImage)
+      dispatch({ type: 'SET_USER_IMAGE', payload:editableProfileImage });
+
     }
 
     showToast();
@@ -436,6 +445,7 @@ const ProfileScreen = ({ navigation }) => {
        
     // Find the district ID based on the selected district name
     const selectedId =allSubDivision.find(division => division.name == itemValue);
+    console.log("subdivision",selectedId)
     setSelectedSubDivisionId(selectedId);
     setEditableSubDivision(itemValue);
   };
@@ -897,13 +907,15 @@ const ProfileScreen = ({ navigation }) => {
             <View style={styles.inputCont}>
               <Text allowFontScaling={false}>Upload Photo</Text>
               <View style={[styles.inputBoxCont, { backgroundColor: "white" }]}>
-                {editableProfileImage ? <Image source={{ uri: `https://mahilamediplex.com/upload/photo/${editableProfileImage}` }} style={{ width: 100, height: 100, borderRadius: 100, marginRight: 20 }} /> : photo && <Image source={{ uri: photo }} style={{ width: 100, height: 100, borderRadius: 100, marginRight: 20 }} />}
+                { photo ? <Image source={{ uri: photo }} style={{ width: 100, height: 100, borderRadius: 100, marginRight: 20 }} />:editableProfileImage && <Image source={{ uri: `https://mahilamediplex.com/upload/photo/${editableProfileImage}` }} style={{ width: 100, height: 100, borderRadius: 100, marginRight: 20 }} /> }
                 <Button title="Choose File" color="#9e0059" onPress={pickImage} />
               </View>
             </View>
 
             <View style={{ marginTop: 20 }}></View>
             <Text allowFontScaling={false}  style={{ letterSpacing: 2, fontSize: 18, fontWeight: 800 }}>NOMINEE DETAILS</Text>
+
+
 
             <View style={{ marginTop: 20 }}></View>
 

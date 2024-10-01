@@ -1,5 +1,5 @@
 import { View, Text,StyleSheet } from 'react-native'
-import React,{udeState,useEffect} from 'react'
+import React,{useState,useEffect} from 'react'
 import { Picker } from '@react-native-picker/picker';
 import { useSelector, useDispatch } from 'react-redux';
 import { Modal } from 'react-native';
@@ -14,7 +14,7 @@ const ShopModal = () => {
     useEffect(() => {
      
         const shop = useSelector(state => state.user.shop ? state.user.shop : null);
-
+console.log(shop)
       if (shop) {
         setModalVisible(false);
       }
