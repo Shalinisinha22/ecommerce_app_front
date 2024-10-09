@@ -19,21 +19,25 @@ const Section7 = ({navigation}) => {
   // console.log(lmcId,"lmcId")
 
 
-
   const getProductsId = async (shop) => {
+    const id= JSON.parse(await AsyncStorage.getItem('shopDetails'))
 
+
+
+
+    
     try {
         const res = await axios.get("https://mahilamediplex.com/mediplex/getProductId", {
-            params: { client_id: lmcId.client_id }
+            params: { client_id: lmcId? lmcId.client_id:id.client_id }
         });
   
 
         if(res.data.length==0){
-          getDefaultProducts()
+          getDefaultShop()
         }
         else{
           const pidArr = res.data.map(item => item.pid);
-          // console.log("PID Array:", pidArr);
+          console.log("PID Array:", pidArr);
 
           setProductId(pidArr);
           await getProducts(pidArr);
@@ -47,6 +51,7 @@ const Section7 = ({navigation}) => {
         console.log("Error fetching product IDs:", err.message);
     }
 }
+
 
 const getProducts = async (pidArr) => {
     try {
@@ -70,9 +75,7 @@ const getProducts = async (pidArr) => {
                 }
                 return item;
             });
-        }).flat(); // Flatten the array if `res.data` contains arrays of products
-
-        // console.log("Final Product Array:", productArr);
+        }).flat(); 
         let filterProduct=[]
         filterProduct= productArr.filter((item)=>item.category_name=="Ayurveda")
         console.log("Final Product Array:", filterProduct);

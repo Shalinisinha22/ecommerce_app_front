@@ -211,13 +211,13 @@ const [bannerImage, setBanner] = useState([])
 </View>
 
 {isItemInCart(route.params.item.pcode)? <View style={{flexDirection:"row",width:width,justifyContent:"space-around",marginTop:10}}>
-<TouchableOpacity onPress={()=>handleDecrementProduct(route.params.item.pcode)} style={{paddingVertical:2,borderWidth:1,borderColor:"#D0D0D0",paddingHorizontal:15}}><Text style={{fontSize:15}}>-</Text></TouchableOpacity>
+<TouchableOpacity onPress={()=>handleDecrementProduct(route.params.item.pcode)} style={{paddingVertical:2,borderWidth:1,borderColor:"#D0D0D0",paddingHorizontal:15}}><Text allowFontScaling={false} style={{fontSize:15}}>-</Text></TouchableOpacity>
 <TouchableOpacity style={{paddingVertical:2,borderWidth:1,borderColor:"#D0D0D0",paddingHorizontal:35}}><Text>{getQty(route.params.item.pcode)}</Text></TouchableOpacity>
 <TouchableOpacity onPress={()=>handleIncrementProduct(route.params.item.pcode)} style={{paddingVertical:2,borderWidth:1,borderColor:"#D0D0D0",paddingHorizontal:15}}><Text>+</Text></TouchableOpacity>
 </View>:    
 
 <View style={{width:width,alignItems:"center",marginTop:20,marginBottom:30}}>
-  <TouchableOpacity onPress={()=>handleCart(route.params.item)} style={{backgroundColor:"#0a7736",paddingVertical:15,paddingHorizontal:35,borderRadius:15}}><Text style={{letterSpacing:2,color:"#fff"}}><Entypo name="shopping-cart" size={20} color="white"/>  ADD TO CART</Text></TouchableOpacity>
+  <TouchableOpacity onPress={()=>handleCart(route.params.item)} style={{backgroundColor:"#0a7736",paddingVertical:15,paddingHorizontal:35,borderRadius:15}}><Text allowFontScaling={false} style={{letterSpacing:2,color:"#fff"}}><Entypo name="shopping-cart" size={20} color="white"/>  ADD TO CART</Text></TouchableOpacity>
 </View>}
 
 

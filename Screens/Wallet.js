@@ -1,4 +1,4 @@
-import { View, Text,Dimensions,TouchableOpacity, ScrollView,StyleSheet,Pressable } from 'react-native'
+import { View, Text,Dimensions,TouchableOpacity, ScrollView,StyleSheet,Pressable,RefreshControl } from 'react-native'
 import React, {useState,useEffect} from 'react'
 import axios from 'axios'
 import { FontAwesome5 } from "@expo/vector-icons";
@@ -12,9 +12,15 @@ const Wallet = () => {
   const user= useSelector((state)=>state.user.userInfo?state.user.userInfo:null)
  
 
+  const [refreshing, setRefreshing] = useState(false); 
+  const handleRefresh = async () => {
+     setRefreshing(true);
+     setRefreshing(false);
+   };
 
   return (
-    <View style={{ flex: 1, backgroundColor: "#fff" }}>
+    <View  style={{ flex: 1, backgroundColor: "#fff" }}>
+    
     <Text
       allowFontScaling={false}
       style={{
@@ -40,10 +46,12 @@ const Wallet = () => {
       }}
     />
 
-    <ScrollView>
+    <ScrollView refreshControl={
+      <RefreshControl refreshing={refreshing} onRefresh={handleRefresh} />
+    }>
       <View style={{ width: width, alignItems: "center", marginTop: 40 }}>
-        <Text style={{ fontWeight: "bold", fontSize: 18, letterSpacing: 1.2 }}>Total Amount:</Text>
-        <Text style={{ fontSize: 18, marginTop: 5 }}>Rs {user.mani_wallet?user.mani_wallet:"0"}</Text>
+        <Text allowFontScaling={false} style={{ fontWeight: "bold", fontSize: 18, letterSpacing: 1.2 }}>Total Amount:</Text>
+        <Text allowFontScaling={false} style={{ fontSize: 18, marginTop: 5 }}>Rs {user.mani_wallet?user.mani_wallet:"0"}</Text>
         {/* <Text
           allowFontScaling={false}
           style={{

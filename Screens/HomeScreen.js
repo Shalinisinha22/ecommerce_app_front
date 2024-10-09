@@ -1,4 +1,4 @@
-import { View, Text, Dimensions, Image, ImageBackground,  Animated} from 'react-native';
+import { View, Text, Dimensions, Image, ImageBackground,  Animated,RefreshControl} from 'react-native';
 import React, { useRef,useState,useEffect } from 'react';
 import Section1 from '../Components/Section1';
 import Section2 from '../Components/Section2';
@@ -30,7 +30,14 @@ const HomeScreen = ({ navigation }) => {
     extrapolate: 'clamp',
   });
 
+  const [refreshing, setRefreshing] = useState(false); 
 
+  const handleRefresh = async () => {
+     setRefreshing(true);
+  
+     setRefreshing(false);
+   };
+ 
 
 
   return (
@@ -38,6 +45,9 @@ const HomeScreen = ({ navigation }) => {
 <Header navigation={navigation}></Header>
 
       <Animated.ScrollView
+      refreshControl={
+        <RefreshControl refreshing={refreshing} onRefresh={handleRefresh} />
+      }
         onScroll={Animated.event(
           [{ nativeEvent: { contentOffset: { y: scrollY } } }],
           { useNativeDriver: false } // Keep false for height and opacity

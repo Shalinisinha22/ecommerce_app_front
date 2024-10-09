@@ -35,6 +35,7 @@ import DownlineListScreen from '../Screens/DownlineListScreen';
 import ActiveMemberScreen from '../Screens/ActiveMemberScreen';
 import MyDashboard from '../Screens/MyDashboard';
 import OrderHistory from '../Screens/OrderHistory';
+import { Swipeable } from 'react-native-gesture-handler';
 
 
 const Stack = createStackNavigator();
@@ -305,7 +306,7 @@ url: "",},
     return (
         <NavigationContainer>
             {userInfo ? (
-                <Drawer.Navigator screenOptions={{ drawerStyle: { backgroundColor: "#8ac926", width: 240, opacity: 0.95 } }} drawerContent={(props) => <DrawerContent {...props} />}>
+                <Drawer.Navigator screenOptions={{swipeEnabled: false, drawerStyle: { backgroundColor: "#8ac926", width: 240, opacity: 0.95 } }} drawerContent={(props) => <DrawerContent {...props} />}>
                     <Drawer.Screen name="Home" component={BottomNavigator} options={{ headerShown: false }} />
                 </Drawer.Navigator>
             ) : (

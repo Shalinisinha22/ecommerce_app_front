@@ -100,42 +100,61 @@ const KycScreen = () => {
       console.error('Upload failed:', error);
     }
   };
-
   const handleSubmit = async () => {
-    if (aadharFront) await uploadImage(aadharFront, aadharFrontName,aadharFrontDetail);
-    if (aadharBack) await uploadImage(aadharBack, aadharBackName,aadharBackDetail);
-    if (panCard) await uploadImage(panCard, panCardName,panCardDetail);
-    if (bankProof) await uploadImage(bankProof, bankProofName,bankProofDetail);
-
-    // Update profile after all images have been uploaded
-    updateProfile();
+    try {
+      if (aadharFront) await uploadImage(aadharFront, aadharFrontName, aadharFrontDetail);
+      if (aadharBack) await uploadImage(aadharBack, aadharBackName, aadharBackDetail);
+      if (panCard) await uploadImage(panCard, panCardName, panCardDetail);
+      if (bankProof) await uploadImage(bankProof, bankProofName, bankProofDetail);
+  
+      // After all images are uploaded, update profile
+      await updateProfile();
+    } catch (error) {
+      Toast.show({
+        type: "error",
+        text1: "Failed to update images.",
+      });
+      console.error("Image upload or profile update failed:", error);
+    }
   };
-
+  
   const updateProfile = async () => {
     try {
-      console.log('Updating profile with:', {
-        aadharFrontName,
-        aadharBackName,
-        panCardName,
-        bankProofName,
-      });
-
       const res = await axios.post("https://mahilamediplex.com/mediplex/updateKyc", {
-        aadhar_front: aadharFrontDetail? aadharFrontDetail :af,
-        aadhar_back: aadharBackDetail?aadharBackDetail:ab,
-        pan_card:panCardDetail?panCardDetail:pan,
-        bank_proof: bankProofDetail?bankProofDetail:bank,
+        aadhar_front: aadharFrontDetail ? aadharFrontDetail : af,
+        aadhar_back: aadharBackDetail ? aadharBackDetail : ab,
+        pan_card: panCardDetail ? panCardDetail : pan,
+        bank_proof: bankProofDetail ? bankProofDetail : bank,
         client_id: userInfo,
       });
 
-      if (res.data.message === "Updation successful") {
-        showToast();
+console.log("kyc",res.data)
+
+      if (res.data == "Profile updated successfully") {
+        // Show success toast when profile update is successful
+        showToast()
+        Toast.show({
+          type: "success",
+          text1: "Your KYC is updated.",
+        });
+        
+        // Fetch updated KYC data
         getKYCData();
+      } else {
+        Toast.show({
+          type: "error",
+          text1: "Failed to update KYC.",
+        });
       }
     } catch (err) {
-      console.log('Profile update failed:', err.message);
+      console.error("Profile update failed:", err.message);
+      Toast.show({
+        type: "error",
+        text1: "Profile update failed.",
+      });
     }
   };
+  
 
   const getKYCData = async () => {
     console.log(userInfo);
@@ -266,6 +285,11 @@ const KycScreen = () => {
               <Text allowFontScaling={false}style={{ color: "white", fontSize: 18 }}>Update Profile</Text>
             </TouchableOpacity>
           </View>
+
+          <Toast
+              position='bottom'
+              bottomOffset={80}
+            />
         </View>
       </ScrollView>
     </View>

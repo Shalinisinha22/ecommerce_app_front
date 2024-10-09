@@ -57,14 +57,14 @@ const OrderHistory = () => {
 
   const renderRow = ({ item, index }) => (
     <View style={styles.row}>
-      <Text style={styles.cell}>{item.cdate}</Text>
+      <Text allowFontScaling={false} style={styles.cell}>{item.cdate}</Text>
       <Image
         source={{ uri: `${imgUrl}/eproduct/${item.product_image[0]}` }} // Replace with your actual image URL
         style={styles.image}
       />
-      <Text style={styles.cell}>{item.name}</Text>
-      <Text style={styles.cell}>{item.qty}</Text>
-      <Text style={styles.cell}>RS {Math.round(item.price * item.qty)}</Text>
+      <Text allowFontScaling={false} style={styles.cell}>{item.name}</Text>
+      <Text allowFontScaling={false} style={styles.cell}>{item.qty}</Text>
+      <Text allowFontScaling={false} style={styles.cell}>RS {Math.round(item.price * item.qty)}</Text>
       {/* {item.status == 1 ?
               <Pressable style={[styles.statusButton, { backgroundColor: "green" }]}>
                 <Text allowFontScaling={false} style={styles.statusText}>Confirm</Text>

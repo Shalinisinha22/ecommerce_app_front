@@ -22,25 +22,36 @@ const Section2 = ({navigation}) => {
 
   const lmcId = useSelector((state)=>state.user.shop? state.user.shop:null)
   const [lmc_id,setLmc]= useState(lmcId)
+
+ 
+
+
  
   console.log(lmcId,"26lmcId")
 
 
 
   const getProductsId = async (shop) => {
+    const id= JSON.parse(await AsyncStorage.getItem('shopDetails'))
+    console.log(id.client_id,"36",lmcId)
 
+
+
+    
     try {
         const res = await axios.get("https://mahilamediplex.com/mediplex/getProductId", {
-            params: { client_id: lmcId.client_id }
+            params: { client_id: lmcId? lmcId.client_id:id.client_id }
         });
   
+
+        console.log("47",res.data)
 
         if(res.data.length==0){
           getDefaultShop()
         }
         else{
           const pidArr = res.data.map(item => item.pid);
-          // console.log("PID Array:", pidArr);
+          console.log("PID Array:", pidArr);
 
           setProductId(pidArr);
           await getProducts(pidArr);
@@ -81,7 +92,7 @@ const getProducts = async (pidArr) => {
 
         let filterProduct=[]
         filterProduct= productArr.filter((item)=>item.category_name=="Ethicals")
-        // console.log("Final Product Array:", filterProduct);
+        console.log("Final Product Array:", filterProduct);
 
         setProducts(filterProduct);
 
@@ -100,8 +111,9 @@ useEffect(()=>{
 
 const getDefaultShop = async()=>{
   try{
-    const res= await axios.get("http://mahilamediplex.com/mediplex/defaultShops")
+    const res= await axios.get("https://mahilamediplex.com/mediplex/defaultShops")
     const data= res.data
+    // console.log("105",data,data)
 
     if(data[0].client_id){
       getProductsId(data[0].client_id)

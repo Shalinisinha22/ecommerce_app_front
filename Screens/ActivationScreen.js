@@ -75,6 +75,10 @@ const ActivationScreen = ({ navigation }) => {
 
 
   const onSubmit = async () => {
+
+    if(!userId){
+      return;
+    }
     try {
       await updateMainWallet()
       await UpdateMainWalletLog()
@@ -250,6 +254,10 @@ const ActivationScreen = ({ navigation }) => {
             <Controller
               control={control}
               editable
+              rules={{
+                required: "User ID is required", // Required field with message
+              }            
+              }
               render={({ field: { onChange, onBlur, value } }) => (
                 <TextInput
                   allowFontScaling={false}

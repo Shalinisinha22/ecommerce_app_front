@@ -6,6 +6,7 @@ import { useRoute } from '@react-navigation/native'
 import { useSelector } from 'react-redux'
 import { TextInput } from 'react-native-gesture-handler'
 import * as ImagePicker from 'expo-image-picker';
+import Toast from 'react-native-toast-message'
 
 const width = Dimensions.get('screen').width
 
@@ -89,19 +90,24 @@ const PaymentScreen = () => {
       const handleSubmit = async (event) => {
      
         let errors = {};
+
+        console.log(transaction_id,"94",paymentSlip)
     
-        if (transaction_id === "" && paymentSlip === null) {
-            if (transaction_id === "") {
-                errors.transaction_id = "This field is required";
-            } else if (paymentSlip === null) {
-                errors.paymentSlip = "This field is required";
-            }
+        if (transaction_id == null || paymentSlip == null) {
+
+            return;
+            // if (transaction_id == null) {
+            //     errors.transaction_id = "This field is required";
+            // } else if (paymentSlip == null) {
+            //     errors.paymentSlip = "This field is required";
+            // }
     
-            setErr(errors);
-            setTimeout(() => {
-                setErr("");
-            }, 3000);
-        } else {
+            // setErr(errors);
+            // setTimeout(() => {
+            //     setErr("");
+            // }, 3000);
+        } 
+        else {
             await uploadImage(paymentSlip);
 
             console.log(transaction_id)
@@ -117,10 +123,13 @@ const PaymentScreen = () => {
                     txt_no: transaction_id,
                     package: route.params.package,
                 });
+                console.log(res.data)
     
                 if (res.data.message === "Data inserted successfully") {
-                    Alert.alert("Success");
+                    // Alert.alert("Success");
+                    showToast()
                 }
+
             } catch (err) {
                 console.log(err.message);
             }
@@ -128,7 +137,12 @@ const PaymentScreen = () => {
     };
     
     
-
+    const showToast = () => {
+        Toast.show({
+          type: "success",
+          text1: "Success!",
+        });
+      };
     
     return (
         <View style={{ flex: 1, backgroundColor: "#fff" }}>
@@ -285,6 +299,11 @@ fontWeight: "bold",
 </Text>
 </TouchableOpacity>
                 </View>
+
+                <Toast
+              position='bottom'
+              bottomOffset={80}
+            />
 
             </ScrollView>
 

@@ -18,6 +18,7 @@ const Header = ({navigation}) => {
   const cart = useSelector((state) => state.cart.cart);
 
   const user=useSelector((state)=>state.user.userInfo?state.user.userInfo:null)
+
   const userImg= useSelector((state)=> state.user.userImg?state.user.userImg:null)
 
 

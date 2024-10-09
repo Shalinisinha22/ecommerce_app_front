@@ -11,30 +11,38 @@ import { Picker } from '@react-native-picker/picker';
 import { useState,useEffect } from 'react';
 import { useDispatch } from 'react-redux';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-
+import Toast from 'react-native-toast-message';
 export default function App() {
 
-
+// AsyncStorage.clear()
 const [shopType,setShopType]= useState(null)
 const [modalVisible, setModalVisible] = useState(true);
 const [selectedShopType, setSelectedShopType] = useState('');
 const [selectedShopClientId,setselectedShopClientId]= useState('');
+
 const getShop= async()=>{
   const res = JSON.parse(await AsyncStorage.getItem('shopDetails'));
-  // console.log("Shop Details APP:", res);
-  if(res.client_id){
+  console.log("Shop Details APP:", res);
+
+ 
+
+  if(res){
+    console.log("res.cliient_id",res.client_id)
+
 
   }
   else{
     try{
-      const res= await axios.get("http://mahilamediplex.com/mediplex/defaultShops")
-      const data= res.data
+      const resp= await axios.get("https://mahilamediplex.com/mediplex/defaultShops")
+     
+      const data= resp.data
   
-      // console.log(data[0].client_id,"27 app")
+      console.log(data[0],"272 app")
+    
       await AsyncStorage.setItem("shopDetails",JSON.stringify(data[0]))
     }
     catch(err){
-      console.log(err.message)
+      console.log(err.message,"38")
     }
   }
 
@@ -43,7 +51,7 @@ const getShop= async()=>{
 }
 useEffect(()=>{
   getShop()
-},[])
+})
 
 
 const handleSelectShopType = async() => {
@@ -62,39 +70,10 @@ await AsyncStorage.setItem("shopDetails",JSON.stringify(selectedShopType))
 <Provider store={store}>
         <PersistGate persistor={persistor}>
         <View style={styles.container}>
+        <Toast ref={(ref) => Toast.setRef(ref)} />
 
 
-        {/* <Modal
-              animationType="slide"
-              transparent={true}
-              visible={modalVisible}
-              onRequestClose={() => {
-                // Prevent modal from closing without selection
-              }}>
-              <View style={styles.modalView}>
-              <Text style={styles.modalText}>Select Shop Type</Text>
-                <View style={{paddingHorizontal:20,borderWidth:1,borderColor:"#D0D0D0",borderRadius:20}}>
-                <Picker
-                  selectedValue={selectedShopType}
-                  style={{ height: 50, width: 250 }}
-                  onValueChange={(itemValue) => setSelectedShopType(itemValue)}>
-                  <Picker.Item label="Select a Shop Type" value="" />
-                  {shopType!=null && shopType.map((item,id)=>(<Picker.Item key={id}  label={item.business_name} value={item} />))}
-              
-
-                </Picker>
-                </View>
-<View style={{marginTop:20}}></View>
-
-<TouchableOpacity style={{paddingHorizontal:40, backgroundColor: "#f01c8b",
-    borderRadius: 10,paddingVertical:10}} onPress={handleSelectShopType} ><Text allowFontScaling={false} style={{color:"white",fontSize:15,letterSpacing:2}}>Confirm</Text></TouchableOpacity>
-            
-            
-              </View>
-            </Modal>
-  
-
-  {selectedShopType!="" && !modalVisible &&    <AppNavigator></AppNavigator> } */}
+     
    <AppNavigator></AppNavigator>
    
       <StatusBar

@@ -94,8 +94,8 @@ const WithdrawalScreen = () => {
 
     <ScrollView>
       <View style={{ width: width, alignItems: "center", marginTop: 40 }}>
-        <Text style={{ fontWeight: "bold", fontSize: 18, letterSpacing: 1.2 }}>Available Amount:</Text>
-        <Text style={{ fontSize: 18, marginTop: 5 }}>Rs {user.mani_wallet?user.mani_wallet:"0"}</Text>
+        <Text allowFontScaling={false} style={{ fontWeight: "bold", fontSize: 18, letterSpacing: 1.2 }}>Available Amount:</Text>
+        <Text allowFontScaling={false} style={{ fontSize: 18, marginTop: 5 }}>Rs {user.mani_wallet?user.mani_wallet:"0"}</Text>
 
         <View style={{ marginTop: 0, paddingTop: 20 }}>
           <View style={{
@@ -136,7 +136,7 @@ const WithdrawalScreen = () => {
             />
           </View>
         </View>
-        {error != "" && <Text style={{ color: "red" }}>{error}</Text>}
+        {error != "" && <Text allowFontScaling={false} style={{ color: "red" }}>{error}</Text>}
 
         <TouchableOpacity
           style={{

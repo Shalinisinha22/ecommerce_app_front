@@ -1,11 +1,10 @@
-import { View, Text, Dimensions, TouchableOpacity, FlatList, Pressable, Image, ScrollView, Modal, StyleSheet } from 'react-native';
-import React, { useState, useEffect, useCallback,useRef } from 'react';
+import { View, Text, Dimensions, TouchableOpacity, FlatList, Pressable, Image, ScrollView, Modal, StyleSheet,RefreshControl } from 'react-native';
+import React, { useState, useEffect } from 'react';
 import { Entypo } from '@expo/vector-icons';
 import Header from '../Components/Header';
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Picker } from '@react-native-picker/picker';
-import { useFocusEffect } from '@react-navigation/native';
 import { useSelector, useDispatch } from 'react-redux';
 import { addToCart, removeFromCart, updateQty ,handleIncrement,handleDecrement,setShopType} from '../redux/actions/userActions';
 import { imgUrl } from '../Components/Image/ImageUrl';
@@ -14,14 +13,19 @@ const width = Dimensions.get('screen').width;
 
 const ProductsScreen = ({ navigation }) => {
   const [shopType, setShopTypes] = useState(null);
-  const [modalVisible, setModalVisible] = useState(true);
   const [selectedShopType, setSelectedShopType] = useState('');
 const [isSelect,setSelect]= useState(false)
   const [shopId, setShopId] = useState('');
   const [products, setProducts] = useState([]);
   const [productId, setProductId] = useState([]);
+  const [refreshing, setRefreshing] = useState(false); // Pull to refresh state
+  const [shopName,setShopName]= useState("")
 
-  const modalRef = useRef(null); // Ref for the modal content
+
+ 
+  
+
+
 
   const getShop = async () => {
     try {
@@ -34,29 +38,33 @@ const [isSelect,setSelect]= useState(false)
     }
   };
 
-  const handleSelectShopType = async () => {
-    if (selectedShopType) {
-      console.log(selectedShopType)
-      setSelect(true)
-      setModalVisible(false);
-      await AsyncStorage.setItem("shopDetails", JSON.stringify(selectedShopType));
-      dispatch(setShopType(selectedShopType))
-      
+  const handleSelectShopType = async (item) => {
+    if (item) {
+      setSelectedShopType(item); // Directly set the item passed to the function
+      console.log(item, "selectedShopType");
+      setSelect(true);
+      setShopName(item.business_name);
+      await AsyncStorage.setItem("shopDetails", JSON.stringify(item));
+      await dispatch(setShopType(selectedShopType?selectedShopType:item));
+      getShopClientId(); // Proceed with fetching the client ID for the selected shop
     }
-    setModalVisible(false);
   };
-
-  const getShopClientId = async () => {
+  
+  
+  const getShopClientId = async (value,item) => {
+  
+       
+    
     try {
         const res = JSON.parse(await AsyncStorage.getItem('shopDetails'));
-        // console.log("Shop Details:", res);
+        console.log("Shop Details:", res.business_name);
         if (res?.client_id) {
             setShopId(res.client_id);
+            setShopName(res.business_name)
+
             await getProductsId(res.client_id);
-            // setModalVisible(false)
-        } else {
-        // setModalVisible(true)
-        }
+            
+        } 
     } catch (err) {
         console.log("Error fetching shop client ID:", err.message);
     }
@@ -101,9 +109,7 @@ const [isSelect,setSelect]= useState(false)
                 }
                 return item;
             });
-        }).flat(); // Flatten the array if res.data contains arrays of products
-
-        console.log("Final Product Array:", productArr);
+        }).flat();
         setProducts(productArr);
 
     } catch (err) {
@@ -111,27 +117,8 @@ const [isSelect,setSelect]= useState(false)
     }
   }
 
-  useEffect(() => {
-    getShopClientId();
-    getShop();
-  }, []);
 
-  useFocusEffect(
-    useCallback(() => {
-      setModalVisible(true);
-      setSelectedShopType('')
-    }, [])
-  );
 
-  // Handle clicks outside the modal
-  const handleBackdropPress = () => {
-    setModalVisible(false);
-  };
-
-  // Prevent the modal content from closing the modal when touched
-  const handleModalPress = (e) => {
-    e.stopPropagation();
-  };
 
 
   const [carts,setCarts]= useState([])
@@ -191,18 +178,90 @@ const [isSelect,setSelect]= useState(false)
    
     
  
+
+  //   useEffect(()=>{
+  //     getShopClientId()
+  //   })
+  
+  //   const fetchData = async () => {
+  //     await getShop(); // Assuming getShop doesn't need dependencies
+  //     await getShopClientId(); // Make sure this works based on its requirements
+  // };
+  //   useEffect(() => {
+  //     fetchData()
+  // }, [products,selectedShopType]);
+  
+  
+  useEffect(() => {
+      setCarts(cart); // Sync the local carts state with Redux cart state
+  }, [cart]);
   
 
-  useEffect(()=>{
-setCarts(cart)
-  },[cart])
-  
 
+  const handleRefresh = async () => {
+    setRefreshing(true);
+    setSelectedShopType('')
+    await getShopClientId(); // Reload data
+    setRefreshing(false);
+  };
+
+
+  useEffect(() => {
+    getShop()
+    getShopClientId()
+},[]);
+
+
+  
   return (
     <View style={{ flex: 1, backgroundColor: "#fff", paddingTop: 0 }}>
+      
       <Header navigation={navigation} />
-      <ScrollView>
-        <View style={{ width: '100%', marginTop: 20, paddingBottom: 10, alignItems: "center" }}>
+
+      <ScrollView
+        refreshControl={
+          <RefreshControl refreshing={refreshing} onRefresh={handleRefresh} />
+        }
+      >
+        <View style={{ width: width, alignItems: "center" }}>
+          <Text allowFontScaling={false} style={styles.modalText}>
+            Select Shop name
+          </Text>
+          <View
+            style={{
+              paddingHorizontal: 20,
+              borderWidth: 1,
+              borderColor: "#D0D0D0",
+              borderRadius: 20,
+            }}
+          >
+            <Picker
+              selectedValue={selectedShopType} // Bind selectedShopType to the picker
+              style={{ height: 50, width: width * 0.7 }} // Adjust width dynamically
+              onValueChange={async (itemValue) => {
+                await setSelectedShopType(itemValue);
+                await handleSelectShopType(itemValue);
+              }}
+            >
+              <Picker.Item label="Select a shop name" value="" />
+              {shopType != null &&
+                shopType.map((item, id) => (
+                  <Picker.Item key={id} label={item.business_name} value={item} />
+                ))}
+            </Picker>
+          </View>
+        </View>
+  
+        <View
+          style={{
+            width: "100%",
+            marginTop: 20,
+            paddingBottom: 10,
+            alignItems: "center",
+          }}
+        >
+
+          {shopName && <Text allowFontScaling={false} style={{fontWeight:"bold",letterSpacing:1,marginBottom:10}}>{shopName}</Text>}
           {products.length !== 0 ? (
             <FlatList
               data={products}
@@ -211,7 +270,7 @@ setCarts(cart)
               columnWrapperStyle={{
                 flex: 1,
                 justifyContent: "space-around",
-                gap:5
+                gap: 5,
               }}
               renderItem={({ item }) => (
                 <Pressable
@@ -226,34 +285,96 @@ setCarts(cart)
                     marginTop: 10,
                     width: width * 0.45, // Adjusting width to be responsive
                   }}
-                  onPress={() => navigation.navigate("productInner", { item: item })}
+                  onPress={() => {
+                     // Close the modal before navigating
+                     console.log("Navigating to productInner with item:", item,navigation);
+
+                    navigation.navigate("productInner", { item: item });
+                  }}
                 >
                   <Image
-                    style={{ width: '100%', height: 100, resizeMode: "contain" }}
-                    source={{ uri: `${imgUrl}/eproduct/${item.sale_image && item.sale_image.length > 0 ? item.sale_image[0] : item.product_image[0]}` }}
+                    style={{ width: "100%", height: 100, resizeMode: "contain" }}
+                    source={{
+                      uri: `${imgUrl}/eproduct/${
+                        item.sale_image && item.sale_image.length > 0
+                          ? item.sale_image[0]
+                          : item.product_image[0]
+                      }`,
+                    }}
                   />
                   <View style={{ marginTop: 8 }}>
-                    <Text allowFontScaling={false} style={{ fontWeight: '600', textAlign: "center", fontSize: 10 }} numberOfLines={2}>
+                    <Text
+                      allowFontScaling={false}
+                      style={{ fontWeight: "600", textAlign: "center", fontSize: 10 }}
+                      numberOfLines={2}
+                    >
                       {item.name}
                     </Text>
-                    <Text allowFontScaling={false} style={{ fontWeight: '300', fontSize: 10, textAlign: "center" }}>
+                    <Text
+                      allowFontScaling={false}
+                      style={{ fontWeight: "300", fontSize: 10, textAlign: "center" }}
+                    >
                       Manufactured by {item.brand_name}
                     </Text>
-                    <Text allowFontScaling={false} style={{ textAlign: "center", textDecorationLine: "line-through", color: "gray", fontSize: 10 }}>
+                    <Text
+                      allowFontScaling={false}
+                      style={{
+                        textAlign: "center",
+                        textDecorationLine: "line-through",
+                        color: "gray",
+                        fontSize: 10,
+                      }}
+                    >
                       Rs {item.mrp}
                     </Text>
-                    <Text allowFontScaling={false} style={{ textAlign: "center", fontSize: 15 }}>Rs {item.price}</Text>
+                    <Text
+                      allowFontScaling={false}
+                      style={{ textAlign: "center", fontSize: 15 }}
+                    >
+                      Rs {item.price}
+                    </Text>
                   </View>
-
+  
                   {isItemInCart(item.pcode) ? (
-                    <View style={{ flexDirection: "row", justifyContent: "space-between", marginTop: 10 }}>
-                      <TouchableOpacity onPress={() => handleDecrementProduct(item.pcode)} style={{ paddingVertical: 2, borderWidth: 1, borderColor: "#D0D0D0", paddingHorizontal: 10 }}>
-                        <Text allowFontScaling={false} style={{ fontSize: 15 }}>-</Text>
+                    <View
+                      style={{
+                        flexDirection: "row",
+                        justifyContent: "space-between",
+                        marginTop: 10,
+                      }}
+                    >
+                      <TouchableOpacity
+                        onPress={() => handleDecrementProduct(item.pcode)}
+                        style={{
+                          paddingVertical: 2,
+                          borderWidth: 1,
+                          borderColor: "#D0D0D0",
+                          paddingHorizontal: 10,
+                        }}
+                      >
+                        <Text allowFontScaling={false} style={{ fontSize: 15 }}>
+                          -
+                        </Text>
                       </TouchableOpacity>
-                      <TouchableOpacity style={{ paddingVertical: 2, borderWidth: 1, borderColor: "#D0D0D0", paddingHorizontal: 35 }}>
+                      <TouchableOpacity
+                        style={{
+                          paddingVertical: 2,
+                          borderWidth: 1,
+                          borderColor: "#D0D0D0",
+                          paddingHorizontal: 35,
+                        }}
+                      >
                         <Text allowFontScaling={false}>{getQty(item.pcode)}</Text>
                       </TouchableOpacity>
-                      <TouchableOpacity onPress={() => handleIncrementProduct(item.pcode)} style={{ paddingVertical: 2, borderWidth: 1, borderColor: "#D0D0D0", paddingHorizontal: 15 }}>
+                      <TouchableOpacity
+                        onPress={() => handleIncrementProduct(item.pcode)}
+                        style={{
+                          paddingVertical: 2,
+                          borderWidth: 1,
+                          borderColor: "#D0D0D0",
+                          paddingHorizontal: 15,
+                        }}
+                      >
                         <Text allowFontScaling={false}>+</Text>
                       </TouchableOpacity>
                     </View>
@@ -268,10 +389,11 @@ setCarts(cart)
                         alignItems: "center",
                         borderRadius: 6,
                         marginTop: 5,
-                        width: '100%', // Ensuring button spans full width
+                        width: "100%", // Ensuring button spans full width
                       }}
                     >
-                      <Text allowFontScaling={false}
+                      <Text
+                        allowFontScaling={false}
                         style={{
                           textAlign: "center",
                           color: "white",
@@ -279,7 +401,8 @@ setCarts(cart)
                           fontWeight: "bold",
                         }}
                       >
-                        <Entypo name="shopping-cart" size={20} color="white" /> ADD TO CART
+                        <Entypo name="shopping-cart" size={20} color="white" />{" "}
+                        ADD TO CART
                       </Text>
                     </TouchableOpacity>
                   )}
@@ -287,55 +410,23 @@ setCarts(cart)
               )}
             />
           ) : (
-            <Text allowFontScaling={false} style={{ textAlign: "center", letterSpacing: 2, marginTop: 20, marginBottom: 20 }}>No Products</Text>
+            <Text
+              allowFontScaling={false}
+              style={{
+                textAlign: "center",
+                letterSpacing: 2,
+                marginTop: 20,
+                marginBottom: 20,
+              }}
+            >
+              No Products
+            </Text>
           )}
         </View>
-
-
       </ScrollView>
-
-
-<View>
-  {selectedShopType==""  && <Modal
-          animationType="slide"
-          transparent={true}
-          visible={modalVisible}
-          onRequestClose={() => setModalVisible(false)}
-        >
-          <Pressable
-            style={styles.backdrop}
-            onPress={handleBackdropPress}
-          >
-            <Pressable
-              ref={modalRef}
-              style={styles.modalView}
-              onPress={handleModalPress}
-            >
-              <Text allowFontScaling={false} style={styles.modalText}>Select Shop name</Text>
-              <View style={{ paddingHorizontal: 20, borderWidth: 1, borderColor: "#D0D0D0", borderRadius: 20 }}>
-                <Picker
-                  selectedValue={selectedShopType}
-                  style={{ height: 50, width: width * 0.7 }} // Adjust width dynamically
-                  onValueChange={(itemValue) => setSelectedShopType(itemValue)}
-                >
-                  <Picker.Item label="Select a shop name" value="" />
-                  {shopType != null && shopType.map((item, id) => (
-                    <Picker.Item key={id} label={item.business_name} value={item} />
-                  ))}
-                </Picker>
-              </View>
-              <View style={{ marginTop: 20 }}></View>
-              <TouchableOpacity style={{ paddingHorizontal: 40, backgroundColor: "#f01c8b", borderRadius: 10, paddingVertical: 10 }} onPress={()=>handleSelectShopType()}>
-                <Text allowFontScaling={false} style={{ color: "white", fontSize: 15, letterSpacing: 2 }}>Close</Text>
-              </TouchableOpacity>
-            </Pressable>
-          </Pressable>
-        </Modal> }
-
-</View>
-      
-   
-    </View>);
+    </View>
+  );
+  
 };
 
 const styles = StyleSheet.create({
@@ -358,7 +449,9 @@ const styles = StyleSheet.create({
   modalText: {
     marginBottom: 15,
     textAlign: 'center',
-    fontSize: 18,
+    fontSize: 15,
+    fontWeight:"bold",
+    letterSpacing:1
   },
   backdrop: {
     ...StyleSheet.absoluteFillObject,

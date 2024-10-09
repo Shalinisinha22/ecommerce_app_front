@@ -96,7 +96,7 @@ const MyDashboard = ({navigation}) => {
                     </View>
                     <View style={{marginTop:20,width:300,alignItems:"center",backgroundColor:"#0a7736",paddingVertical:12,borderWidth:1,borderColor:"#fff"}}>
                         <TouchableOpacity 
-                        onPress={()=>{item.url ? navigation.navigate(item.url):null}} style={{alignItems:"center"}}><Text style={{color:"#fff",letterSpacing:1}}>More Info   <Entypo name="arrow-with-circle-right" size={20} color="white" /></Text></TouchableOpacity>
+                        onPress={()=>{item.url ? navigation.navigate(item.url):null}} style={{alignItems:"center"}}><Text allowFontScaling={false} style={{color:"#fff",letterSpacing:1}}>More Info   <Entypo name="arrow-with-circle-right" size={20} color="white" /></Text></TouchableOpacity>
                     </View>
                 </View>
         ))

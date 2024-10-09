@@ -16,6 +16,7 @@ const FundRequestScreen = () => {
     const userInfo = useSelector((state) => state.user.userInfo ? state.user.userInfo : null)
    
 
+    console.log(userInfo)
     const [bankDetails, setBankDetails] = useState(null)
     const [transaction_id, setTransaction_id] = useState("")
     const [paymentSlip, setPaymentSlip] = useState(null)

@@ -133,7 +133,7 @@ fontWeight: "bold",
 
             
 :
-<Text style={{textAlign:"center",letterSpacing:2,marginTop:20,marginBottom:20}}>No Products</Text>}
+<Text allowFontScaling={false} style={{textAlign:"center",letterSpacing:2,marginTop:20,marginBottom:20}}>No Products</Text>}
 
   
     </View>

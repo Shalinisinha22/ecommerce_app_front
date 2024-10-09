@@ -35,21 +35,26 @@ const Section4 = ({navigation}) => {
 
 
 
-  const getProductsId = async (shop) => {
 
+  const getProductsId = async (shop) => {
+    const id= JSON.parse(await AsyncStorage.getItem('shopDetails'))
+    // console.log(id.client_id,"36",lmcId)
+
+
+
+    
     try {
         const res = await axios.get("https://mahilamediplex.com/mediplex/getProductId", {
-            params: { client_id: lmcId.client_id }
+            params: { client_id: lmcId? lmcId.client_id:id.client_id }
         });
-        
   
 
         if(res.data.length==0){
-          getDefaultProducts()
+          getDefaultShop()
         }
         else{
           const pidArr = res.data.map(item => item.pid);
-          // console.log("PID Array:", pidArr);
+          console.log("PID Array:", pidArr);
 
           setProductId(pidArr);
           await getProducts(pidArr);
@@ -300,7 +305,7 @@ renderItem={({ item, index }) => (
 
 
 {isItemInCart(item.pcode)? <View style={{flexDirection:"row",width:200,justifyContent:"space-between",marginTop:10}}>
-<TouchableOpacity onPress={()=>handleDecrementProduct(item.pcode)} style={{paddingVertical:2,borderWidth:1,borderColor:"#D0D0D0",paddingHorizontal:15}}><Text style={{fontSize:15}}>-</Text></TouchableOpacity>
+<TouchableOpacity onPress={()=>handleDecrementProduct(item.pcode)} style={{paddingVertical:2,borderWidth:1,borderColor:"#D0D0D0",paddingHorizontal:15}}><Text allowFontScaling={false} style={{fontSize:15}}>-</Text></TouchableOpacity>
 <TouchableOpacity style={{paddingVertical:2,borderWidth:1,borderColor:"#D0D0D0",paddingHorizontal:35}}><Text>{getQty(item.pcode)}</Text></TouchableOpacity>
 <TouchableOpacity onPress={()=>handleIncrementProduct(item.pcode)} style={{paddingVertical:2,borderWidth:1,borderColor:"#D0D0D0",paddingHorizontal:15}}><Text>+</Text></TouchableOpacity>
 </View>:     <TouchableOpacity

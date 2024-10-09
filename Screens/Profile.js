@@ -373,7 +373,7 @@ const dispatch= useDispatch()
 
     console.log("299",selectedStateId,selectedDistrictId,state,stateId,data.bankName)
 
-    const res = await axios.post("http://192.168.0.108:3002/mediplex/updateProfile", {
+    const res = await axios.post("https://mahilamediplex.com/mediplex/updateProfile", {
 
       first_name: data.fullname ? data.fullname : editableFullName,
       m_dob: dob ? moment(dob).format('YYYY-MM-DD') : moment(editableDob).format('YYYY-MM-DD'),
@@ -482,7 +482,7 @@ const dispatch= useDispatch()
       />
 
             <View style={{ marginTop: 20 }}></View>
-            <Text style={{ letterSpacing: 2, fontSize: 18, fontWeight: 800 }}>PERSONAL DETAILS</Text>
+            <Text allowFontScaling={false} style={{ letterSpacing: 2, fontSize: 18, fontWeight: 800 }}>PERSONAL DETAILS</Text>
 
             <View style={{ marginTop: 20 }}></View>
 
@@ -547,41 +547,81 @@ const dispatch= useDispatch()
             </View>
 
             <View style={styles.inputCont}>
-              <Text allowFontScaling={false}>Mobile Number</Text>
-              <View style={styles.inputBoxCont}>
-                <Controller
-                  control={control}
-                  render={({ field: { onChange, onBlur, value } }) => (
-                    <TextInput
-                      allowFontScaling={false}
-                      cursorColor={"white"}
-                      keyboardType="numeric"
-                      autoFocus={true}
-                      style={{
-                        color: "white",
-                        marginVertical: 5,
-                        width: 300,
-                        fontSize: 16,
-                      }}
-                      onBlur={onBlur}
-                      onChangeText={(value) => {
-                        setEditableMobile(value)
-                        onChange(value)
-                      }}
-                      value={editableMobile}
-                    />
-                  )}
-                  name="phone"
-                />
-              </View>
-            </View>
+  <Text allowFontScaling={false}>Mobile Number</Text>
+  <View style={styles.inputBoxCont}>
+    <Controller
+      control={control}
+      rules={{
+        // required: "Mobile number is required", // Required field with message
+        minLength: {
+          value: 10,
+          message: "Mobile number must be 10 digits long",
+        },
+        maxLength: {
+          value: 10,
+          message: "Mobile number must be 10 digits long",
+        },
+        pattern: {
+          value: /^[0-9]+$/, // Only allow numbers
+          message: "Mobile number can only contain digits",
+        },
+      }}
+      render={({ field: { onChange, onBlur, value }, fieldState: { error } }) => (
+        <>
+          <TextInput
+            allowFontScaling={false}
+            cursorColor={"white"}
+            keyboardType="numeric"
+            maxLength={10} // Restrict input length to 10 digits
+            style={{
+              color: "white",
+              marginVertical: 5,
+              width: 300,
+              fontSize: 16,
+            }}
+            onBlur={onBlur}
+            onChangeText={(value) => {
+              if (/^\d*$/.test(value)) { // Only allow numeric input
+                setEditableMobile(value);
+                onChange(value);
+              }
+            }}
+            value={editableMobile}
+          />
+          {/* Display error message */}
+        </>
+      )}
+      name="phone"
+    />
+  </View>
+  {errors.phone && <Text allowFontScaling={false} style={styles.errorText}>{errors.phone.message}</Text>}
+
+</View>
+
+  
+
 
             <View style={styles.inputCont}>
               <Text allowFontScaling={false}>WhatsApp</Text>
               <View style={styles.inputBoxCont}>
                 <Controller
                   control={control}
-                  render={({ field: { onChange, onBlur, value } }) => (
+                  rules={{
+                    // required: "Mobile number is required", // Required field with message
+                    minLength: {
+                      value: 10,
+                      message: "Mobile number must be 10 digits long",
+                    },
+                    maxLength: {
+                      value: 10,
+                      message: "Mobile number must be 10 digits long",
+                    },
+                    pattern: {
+                      value: /^[0-9]+$/, // Only allow numbers
+                      message: "Mobile number can only contain digits",
+                    },
+                  }}
+                  render={({ field: { onChange, onBlur, value }, fieldState: { error } }) => (
                     <TextInput
                       allowFontScaling={false}
                       cursorColor={"white"}
@@ -604,6 +644,9 @@ const dispatch= useDispatch()
                   name="whatsapp"
                 />
               </View>
+
+              {errors.whatsapp && <Text  allowFontScaling={false} style={styles.errorText}>{errors.whatsapp.message}</Text>}
+
             </View>
 
             <View style={styles.inputCont}>
@@ -611,7 +654,14 @@ const dispatch= useDispatch()
               <View style={styles.inputBoxCont}>
                 <Controller
                   control={control}
-                  render={({ field: { onChange, onBlur, value } }) => (
+                  rules={{
+                    // required: "Email is required", // Email is required
+                    pattern: {
+                      value: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/, // Regular expression for email validation
+                      message: "Enter a valid email address", // Custom error message
+                    },
+                  }}
+                  render={({ field: { onChange, onBlur, value }, fieldState: { error } }) => (
                     <TextInput
                       allowFontScaling={false}
                       cursorColor={"white"}
@@ -633,6 +683,8 @@ const dispatch= useDispatch()
                   name="email"
                 />
               </View>
+              {errors.email && <Text allowFontScaling={false} style={styles.errorText}>{errors.email.message}</Text>}
+
             </View>
 
 
@@ -771,7 +823,7 @@ const dispatch= useDispatch()
 
   {allSubDivision.length!=0 && 
   <View style={styles.inputCont}>
-    <Text style={{ fontWeight: '500', fontSize: 16 }}>SubDivision</Text>
+    <Text allowFontScaling={false} style={{ fontWeight: '500', fontSize: 16 }}>SubDivision</Text>
     <RNPickerSelect
       style={{
         inputIOS: { backgroundColor: "#17842b", color: "white", fontSize: 18 },
@@ -1007,7 +1059,23 @@ const dispatch= useDispatch()
               <View style={styles.inputBoxCont}>
                 <Controller
                   control={control}
-                  render={({ field: { onChange, onBlur, value } }) => (
+                  rules={{
+                    // required: "Mobile number is required", // Required field with message
+                    minLength: {
+                      value: 10,
+                      message: "Mobile number must be 10 digits long",
+                    },
+                    maxLength: {
+                      value: 10,
+                      message: "Mobile number must be 10 digits long",
+                    },
+                    pattern: {
+                      value: /^[0-9]+$/, // Only allow numbers
+                      message: "Mobile number can only contain digits",
+                    },
+                  }}
+
+                  render={({ field: { onChange, onBlur, value }, fieldState: { error } }) => (
                     <TextInput
                       allowFontScaling={false}
                       cursorColor={"white"}
@@ -1030,6 +1098,8 @@ const dispatch= useDispatch()
                   name="nomineePhone"
                 />
               </View>
+              {errors.nomineePhone && <Text allowFontScaling={false} style={styles.errorText}>{errors.nomineePhone.message}</Text>}
+
             </View>
 
 
@@ -1200,8 +1270,18 @@ const dispatch= useDispatch()
               <View style={styles.inputBoxCont}>
                 <Controller
                   control={control}
+                  rules={{
+                    // required: "Mobile number is required", // Required field with message
+                  
+                    maxLength: {
+                      value: 10,
+                      message: "Enter valid Pan number",
+                    },
+                  
+                  }}
+
                   editable
-                  render={({ field: { onChange, onBlur, value } }) => (
+                  render={({ field: { onChange, onBlur, value }, fieldState: { error } }) => (
                     <TextInput
                       allowFontScaling={false}
                       cursorColor={"white"}
@@ -1223,6 +1303,9 @@ const dispatch= useDispatch()
                   name="pan"
                 />
               </View>
+
+              {errors.pan && <Text allowFontScaling={false} style={styles.errorText}>{errors.pan.message}</Text>}
+
             </View>
 
 
@@ -1324,6 +1407,9 @@ const styles = StyleSheet.create({
     marginBottom: 2,
     paddingLeft: 10,
   },
+  errorText:{
+   color:"red"
+  }
 })
 
 
