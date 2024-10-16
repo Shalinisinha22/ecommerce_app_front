@@ -30,7 +30,19 @@ const [bannerImage, setBanner] = useState([])
       let imgArr = [];
     
       // Check if `image` exists and has elements
-      if (route.params.item.product_image && route.params.item.product_image.length > 0) {
+
+      if (route.params.item.sale_image && route.params.item.sale_image.length > 0) {
+        for (let i = 0; i < route.params.item.sale_image.length; i++) {
+          // console.log("sale_image");
+          imgArr.push({
+            image: `${imgUrl}/eproduct/${route.params.item.sale_image[i]}`,
+            id: i
+          });
+        }
+      }
+     
+      // Check if `sale_image` exists and has elements
+      else  if (route.params.item.product_image && route.params.item.product_image.length > 0) {
         for (let i = 0; i < route.params.item.product_image.length; i++) {
           // console.log("image");
           imgArr.push({
@@ -39,18 +51,6 @@ const [bannerImage, setBanner] = useState([])
           });
           // console.log(imgArr);
         }
-      }
-      // Check if `sale_image` exists and has elements
-      else if (route.params.item.sale_image && route.params.item.sale_image.length > 0) {
-        for (let i = 0; i < route.params.item.sale_image.length; i++) {
-          // console.log("sale_image");
-          imgArr.push({
-            image: `${imgUrl}/eproduct/${route.params.item.sale_image[i]}`,
-            id: i
-          });
-        }
-      } else {
-        console.log("nothing");
       }
     
       setBanner(imgArr);

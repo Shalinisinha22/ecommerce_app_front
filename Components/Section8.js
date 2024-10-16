@@ -13,7 +13,7 @@ const Section8 = ({navigation}) => {
   const [productId, setProductId] = useState([]);
 
 
-  const lmcId = useSelector((state)=>state.user.shop? state.user.shop:null)
+  const lmcId = useSelector((state)=>state.shop.shop? state.shop.shop:null)
   const [lmc_id,setLmc]= useState(lmcId)
  
   // console.log(lmcId,"lmcId")
@@ -73,7 +73,7 @@ const getProducts = async (pidArr) => {
             });
         }).flat();
         let filterProduct=[]
-        filterProduct= productArr.filter((item)=>item.category_name=="Foods")
+        filterProduct= productArr.filter((item)=>item.category_name=="FOODS SUPLIMENT")
         console.log("Final Product Array:", filterProduct);
 
         setProducts(filterProduct);
@@ -208,13 +208,15 @@ renderItem={({ item, index }) => (
                 <View style={{margin:5}}>
                   <Text allowFontScaling={false} style={{fontWeight:600}}>{item.name}</Text>
                   <Text allowFontScaling={false} style={{fontWeight:300,fontSize:10,textAlign:"center"}}>{item.brand_name}</Text>
-                  <Text  allowFontScaling={false} style={{ textAlign: "center",textDecorationLine:"line-through",color:"gray",fontSize:10 }}>
+                  <Text  allowFontScaling={false} style={{ textAlign: "center",textDecorationLine:"line-through",color:"#800000",fontSize:10 }}>
                    Rs {item.mrp}
                   </Text>
-                  <View style={{flexDirection:"row",alignItems:"center",marginLeft:15}}>
+                  <Text  allowFontScaling={false} style={{ fontSize:12,fontWeight: "bold",textAlign: "center",color: "#228B22" }}>RS {item.price} </Text>
+
+                  {/* <View style={{flexDirection:"row",alignItems:"center",marginLeft:15}}>
   <Text  allowFontScaling={false} style={{ fontSize:12 }}>RS {item.price} </Text>
   <Text  allowFontScaling={false} style={{ fontSize:8,color:"#0a7736" }}>OFFER PRICE</Text>
-</View>
+</View> */}
                 </View>
 
                
@@ -228,7 +230,7 @@ renderItem={({ item, index }) => (
 
 onPress={()=>handleCart(item,item.pcode)}
   style={{
-    backgroundColor: "#9e0059",
+    backgroundColor: "#228B22",
     paddingVertical: 10,
      paddingHorizontal:20,
     justifyContent: "center",

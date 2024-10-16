@@ -51,7 +51,7 @@ const getShop= async()=>{
 }
 useEffect(()=>{
   getShop()
-})
+},[])
 
 
 const handleSelectShopType = async() => {

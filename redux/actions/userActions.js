@@ -13,9 +13,10 @@ export const clearUserInfo = () => ({
   type: 'CLEAR_USER_INFO',
 });
 
-export const setShopType = (shopType) => ({
+// actions/shopActions.js
+export const setShopType = (shop) => ({
   type: 'SET_SHOP_TYPE',
-  payload: shopType,
+  payload: shop,
 });
 
 export const addToCart = ({ item, id }) => {

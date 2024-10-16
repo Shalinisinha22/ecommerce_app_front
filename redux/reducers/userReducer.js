@@ -14,8 +14,6 @@ const userReducer = (state = initialState, action) => {
     case 'CLEAR_USER_INFO':
       return { ...state, userInfo: null };
 
-    case 'SET_SHOP_TYPE':
-      return { ...state, shop: action.payload };
 
    case 'SET_USER_IMAGE':
         return {...state,userImg:action.payload};

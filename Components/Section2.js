@@ -1,4 +1,4 @@
-import { View, Text, ScrollView,Pressable, Image, FlatList,Dimensions, TouchableOpacity } from 'react-native'
+import { View, Text, ScrollView,Pressable, Image, FlatList,Dimensions, TouchableOpacity,StyleSheet } from 'react-native'
 import React from 'react'
 import { Foundation,Entypo } from '@expo/vector-icons';
 import axios from 'axios';
@@ -20,7 +20,7 @@ const Section2 = ({navigation}) => {
   const [productId, setProductId] = useState([]);
 
 
-  const lmcId = useSelector((state)=>state.user.shop? state.user.shop:null)
+  const lmcId = useSelector((state)=>state.shop.shop? state.shop.shop:null)
   const [lmc_id,setLmc]= useState(lmcId)
 
  
@@ -249,13 +249,14 @@ renderItem={({ item, index }) => (
                 <View style={{margin:5}}>
                   <Text allowFontScaling={false} style={{fontWeight:600}}>{item.name}</Text>
                   <Text allowFontScaling={false} style={{fontWeight:300,fontSize:10,textAlign:"center"}}>{item.brand_name}</Text>
-                  <Text  allowFontScaling={false} style={{ textAlign: "center",textDecorationLine:"line-through",color:"gray",fontSize:10 }}>
+                  <Text  allowFontScaling={false} style={{ textAlign: "center",textDecorationLine:"line-through",color:"#800000",fontSize:10 }}>
                    Rs {item.mrp}
                   </Text>
-<View style={{flexDirection:"row",alignItems:"center",marginLeft:15}}>
-  <Text  allowFontScaling={false} style={{ fontSize:12 }}>RS {item.price} </Text>
-  <Text  allowFontScaling={false} style={{ fontSize:8,color:"#0a7736" }}>OFFER PRICE</Text>
-</View>
+                  <Text  allowFontScaling={false} style={{ fontSize:12,fontWeight: "bold",textAlign: "center",color: "#228B22" }}>RS {item.price} </Text>
+
+{/* <View style={{flexDirection:"row",alignItems:"center",marginLeft:15}}> */}
+  {/* <Text  allowFontScaling={false} style={{ fontSize:8,color:"#0a7736" }}>OFFER PRICE</Text> */}
+{/* </View> */}
                   {/* <Text  allowFontScaling={false} style={{ textAlign: "center",fontSize:15 }}>Rs {item.price}</Text> */}
                 </View>
 
@@ -271,7 +272,7 @@ renderItem={({ item, index }) => (
 
 onPress={()=>handleCart(item,item.pcode)}
   style={{
-    backgroundColor: "#9e0059",
+    backgroundColor: "#228B22",
     paddingVertical: 10,
      paddingHorizontal:20,
     justifyContent: "center",
@@ -304,5 +305,74 @@ onPress={()=>handleCart(item,item.pcode)}
     </View>
   )
 }
+
+const styles = StyleSheet.create({
+ 
+ 
+  productImage: {
+    width: "100%",
+    height: 100,
+    resizeMode: "contain",
+  },
+  productName: {
+    fontWeight: "600",
+    textAlign: "center",
+    fontSize: 10,
+  },
+  productBrand: {
+    fontWeight: "300",
+    fontSize: 10,
+    textAlign: "center",
+  },
+  productMRP: {
+    fontSize: 10,
+    fontWeight: "bold",
+    textDecorationLine: "line-through",
+    textAlign: "center",
+    color: "#800000",
+  },
+  productPrice: {
+    fontSize: 10,
+    fontWeight: "bold",
+    textAlign: "center",
+    color: "#228B22",
+  },
+  cartButtons: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    borderRadius: 10,
+    borderWidth: 2,
+    paddingVertical: 5,
+    marginTop: 10,
+    width: "100%",
+  },
+  qtyButton: {
+    paddingHorizontal: 5,
+  },
+  qtyCount: {
+    paddingHorizontal: 5,
+  },
+  addToCartButton: {
+    borderRadius: 10,
+    backgroundColor: "#228B22",
+    paddingVertical: 5,
+    paddingHorizontal: 10,
+    marginTop: 10,
+    width: "100%",
+    alignItems: "center",
+  },
+  addToCartText: {
+    fontWeight: "600",
+    color: "white",
+    textAlign: "center",
+  },
+  noProductsText: {
+    textAlign: "center",
+    fontSize: 14,
+    color: "#800000",
+    marginTop: 20,
+  }
+});
 
 export default Section2
