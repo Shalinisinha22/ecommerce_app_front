@@ -39,6 +39,7 @@ import { Swipeable } from 'react-native-gesture-handler';
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import AllProducts from '../Screens/AllProducts';
+import AllOrders from '../Screens/AllOrders';
 
 const Stack = createStackNavigator();
 const Drawer = createDrawerNavigator();
@@ -147,7 +148,7 @@ export const AppNavigator = () => {
         dropdownIcon: <AntDesign name="down" size={15} color="white" />,
 url: "",},
 
-{ id: 6, name: "Order History", url: "orderHistory" },
+// { id: 6, name: "Order History", url: "orderHistory" },
 
  { id: 7, name: "Logout", url: "" }
 
@@ -192,6 +193,7 @@ url: "",},
                 <Stack.Screen name="dashboard" component={MyDashboard} options={{ headerShown: false }} />
                 <Stack.Screen name="orderHistory" component={OrderHistory} options={{ headerShown: false }} />
                 <Stack.Screen name="AllProducts" component={AllProducts} options={{ headerShown: false }} />
+                <Stack.Screen name="AllOrders" component={AllOrders} options={{ headerShown: false }} />
 
             </Stack.Navigator>
         );
@@ -252,15 +254,15 @@ url: "",},
     };
 
     const BottomNavigator = () => (
-        <Tab.Navigator screenOptions={{ tabBarStyle: { elevation: 15, height: 65, borderTopWidth: 1, backgroundColor: "#9e0059", opacity: 1, paddingBottom: 5 } }}>
+        <Tab.Navigator screenOptions={{ tabBarStyle: { elevation: 15, height: 60, borderTopWidth: 1, backgroundColor: "#9e0059", opacity: 1, paddingBottom: 0 } }}>
             <Tab.Screen
                 name="Home"
                 component={StackNavigator}
                 options={{
-                    tabBarLabel: "Home",
+                    tabBarLabel: "",
                     tabBarLabelStyle: { color: "#fff", fontSize: 10, fontWeight: 800, letterSpacing: 2 },
                     headerShown: false,
-                    tabBarIcon: ({ focused }) => focused ? <Entypo name="home" size={25} color="#fff" /> : <AntDesign name="home" size={25} color="#D0D0D0" />,
+                    tabBarIcon: ({ focused }) => focused ? <Entypo name="home" size={30} color="#fff" /> : <AntDesign name="home" size={25} color="#D0D0D0" />,
                     tabBarAllowFontScaling:false,
 
                 }}
@@ -269,37 +271,27 @@ url: "",},
                 name="wallet"
                 component={Wallet}
                 options={{
-                    tabBarLabel: "Wallet",
+                    tabBarLabel: "",
                     tabBarLabelStyle: { color: "#fff", fontSize: 10, fontWeight: 600, letterSpacing: 2 },
                     headerShown: false,
-                    tabBarIcon: ({ focused }) => focused ? <Entypo name="wallet" size={25} color="#fff" /> : <Entypo name="wallet" size={25} color="#D0D0D0" />,
+                    tabBarIcon: ({ focused }) => focused ? <Entypo name="wallet" size={30} color="#fff" /> : <Entypo name="wallet" size={25} color="#D0D0D0" />,
                     tabBarAllowFontScaling:false,
 
                 }}
             />
-            <Tab.Screen
-                name="withdrawal"
-                component={WithdrawalScreen}
-                options={{
-                    tabBarLabel: "Withdrawal",
-                    tabBarLabelStyle: { color: "#fff", fontSize: 10, fontWeight: 600, letterSpacing: 2 },
-                    headerShown: false,
-                    tabBarIcon: ({ focused }) => focused ? <MaterialCommunityIcons name="piggy-bank" size={25} color="#fff" /> : <MaterialCommunityIcons name="piggy-bank-outline" size={25} color="#D0D0D0" />,
-                    tabBarAllowFontScaling:false,
 
-                }}
-            />
-   <Tab.Screen
+
+<Tab.Screen
         name="shop"
         component={ProductsScreen}
         options={({ route }) => ({
-          tabBarLabel: "Shop Now",
+          tabBarLabel: "",
           tabBarLabelStyle: { color: "#fff", fontSize: 10, fontWeight: '600', letterSpacing: 2 },
           headerShown: false,
           tabBarAllowFontScaling:false,
           tabBarIcon: ({ focused }) =>
             focused ? (
-              <Ionicons name="bag-add" size={25} color="#fff" />
+              <Ionicons name="bag-add" size={30} color="#fff" />
             ) : (
               <Ionicons name="bag-add" size={25} color="#D0D0D0" />
             ),
@@ -314,9 +306,34 @@ url: "",},
           },
         })}
       />
-   
-
             <Tab.Screen
+                name="withdrawal"
+                component={WithdrawalScreen}
+                options={{
+                    tabBarLabel: "",
+                    tabBarLabelStyle: { color: "#fff", fontSize: 10, fontWeight: 600, letterSpacing: 2 },
+                    headerShown: false,
+                    tabBarIcon: ({ focused }) => focused ? <MaterialCommunityIcons name="piggy-bank" size={30} color="#fff" /> : <MaterialCommunityIcons name="piggy-bank-outline" size={25} color="#D0D0D0" />,
+                    tabBarAllowFontScaling:false,
+
+                }}
+            />
+ 
+   
+   <Tab.Screen
+                name="AllOrders"
+                component={AllOrders}
+                options={{
+
+                    tabBarAllowFontScaling:false,
+                    tabBarLabel: "",
+                    tabBarLabelStyle: { color: "#fff", fontSize: 10, fontWeight: 600, letterSpacing: 2 },
+                    headerShown: false,
+                    tabBarIcon: ({ focused }) => focused ? <MaterialIcons name="work-history"  size={30} color="#fff" /> : <MaterialIcons name="work-history" size={25} color="#D0D0D0" />,
+                }}
+            />
+
+            {/* <Tab.Screen
                 name="profile"
                 component={Profile}
                 options={{
@@ -327,7 +344,7 @@ url: "",},
                     headerShown: false,
                     tabBarIcon: ({ focused }) => focused ? <FontAwesome name="user-circle-o" size={25} color="#fff" /> : <FontAwesome name="user-circle-o" size={25} color="#D0D0D0" />,
                 }}
-            />
+            /> */}
 
 
 

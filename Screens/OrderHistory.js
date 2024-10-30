@@ -4,44 +4,44 @@ import axios from 'axios';
 import { Entypo } from '@expo/vector-icons';
 import { useSelector } from 'react-redux';
 import { imgUrl } from '../Components/Image/ImageUrl';
+import { useRoute } from '@react-navigation/native';
 import moment from 'moment-timezone';
-
 const width = Dimensions.get('screen').width;
 
 const OrderHistory = ({ navigation }) => {
+  const route = useRoute();
   const [orders, setOrders] = useState([]);
+  const userInfo = useSelector((state) => state.user.userInfo || null);
 
-  const userInfo = useSelector((state) => state.user.userInfo ? state.user.userInfo : null);
-
-  const getOrders = async () => { 
+  const getOrders = async () => {
     try {
-        const res = await axios.get("https://mahilamediplex.com/mediplex/ordersHistory", {
-            params: {
-                uid: userInfo.client_id
-            }
-        });
-
-        let newArr = res.data;
-
-        // If newArr is an array, parse the `image` field for each item
-        if (Array.isArray(newArr)) {
-            newArr = newArr.map(item => ({
-                ...item,
-                image: item.image ? JSON.parse(item.image) : null
-            }));
-        } else if (newArr && newArr.image) {
-            // If it's an object, parse the `image` field directly
-            newArr.image = JSON.parse(newArr.image);
+      const res = await axios.get("https://mahilamediplex.com/mediplex/ordersHistory", {
+        params: {
+          uid: userInfo.client_id,
+          order_id: route.params?.order_id
         }
-        // newArr = newArr.sort((a, b) => new Date(b.date) - new Date(a.date));
-
-        
-        setOrders(newArr);
+      });
+  
+      // Access the orderDetails array from the response data
+      let newArr = res.data.orderDetails;
+  
+      // If orderDetails is an array, parse the `image` field for each item
+      if (Array.isArray(newArr)) {
+        newArr = newArr.map(item => ({
+          ...item,
+          image: item.image ? JSON.parse(item.image) : null
+        }));
+      } else {
+        // If orderDetails is not an array, set it as an empty array
+        newArr = [];
+      }
+  
+      setOrders(newArr);
     } catch (err) {
-        console.log(err.message);
+      console.error("Error fetching orders:", err.message);
     }
-};
-
+  };
+  
 
   useEffect(() => {
     getOrders();
@@ -49,65 +49,58 @@ const OrderHistory = ({ navigation }) => {
 
   const renderRow = ({ item }) => (
     <View style={styles.row}>
-      <Text allowFontScaling={false} style={styles.cell}>{moment(item.order_date).format('YYYY-MM-DD')}</Text>
-      <View style={{alignItems:"center"}}>
-        <Image
-          source={{ uri: `${imgUrl}/eproduct/${item.image[0]}` }} // Replace with your actual image URL
-          style={styles.image}
-        />
-        <Text allowFontScaling={false} style={[styles.cell,{fontSize:6}]}>{item.name}</Text>
+
+<Text allowFontScaling={false} style={styles.cell}>{moment(route.params?.order_date).format('YYYY-MM-DD')}</Text>
+
+      <View style={styles.imageContainer}>
+        {item.image && item.image[0] ? (
+          <Image
+            source={{ uri: `${imgUrl}/eproduct/${item.image[0]}` }}
+            style={styles.image}
+          />
+        ) : (
+          <Text style={styles.noImageText}>No Image</Text>
+        )}
+        <Text numberOfLines={4} style={styles.productName}>{item.name}</Text>
       </View>
-      <Text allowFontScaling={false} style={styles.cell}>{item.qty}</Text>
-      <Text allowFontScaling={false} style={styles.cell}>RS {item.user_payable_amount}</Text>
-      <Text allowFontScaling={false} style={styles.cell}>{item.payment_method}</Text>
-      {/* <Text allowFontScaling={false} style={styles.cell}>{moment(item.delivery_new_date).format('YYYY-MM-DD')}</Text> */}
+      <Text style={styles.cell}>{route.params?.shop}</Text>
+
+      <Text style={styles.cell}>{item.qty}</Text>
+      <Text style={styles.cell}>RS {item.offer_price * item.qty}</Text>
+      {/* Add more fields as needed */}
     </View>
   );
 
   return (
-    <View style={{ flex: 1, backgroundColor: "white" }}>
-      <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-around" }}>
-        <TouchableOpacity onPress={() => navigation.openDrawer()} style={{ paddingTop: 0, paddingLeft: 0 }}>
+    <View style={styles.container}>
+      <View style={styles.header}>
+        <TouchableOpacity onPress={() => navigation.openDrawer()} style={styles.menuButton}>
           <Entypo name="menu" size={40} color="#155d27" />
         </TouchableOpacity>
-        <View style={{ alignItems: "center", marginTop: 15 }}>
-          <Text allowFontScaling={false} style={{ color: "gray", fontSize: 15, letterSpacing: 2 }}>
-            ORDER HISTORY
-          </Text>
+        <View style={styles.headerTextContainer}>
+          <Text style={styles.headerText}>ORDER HISTORY</Text>
         </View>
         <Pressable onPress={() => navigation.navigate("Home")}>
-          <Image source={require("../assets/logo.png")} style={{ height: 80, width: 80, resizeMode: "contain" }} />
+          <Image source={require("../assets/logo.png")} style={styles.logo} />
         </Pressable>
       </View>
-      <Text
-        allowFontScaling={false}
-        style={{
-          height: 1,
-          borderColor: "whitesmoke",
-          borderWidth: 2,
-          marginTop: 8,
-          width: width
-        }}
-      />
-
-      <View style={styles.container}>
+      <View style={styles.divider} />
+      <View style={styles.tableContainer}>
         <View style={styles.headerRow}>
-          <Text allowFontScaling={false} style={styles.headerCell}>Order Date</Text>
-          <Text allowFontScaling={false} style={styles.headerCell}>Name</Text>
-          <Text allowFontScaling={false} style={styles.headerCell}>Qty</Text>
-          <Text allowFontScaling={false} style={styles.headerCell}>Amt</Text>
-          <Text allowFontScaling={false} style={styles.headerCell}>Payment Type</Text>
-          {/* <Text allowFontScaling={false} style={styles.headerCell}>Delivery Date</Text> */}
+        <Text style={styles.headerCell}>Date</Text>
+          <Text style={styles.headerCell}>Name</Text>
+          <Text style={styles.headerCell}>Shop</Text>
+          <Text style={styles.headerCell}>Qty</Text>
+          <Text style={styles.headerCell}>Amt</Text>
         </View>
-
-        {orders.length != 0 ? (
+        {orders.length ? (
           <FlatList
             data={orders}
             renderItem={renderRow}
             keyExtractor={(item, index) => index.toString()}
           />
         ) : (
-          <Text style={{ textAlign: "center", marginTop: 10 }}>No Orders</Text>
+          <Text style={styles.noOrdersText}>No Orders</Text>
         )}
       </View>
     </View>
@@ -116,6 +109,40 @@ const OrderHistory = ({ navigation }) => {
 
 const styles = StyleSheet.create({
   container: {
+    flex: 1,
+    backgroundColor: "white"
+  },
+  header: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-around"
+  },
+  menuButton: {
+    paddingTop: 0,
+    paddingLeft: 0
+  },
+  headerTextContainer: {
+    alignItems: "center",
+    marginTop: 15
+  },
+  headerText: {
+    color: "gray",
+    fontSize: 15,
+    letterSpacing: 2
+  },
+  logo: {
+    height: 80,
+    width: 80,
+    resizeMode: "contain"
+  },
+  divider: {
+    height: 1,
+    borderColor: "whitesmoke",
+    borderWidth: 2,
+    marginTop: 8,
+    width: width
+  },
+  tableContainer: {
     flex: 1,
     padding: 10
   },
@@ -136,31 +163,34 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     borderColor: '#ddd'
   },
-  cell: {
-    flex: 1,
-    textAlign: 'center',
-    fontSize: 8,
-    letterSpacing: 0.5
+  imageContainer: {
+    alignItems: "center"
   },
   image: {
     width: 30,
     height: 30,
     resizeMode: "contain"
   },
-  statusButton: {
-    paddingVertical: 5,
-    paddingHorizontal: 18,
-    borderRadius: 5,
-    marginHorizontal: 2,
-    justifyContent: "center",
-    marginTop: 8,
-    marginBottom: 8
+  noImageText: {
+    fontSize: 6,
+    color: "gray"
   },
-  statusText: {
-    color: 'white',
+  productName: {
+    fontSize: 8,
+    // width: 60,
     textAlign: 'center',
-    fontSize: 8
+    
   },
+  cell: {
+    flex: 1,
+    textAlign: 'center',
+    fontSize: 8,
+    letterSpacing: 0.5
+  },
+  noOrdersText: {
+    textAlign: "center",
+    marginTop: 10
+  }
 });
 
 export default OrderHistory;

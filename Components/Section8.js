@@ -161,9 +161,9 @@ setCarts(cart)
 
     <View style={{flexDirection:"row",alignItems:"center",marginTop:10,justifyContent:"space-between"}}>
     <View style={{flexDirection:"row",alignItems:"center"}}>
-    <Text  allowFontScaling={false} style={{ padding: 10, fontSize: 14, fontWeight: "bold",letterSpacing:3,color:"#b6306d" }}>
+    <Text  allowFontScaling={false} style={{ padding: 10, fontSize: 12, fontWeight: "bold",letterSpacing:3,color:"#b6306d" }}>
               FOODS SUPLIMENT</Text>
-              <Text  allowFontScaling={false} style={{ fontSize: 16, fontWeight: "700",letterSpacing:3,color:"" }}>PRODUCTS
+              <Text  allowFontScaling={false} style={{ fontSize: 15, fontWeight: "700",letterSpacing:3,color:"" }}>PRODUCTS
               </Text>
               </View>
               {products.length!=0 && <TouchableOpacity onPress={()=>navigation.navigate("AllProducts",{products:products})}  style={{paddingRight:20}}>
