@@ -1,4 +1,4 @@
-import { View, Text,Dimensions,TouchableOpacity,ScrollView,Image } from 'react-native'
+import { View, Text,Dimensions,TouchableOpacity,ScrollView,Image,Pressable } from 'react-native'
 import React,{useState,useEffect} from 'react'
 import { useSelector } from 'react-redux'
 import { Entypo,Fontisto,AntDesign } from '@expo/vector-icons'
@@ -53,7 +53,7 @@ const MyDashboard = ({navigation}) => {
   return (
     <View style={{flex:1,backgroundColor:"#fff"}}>
 
-         <Text
+         {/* <Text
           allowFontScaling={false}
           style={{
             height: 1,
@@ -62,22 +62,32 @@ const MyDashboard = ({navigation}) => {
             marginTop: 15,
             width: width
           }}
-        />
-  <View style={{ alignItems: "center", marginTop: 15 }}>
+        /> */}
+        <View style={{flexDirection:"row",alignItems:"center",justifyContent:"space-around"}}>
+        <TouchableOpacity onPress={() => navigation.openDrawer()} style={{ paddingTop: 0,paddingLeft:0}}>
+<Entypo name="menu" size={40} color="#155d27" />
+   
+            </TouchableOpacity>
+  <View style={{ alignItems: "center", marginTop: 0, marginLeft:0 }}>
           <Text allowFontScaling={false} style={{ color: "gray", fontSize: 15, letterSpacing: 2 }}>
      MY DASHBOARD
           </Text>
         </View>
-        <Text
+        <Pressable onPress={()=>navigation.navigate("Home")}>
+              <Image source={require("../assets/logo.png")} style={{ height: 80, width: 80, resizeMode: "contain" }} />
+            </Pressable> 
+                    </View>
+       
+        {/* <Text
           allowFontScaling={false}
           style={{
             height: 1,
             borderColor: "whitesmoke",
             borderWidth: 2,
-            marginTop: 15,
+            marginTop: 12,
             width: width
           }}
-        />
+        /> */}
 
         <ScrollView>
             <View style={{width:width,alignItems:"center",marginTop:20}}>

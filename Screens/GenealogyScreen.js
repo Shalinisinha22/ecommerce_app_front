@@ -1,10 +1,11 @@
-import { View, Text, ScrollView,TextInput,TouchableOpacity, Dimensions } from 'react-native';
+import { View, Text, ScrollView,TextInput,TouchableOpacity, Dimensions,Image,Pressable } from 'react-native';
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import Node from '../Components/Node'; // Corrected import
 import { useSelector } from 'react-redux';
 import { useForm, Controller } from "react-hook-form";
-const GenealogyScreen = () => {
+import { Entypo } from '@expo/vector-icons';
+const GenealogyScreen = ({navigation}) => {
   const [clients, setClients] = useState(null); // Changed to `null` to handle the initial state
 const [rootNode,setRootNode]=useState(null)
 const [rootNodeName,setRootNodeName]=useState("")
@@ -95,7 +96,7 @@ const onSubmit= async()=>{
     <View style={{ flex: 1,backgroundColor:"#fff" }}>
      <View style={{}}>
        
-       <Text
+       {/* <Text
      allowFontScaling={false}
      style={{
        height: 1,
@@ -103,19 +104,30 @@ const onSubmit= async()=>{
        borderWidth: 2,
        marginBottm:10
      }}
-   />
+   /> */}
+
+<View style={{flexDirection:"row",alignItems:"center",justifyContent:"space-around"}}>
+        <TouchableOpacity onPress={() => navigation.openDrawer()} style={{ paddingTop: 0,paddingLeft:0}}>
+<Entypo name="menu" size={40} color="#155d27" />
+   
+            </TouchableOpacity>
+
          <View style={{ alignItems: "center", marginTop: 10 }}>
-           <Text allowFontScaling={false} style={{ color: "#9e0059", fontSize: 15,letterSpacing:2 }}>
+           <Text allowFontScaling={false} style={{ color: "#9e0059", fontSize: 18,letterSpacing:2 }}>
         MY TREE
            </Text>
          </View>
+         <Pressable onPress={()=>navigation.navigate("Home")}>
+              <Image source={require("../assets/logo.png")} style={{ height: 80, width: 80, resizeMode: "contain" }} />
+            </Pressable> 
+                     </View>
          <Text
      allowFontScaling={false}
      style={{
        height: 1,
        borderColor: "whitesmoke",
        borderWidth: 2,
-       marginTop: 15,
+       marginTop: 10,
      }}
    />
  

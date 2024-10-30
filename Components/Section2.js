@@ -18,8 +18,6 @@ const Section2 = ({navigation}) => {
   const [shopId, setShopId] = useState('');
   const [products, setProducts] = useState([]);
   const [productId, setProductId] = useState([]);
-
-
   const lmcId = useSelector((state)=>state.shop.shop? state.shop.shop:null)
   const [lmc_id,setLmc]= useState(lmcId)
 
@@ -31,7 +29,7 @@ const Section2 = ({navigation}) => {
 
 
 
-  const getProductsId = async (shop) => {
+const getProductsId = async (shop) => {
     const id= JSON.parse(await AsyncStorage.getItem('shopDetails'))
     console.log(id.client_id,"36",lmcId)
 
@@ -51,7 +49,7 @@ const Section2 = ({navigation}) => {
         }
         else{
           const pidArr = res.data.map(item => item.pid);
-          console.log("PID Array:", pidArr);
+          // console.log("PID Array:", pidArr);
 
           setProductId(pidArr);
           await getProducts(pidArr);
@@ -92,7 +90,7 @@ const getProducts = async (pidArr) => {
 
         let filterProduct=[]
         filterProduct= productArr.filter((item)=>item.category_name=="Ethicals")
-        console.log("Final Product Array:", filterProduct);
+        // console.log("Final Product Array:", filterProduct);
 
         setProducts(filterProduct);
 
@@ -194,7 +192,7 @@ setCarts(cart)
   
 
   return (
-    <View style={{marginTop:0,backgroundColor:"#fff",borderTopLeftRadius:20,borderTopRightRadius:20,borderTopWidth:5,borderColor:"#fff"}}>
+   <View style={{marginTop:0,backgroundColor:"#fff",borderTopLeftRadius:20,borderTopRightRadius:20,borderTopWidth:5,borderColor:"#fff"}}>
 
 <View style={{flexDirection:"row",alignItems:"center",marginTop:10,justifyContent:"space-between"}}>
 <View style={{flexDirection:"row",alignItems:"center"}}>
@@ -204,14 +202,22 @@ setCarts(cart)
           </Text>
 </View>
 
+{products.length!=0 && <TouchableOpacity onPress={()=>navigation.navigate("AllProducts",{products:products})}  style={{paddingRight:20}}>
+  <Text style={{fontWeight:"bold"}}>VIEW ALL</Text>
+</TouchableOpacity> }
+
+
 {/* <TouchableOpacity onPress={()=>navigation.navigate("products")} style={{paddingHorizontal:15,paddingVertical:5,marginRight:8}}><Text allowFontScaling={false} style={{fontSize:12,textDecorationLine:"underline",color:"#8ac926",fontWeight:700}}>VIEW ALL</Text></TouchableOpacity> */}
 </View>
 
 {/* {console.log("products",products)} */}
 
 
-{products.length!=0? <FlatList   
+<View style={{paddingRight:10}}>
+{products.length!=0? 
+<FlatList   
 data={products}
+// numColumns={2}
 horizontal
 showsHorizontalScrollIndicator={false}
       
@@ -228,7 +234,8 @@ renderItem={({ item, index }) => (
                   padding:12,
                   borderColor:"#D0D0D0",
                   marginLeft:10,
-                  marginTop:10
+                  marginTop:10,
+                  
                   
                 }}
                 onPress={()=>navigation.navigate("productInner",{item:item})}
@@ -301,6 +308,9 @@ onPress={()=>handleCart(item,item.pcode)}
             
 </FlatList>:
 <Text allowFontScaling={false} style={{textAlign:"center",letterSpacing:2,marginTop:20,marginBottom:20}}>No Products</Text>}
+
+</View>
+
 
     </View>
   )

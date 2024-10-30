@@ -1,4 +1,4 @@
-import { View, Text, Dimensions, TouchableOpacity, FlatList, Pressable, Image, ScrollView, RefreshControl, StyleSheet } from 'react-native';
+import { View, Text, Dimensions, TouchableOpacity, FlatList, Pressable, Image, ScrollView, RefreshControl, StyleSheet,BackHandler } from 'react-native';
 import React, { useState, useEffect } from 'react';
 import { Entypo } from '@expo/vector-icons';
 import Header from '../Components/Header';
@@ -116,6 +116,12 @@ const ProductsScreen = ({ navigation }) => {
     dispatch(handleDecrement({ id }));
   };
 
+
+
+
+ 
+
+
   const handleRefresh = async () => {
     setRefreshing(true);
     await getShop();
@@ -134,6 +140,32 @@ const ProductsScreen = ({ navigation }) => {
       }
   
   }, [shopId,shop]);
+
+  // useEffect(() => {
+  //   const backAction = () => {
+  //     // Ensure navigation is available and go back in the navigation stack
+  //     if (navigation.canGoBack()) {
+    
+      
+        
+  //     navigation.goBack();
+        
+  
+  //     } 
+     
+  //     return true; // Prevent the default back button behavior
+  //   };
+  
+  //   const backHandler = BackHandler.addEventListener(
+  //     'hardwareBackPress',
+  //     backAction,
+  //   );
+  
+  //   return () => {
+  //     backHandler.remove(); // Clean up the event listener
+  //   };
+  // }, [navigation]);
+  
 
   return (
     <View style={{ flex: 1, backgroundColor: "#fff", paddingTop: 0 }}>
@@ -177,7 +209,7 @@ const ProductsScreen = ({ navigation }) => {
                 <Pressable
                   key={item.id}
                   style={styles.productCard}
-                  onPress={() => navigation.navigate("productInner", { item })}
+                  onPress={() => navigation.navigate("productInner", { item, screen:"products" })}
                 >
                   <Image
                     style={styles.productImage}

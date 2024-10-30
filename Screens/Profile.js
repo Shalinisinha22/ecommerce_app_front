@@ -19,6 +19,7 @@ import axios from "axios";
 import Toast from "react-native-toast-message";
 import { useDispatch, useSelector } from "react-redux";
 import * as ImagePicker from "expo-image-picker";
+import { Entypo } from "@expo/vector-icons";
 // import DateTimePicker from "@react-native-community/datetimepicker";
 import moment from 'moment-timezone';
 import { EvilIcons } from "@expo/vector-icons";
@@ -277,7 +278,7 @@ const dispatch= useDispatch()
       if (res.data) {
         const initialProfile = res.data[0];
         districtIdNameMap[initialProfile.district]
-        // console.log(stateIdNameMap[initialProfile.m_state])
+        console.log(initialProfile.photo)
         setProfile(initialProfile);
         setEditableFullName(initialProfile.first_name || "");
         setEditableFatherName(initialProfile.m_father_name || "");
@@ -463,21 +464,32 @@ const dispatch= useDispatch()
           height: 1,
           borderColor: "whitesmoke",
           borderWidth: 2,
-          marginBottm:10
+          marginBottm:0
         }}
       />
-            <View style={{ alignItems: "center", marginTop: 10 }}>
+        <View style={{flexDirection:"row",alignItems:"center",justifyContent:"space-around"}}>
+        <TouchableOpacity onPress={() => navigation.openDrawer()} style={{ paddingTop: 0,paddingLeft:0}}>
+<Entypo name="menu" size={40} color="#155d27" />
+   
+            </TouchableOpacity>
+
+            <View style={{ alignItems: "center", marginTop: 0 }}>
               <Text allowFontScaling={false} style={{ color: "#9e0059", fontSize: 15,letterSpacing:2 }}>
                EDIT DETAILS
               </Text>
             </View>
+
+            <Pressable onPress={()=>navigation.navigate("Home")}>
+              <Image source={require("../assets/logo.png")} style={{ height: 80, width: 80, resizeMode: "contain" }} />
+            </Pressable> 
+                        </View>
             <Text
         allowFontScaling={false}
         style={{
           height: 1,
           borderColor: "whitesmoke",
           borderWidth: 2,
-          marginTop: 15,
+          marginTop: 10,
         }}
       />
 
@@ -1371,7 +1383,7 @@ const styles = StyleSheet.create({
   safeArea: {
     flex: 1,
     backgroundColor: "white",
-    marginTop: 15,
+    marginTop: 0,
     padding: 15
   },
   inputBoxCont: {

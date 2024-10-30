@@ -1,14 +1,16 @@
-import { View, Text, Dimensions, Button, StyleSheet, ScrollView, Image, TouchableOpacity } from 'react-native';
+import { View, Text, Dimensions, Button, StyleSheet, ScrollView, Image, TouchableOpacity,Pressable } from 'react-native';
 import React, { useState, useEffect } from 'react';
 import * as ImagePicker from 'expo-image-picker';
 import Toast from 'react-native-toast-message';
 import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
+import { Entypo } from '@expo/vector-icons';
 import axios from 'axios';
 import { useSelector } from 'react-redux';
+// import { Entypo } from '@expo/vector-icons';
 
 const width = Dimensions.get('screen').width;
 
-const KycScreen = () => {
+const KycScreen = ({navigation}) => {
   const [aadharFront, setAadharFront] = useState(null);
   const [aadharFrontName, setAadharFrontName] = useState(null);
   const [aadharFrontDetail,setAadharFrontDetail]= useState(null)
@@ -187,11 +189,23 @@ console.log("kyc",res.data)
   return (
     <View style={{ width: width, alignItems: "center", flex: 1, backgroundColor: "#fff" }}>
       <ScrollView>
-        <View style={{ alignItems: "center", marginTop: 15 }}>
+
+      <View style={{flexDirection:"row",alignItems:"center",justifyContent:"space-around"}}>
+        <TouchableOpacity onPress={() => navigation.openDrawer()} style={{ paddingTop: 0,paddingLeft:0}}>
+<Entypo name="menu" size={40} color="#155d27" />
+   
+            </TouchableOpacity>
+
+        <View style={{ alignItems: "center", marginTop: 0 }}>
           <Text allowFontScaling={false} style={{ color: "gray", fontSize: 15, letterSpacing: 2 }}>
             Edit KYC
           </Text>
         </View>
+
+        <Pressable onPress={()=>navigation.navigate("Home")}>
+              <Image source={require("../assets/logo.png")} style={{ height: 80, width: 80, resizeMode: "contain" }} />
+            </Pressable> 
+                    </View>
         <Text
           allowFontScaling={false}
           style={{

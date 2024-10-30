@@ -10,7 +10,7 @@ import Toast from 'react-native-toast-message'
 
 const width = Dimensions.get('screen').width
 
-const PaymentScreen = () => {
+const PaymentScreen = ({navigation}) => {
 
     const route = useRoute()
 
@@ -128,6 +128,12 @@ const PaymentScreen = () => {
                 if (res.data.message === "Data inserted successfully") {
                     // Alert.alert("Success");
                     showToast()
+                    setTimeout(() => {
+                        navigation.navigate("Home")
+
+                    }, 3000);
+
+                    
                 }
 
             } catch (err) {

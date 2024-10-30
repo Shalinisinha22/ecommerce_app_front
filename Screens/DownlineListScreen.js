@@ -1,9 +1,10 @@
-import { View, Text, ScrollView, Pressable, StyleSheet, TextInput } from 'react-native';
+import { View, Text, ScrollView, Pressable, StyleSheet, TextInput,TouchableOpacity,Image } from 'react-native';
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import { Entypo } from '@expo/vector-icons';
 import { useSelector } from 'react-redux';
 
-const DownlineListScreen = () => {
+const DownlineListScreen = ({navigation}) => {
   const [leftUserArray, setLeftUserArray] = useState([]);
   const [rightUserArray, setRightUserArray] = useState([]);
   const [leftSearch, setLeftSearch] = useState('');
@@ -144,7 +145,7 @@ const DownlineListScreen = () => {
   return (
     <ScrollView style={{ flex: 1, backgroundColor: '#fff' }}>
       <View>
-        <Text
+        {/* <Text
           allowFontScaling={false}
           style={{
             height: 1,
@@ -152,21 +153,34 @@ const DownlineListScreen = () => {
             borderWidth: 2,
             marginBottom: 10
           }}
-        />
-        <View style={{ alignItems: "center", marginTop: 10 }}>
-          <Text allowFontScaling={false} style={{ color: "#9e0059", fontSize: 15, letterSpacing: 2 }}>
-            DOWNLINE LIST
-          </Text>
-        </View>
-        <Text
-          allowFontScaling={false}
-          style={{
-            height: 1,
-            borderColor: "whitesmoke",
-            borderWidth: 2,
-            marginTop: 15,
-          }}
-        />
+        /> */}
+
+<View style={{flexDirection:"row",alignItems:"center",justifyContent:"space-around"}}>
+        <TouchableOpacity onPress={() => navigation.openDrawer()} style={{ paddingTop: 0,paddingLeft:0}}>
+<Entypo name="menu" size={40} color="#155d27" />
+   
+            </TouchableOpacity>
+
+         <View style={{ alignItems: "center", marginTop: 10 }}>
+           <Text allowFontScaling={false} style={{ color: "#9e0059", fontSize: 18,letterSpacing:2 }}>
+           DOWNLINE LIST
+
+           </Text>
+         </View>
+         <Pressable onPress={()=>navigation.navigate("Home")}>
+              <Image source={require("../assets/logo.png")} style={{ height: 80, width: 80, resizeMode: "contain" }} />
+            </Pressable> 
+                     </View>
+         <Text
+     allowFontScaling={false}
+     style={{
+       height: 1,
+       borderColor: "whitesmoke",
+       borderWidth: 2,
+       marginTop: 10,
+     }}
+   />
+       
       </View>
 
       {renderTable(filteredLeftUsers, 'Left', leftSearch, setLeftSearch)}

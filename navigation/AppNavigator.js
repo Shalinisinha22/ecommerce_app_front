@@ -7,7 +7,7 @@ import { Ionicons, Entypo, FontAwesome6 } from '@expo/vector-icons';
 import { MaterialCommunityIcons, MaterialIcons } from '@expo/vector-icons';
 import { NavigationContainer } from "@react-navigation/native";
 import { createDrawerNavigator } from "@react-navigation/drawer";
-import { StyleSheet, ScrollView, View, Text, FlatList, TouchableOpacity } from 'react-native';
+import { StyleSheet, ScrollView, View, Text, FlatList, TouchableOpacity, Alert } from 'react-native';
 import HomeScreen from '../Screens/HomeScreen';
 import Wallet from '../Screens/Wallet';
 import WithdrawalScreen from '../Screens/WithdrawalScreen';
@@ -36,7 +36,9 @@ import ActiveMemberScreen from '../Screens/ActiveMemberScreen';
 import MyDashboard from '../Screens/MyDashboard';
 import OrderHistory from '../Screens/OrderHistory';
 import { Swipeable } from 'react-native-gesture-handler';
-
+import axios from 'axios';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import AllProducts from '../Screens/AllProducts';
 
 const Stack = createStackNavigator();
 const Drawer = createDrawerNavigator();
@@ -44,8 +46,35 @@ const Tab = createBottomTabNavigator();
 
 export const AppNavigator = () => {
     const userInfo = useSelector(state => state.user.userInfo ? state.user.userInfo : null);
-   const shop=   useSelector(state => state.user.shop ? state.user.shop : null);
-   console.log(shop,"shop")
+   const shop=   useSelector(state => state.shop.shop ? state.shop.shop : null);
+// Alert.alert(userInfo)
+
+   const [verify,setVerify]= useState(false)
+
+
+
+     const verifyUser= async()=>{
+        const res= await axios.get("https://mahilamediplex.com/mediplex/verify",{
+            params:{
+                client_id:userInfo.client_id
+            }
+        })
+
+        if(res.status==200){
+            console.log("verify","appnavigator")
+            setVerify(true)
+        }
+        else{
+            setVerify(false)
+            await AsyncStorage.clear()
+        }
+     }
+
+     useEffect(()=>{
+        if(userInfo?.client_id){
+            verifyUser()
+        }
+     },[userInfo,verify])
 
     const drawerMenu = [
 
@@ -131,14 +160,13 @@ url: "",},
 
     const dispatch = useDispatch();
   const handleLogout = () => {
-
     dispatch({ type: 'CLEAR_USER_INFO' });
   };
 
     function StackNavigator() {
         return (
             <Stack.Navigator>
-                {userInfo ? (
+                {verify && userInfo ? (
                     <Stack.Screen name="Home" component={HomeScreen} options={{ headerShown: false }} />
                 ) : (
                     <Stack.Screen name="Login" component={LoginScreen} options={{ headerShown: false }} />
@@ -146,7 +174,7 @@ url: "",},
                 <Stack.Screen name="Search" component={SearchBar} options={{ headerShown: false }} />
                 <Stack.Screen name="cart" component={CartScreen} options={{ headerShown: false }} />
                 <Stack.Screen name="coming" component={ComingSoon} options={{ headerShown: false }} />
-                <Stack.Screen name="products" component={ProductsScreen} options={{ headerShown: false }} />
+                {/* <Stack.Screen name="products" component={ProductsScreen} options={{ headerShown: false }} /> */}
                 <Stack.Screen name="productInner" component={ProductInnerScreen} options={{ headerShown: false }} />
                 <Stack.Screen name="kyc" component={KycScreen} options={{ headerShown: false }} />
                 <Stack.Screen name="updatePassword" component={UpdatePasswordScreen} options={{ headerShown: false }} />
@@ -163,7 +191,7 @@ url: "",},
                 <Stack.Screen name="ActiveMember" component={ActiveMemberScreen} options={{ headerShown: false }} />
                 <Stack.Screen name="dashboard" component={MyDashboard} options={{ headerShown: false }} />
                 <Stack.Screen name="orderHistory" component={OrderHistory} options={{ headerShown: false }} />
-
+                <Stack.Screen name="AllProducts" component={AllProducts} options={{ headerShown: false }} />
 
             </Stack.Navigator>
         );
@@ -187,7 +215,7 @@ url: "",},
                     data={drawerMenu}
                     scrollEnabled={false}
                     renderItem={({ item }) => (
-                        <View key={item.id} style={{ justifyContent: "center", gap: 2, padding: 5 }}>
+                        <View key={item.id} style={{justifyContent: "center", gap: 2, padding: 5 }}>
                             {item.submenu ? (
                                 <>
                                     <TouchableOpacity onPress={() => toggleSubmenu(item.id)} style={{ flexDirection: "row", alignItems: "center", padding: 15, gap: 12 }}>
@@ -300,18 +328,21 @@ url: "",},
                     tabBarIcon: ({ focused }) => focused ? <FontAwesome name="user-circle-o" size={25} color="#fff" /> : <FontAwesome name="user-circle-o" size={25} color="#D0D0D0" />,
                 }}
             />
+
+
+
         </Tab.Navigator>
     );
 
     return (
         <NavigationContainer>
-            {userInfo ? (
-                <Drawer.Navigator screenOptions={{swipeEnabled: false, drawerStyle: { backgroundColor: "#8ac926", width: 240, opacity: 0.95 } }} drawerContent={(props) => <DrawerContent {...props} />}>
-                    <Drawer.Screen name="Home" component={BottomNavigator} options={{ headerShown: false }} />
-                </Drawer.Navigator>
+            {verify && userInfo ? (
+              <Drawer.Navigator screenOptions={{swipeEnabled: false, drawerStyle: { backgroundColor: "#8ac926", width: 240, opacity: 0.95 } }} drawerContent={(props) => <DrawerContent {...props} />}>
+              <Drawer.Screen name="Home" component={BottomNavigator} options={{ headerShown: false }} />
+          </Drawer.Navigator>
             ) : (
                 // <ChooseShopScreen></ChooseShopScreen>
-                <StackNavigator/>
+              <StackNavigator></StackNavigator>
             )}
         </NavigationContainer>
     );

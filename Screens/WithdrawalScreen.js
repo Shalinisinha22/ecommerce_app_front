@@ -1,11 +1,12 @@
-import { View, Text,Dimensions,TouchableOpacity, ScrollView,StyleSheet,Pressable } from 'react-native'
+import { View, Text,Dimensions,TouchableOpacity,Image, ScrollView,StyleSheet,Pressable,RefreshControl } from 'react-native'
 import React, {useState,useEffect} from 'react'
 import axios from 'axios'
 import { useSelector } from 'react-redux'
 import { TextInput } from 'react-native-gesture-handler'
 import { useForm, Controller } from "react-hook-form";
+import { Entypo } from '@expo/vector-icons'
 const width = Dimensions.get('screen').width
-const WithdrawalScreen = () => {
+const WithdrawalScreen = ({navigation}) => {
 
   const [amt,setAmt]= useState(0)
   const { control, handleSubmit, setValue, formState: { errors } } = useForm();
@@ -13,6 +14,7 @@ const WithdrawalScreen = () => {
   const [error,setError]= useState("")
   const [withdrawData,setWithdrawData]= useState([])
 
+  console.log("userwithdraw",user.mani_wallet)
 
   const onSubmit= async()=>{
      if(user.bank_name && user.bank_ac_no && user.bank_ifsc_code){
@@ -66,6 +68,31 @@ const WithdrawalScreen = () => {
   useEffect(()=>{
     getWithdrawData()
   },[])
+
+
+  const [wallet, setWallet] = useState(user?.mani_wallet);
+
+  const getWallet = async () => {
+    if (user?.mani_wallet) {
+      setWallet(user.mani_wallet);
+    }
+  };
+
+  useEffect(() => {
+    getWallet();
+  }, [user]);
+
+
+
+ 
+
+  const [refreshing, setRefreshing] = useState(false); 
+
+  const handleRefresh = async () => {
+    setRefreshing(true);
+    getWallet()
+    setRefreshing(false);
+  };
   return (
     <View style={{ flex: 1, backgroundColor: "#fff" }}>
     <Text
@@ -77,6 +104,17 @@ const WithdrawalScreen = () => {
         marginBottom: 10
       }}
     />
+     <View style={{alignItems:"center",width:width,marginTop:0,flexDirection:"row"}}>
+
+<TouchableOpacity onPress={() => navigation.openDrawer()} style={{ paddingTop: 7,paddingLeft:30}}>
+<Entypo name="menu" size={40} color="#155d27" />
+
+         </TouchableOpacity>
+         <Pressable onPress={()=>navigation.navigate("Home")}>
+            <Image  source={require("../assets/logo.png")} style={{height:80,width:80,resizemode:"contain",marginLeft:75}}></Image>
+
+            </Pressable>
+ </View>   
     <View style={{ alignItems: "center", marginTop: 10 }}>
       <Text allowFontScaling={false} style={{ color: "#9e0059", fontSize: 15, letterSpacing: 2 }}>
         WITHDRAW AMOUNT
@@ -92,10 +130,12 @@ const WithdrawalScreen = () => {
       }}
     />
 
-    <ScrollView>
+<ScrollView refreshControl={
+      <RefreshControl refreshing={refreshing} onRefresh={handleRefresh} />
+    }>
       <View style={{ width: width, alignItems: "center", marginTop: 40 }}>
         <Text allowFontScaling={false} style={{ fontWeight: "bold", fontSize: 18, letterSpacing: 1.2 }}>Available Amount:</Text>
-        <Text allowFontScaling={false} style={{ fontSize: 18, marginTop: 5 }}>Rs {user.mani_wallet?user.mani_wallet:"0"}</Text>
+        <Text allowFontScaling={false} style={{ fontSize: 18, marginTop: 5 }}>Rs {user.mani_wallet?Math.round(user.mani_wallet):"0"}</Text>
 
         <View style={{ marginTop: 0, paddingTop: 20 }}>
           <View style={{

@@ -2,9 +2,10 @@ import { View, Text,ScrollView,Dimensions,StyleSheet,FlatList, Button, Pressable
 import React,{useState,useEffect} from 'react'
 import axios from 'axios'
 import { useSelector } from 'react-redux'
+import { Entypo } from '@expo/vector-icons'
 const width= Dimensions.get('screen').width
 import { imgUrl } from '../Components/Image/ImageUrl'
-const DailyIncome= () => {
+const DailyIncome= ({navigation}) => {
   const [allDailyIncome,setAllDailyIncome]= useState([])
 
   const userInfo = useSelector((state)=>state.user.userInfo?state.user.userInfo:null)
@@ -86,36 +87,34 @@ const DailyIncome= () => {
 
   return (
     <View style={{flex:1,backgroundColor:"white"}}>
-          <ScrollView>
-        <View style={{}}>
-       
-          <Text
-          allowFontScaling={false}
-          style={{
-            height: 1,
-            borderColor: "whitesmoke",
-            borderWidth: 2,
-            marginBottm:10
-          }}
-     
-      />
-            <View style={{ alignItems: "center", marginTop: 10 }}>
-              <Text allowFontScaling={false} style={{ color: "#9e0059", fontSize: 15,letterSpacing:2 }}>
-     DAILY INCOME
-              </Text>
-            </View>
-            <Text
-        allowFontScaling={false}
-        style={{
-          height: 1,
-          borderColor: "whitesmoke",
-          borderWidth: 2,
-          marginTop: 15,
-        }}
-      />     
-    
-</View>
 
+<View style={{flexDirection:"row",alignItems:"center",justifyContent:"space-around"}}>
+        <TouchableOpacity onPress={() => navigation.openDrawer()} style={{ paddingTop: 0,paddingLeft:0}}>
+<Entypo name="menu" size={40} color="#155d27" />
+   
+            </TouchableOpacity>
+
+         <View style={{ alignItems: "center", marginTop: 10 }}>
+           <Text allowFontScaling={false} style={{ color: "#9e0059", fontSize: 15,letterSpacing:2 }}>
+           DAILY INCOME
+           </Text>
+         </View>
+         <Pressable onPress={()=>navigation.navigate("Home")}>
+              <Image source={require("../assets/logo.png")} style={{ height: 80, width: 80, resizeMode: "contain" }} />
+            </Pressable>    
+                 </View>
+         <Text
+     allowFontScaling={false}
+     style={{
+       height: 1,
+       borderColor: "whitesmoke",
+       borderWidth: 2,
+       marginTop: 5,
+       marginBottom:15
+     }}
+   />
+          <ScrollView>
+       
 
 <View style={styles.table}>
         {/* Table Header */}

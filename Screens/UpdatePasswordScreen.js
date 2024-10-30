@@ -1,14 +1,15 @@
-import { View, Text, Dimensions, TouchableOpacity, ScrollView, StyleSheet, TextInput, Alert } from 'react-native'
+import { View, Text, Dimensions, TouchableOpacity,Image, ScrollView, StyleSheet, TextInput, Alert,Pressable } from 'react-native'
 import React, { useState, useEffect } from 'react'
 import { useForm, Controller } from "react-hook-form";
 import { useSelector } from 'react-redux';
 import Toast from "react-native-toast-message";
+import { Entypo } from '@expo/vector-icons';
 const width = Dimensions.get('screen').width
 
 import axios from 'axios';
 
 
-const UpdatePasswordScreen = () => {
+const UpdatePasswordScreen = ({navigation}) => {
   const { control, handleSubmit, setValue, formState: { errors }, reset } = useForm();
 
   const [oldPass, setOldPass] = useState("")
@@ -83,10 +84,24 @@ const UpdatePasswordScreen = () => {
 
       <ScrollView>
 
-        <View style={{ alignItems: "center", marginTop: 25 }}>
+
+
+      <View style={{flexDirection:"row",alignItems:"center",justifyContent:"space-around"}}>
+        <TouchableOpacity onPress={() => navigation.openDrawer()} style={{ paddingTop: 0,paddingLeft:0}}>
+<Entypo name="menu" size={40} color="#155d27" />
+   
+            </TouchableOpacity>
+
+
+        <View style={{ alignItems: "center", marginTop: 0 }}>
           <Text allowFontScaling={false} style={{ color: "gray", fontSize: 15, letterSpacing: 2 }}>
             Update Login Password
           </Text>
+        </View>
+
+        <Pressable onPress={()=>navigation.navigate("Home")}>
+              <Image source={require("../assets/logo.png")} style={{ height: 80, width: 80, resizeMode: "contain" }} />
+            </Pressable> 
         </View>
         <Text
           allowFontScaling={false}
@@ -94,7 +109,7 @@ const UpdatePasswordScreen = () => {
             height: 1,
             borderColor: "whitesmoke",
             borderWidth: 2,
-            marginTop: 15,
+            marginTop: 10,
             width: width
           }}
         />

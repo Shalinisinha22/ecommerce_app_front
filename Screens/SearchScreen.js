@@ -16,7 +16,7 @@ export default function SearchBar({ navigation }) {
     const [previousSearches, setPreviousSearches] = useState([]);
     const [error, setError] = useState('');
 
-    const lmcId = useSelector((state) => state.user.shop ? state.user.shop : null);
+    const lmcId = useSelector((state) => state.shop.shop ? state.shop.shop : null);
 
     useEffect(() => {
         getProductsId();
@@ -24,23 +24,29 @@ export default function SearchBar({ navigation }) {
     }, [lmcId]);
 
     const getProductsId = async () => {
+        const id= JSON.parse(await AsyncStorage.getItem('shopDetails'))
+        console.log(id.client_id,"36",lmcId)
+       
         try {
             const res = await axios.get("https://mahilamediplex.com/mediplex/getProductId", {
-                params: { client_id: lmcId.client_id }
+                params: { client_id: lmcId? lmcId.client_id:id.client_id }
             });
-
+      
             if (res.data.length === 0) {
                 getDefaultShop();
             } else {
                 const pidArr = res.data.map(item => item.pid);
+                console.log(pidArr)
                 await getProducts(pidArr);
             }
         } catch (err) {
-            setError("Error fetching product IDs. Please try again.");
+            setError("Searching....");
             console.log("Error fetching product IDs:", err.message);
         }
     }
 
+    
+    
     const getProducts = async (pidArr) => {
         try {
             const productPromises = pidArr.map(pid => 
@@ -156,15 +162,17 @@ export default function SearchBar({ navigation }) {
                     <ScrollView style={{ marginTop: 20, padding: 10 }}>
                         {filteredProducts.map((product, index) => (
                             product && (
+                                
                                 <Pressable key={index} onPress={() => navigation.navigate("productInner", { item: product })} style={styles.productContainer}>
+                                   {/* {console.log(product,"search")} */}
                                     <Image
                                         style={{ width: 150, height: 130, resizeMode: "contain" }}
                                         source={{ uri: `${imgUrl}/eproduct/${product.sale_image?.[0] || product.product_image?.[0]}` }}
                                     />
                                     <View>
                                         <Text allowFontScaling={false} >{product.name}</Text>
-                                        <Text allowFontScaling={false}  style={styles.strikeThrough}>Rs {product.original_price}</Text>
-                                        <Text allowFontScaling={false} style={styles.price}>Rs {product.sale_price}</Text>
+                                        <Text allowFontScaling={false}  style={styles.strikeThrough}>Rs {product.mrp}</Text>
+                                        <Text allowFontScaling={false} style={styles.price}>Rs {product.price}</Text>
                                     </View>
                                     {isItemInCart(product.pcode) ? (
                                         <View style={{ flexDirection: "row", width: 200, justifyContent: "space-between", marginTop: 10 }}>

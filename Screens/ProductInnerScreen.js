@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet, ActivityIndicator, Alert,Image, Dimensions,TouchableOpacity, ScrollView } from 'react-native'
+import { View, Text, StyleSheet, ActivityIndicator, Alert,Image, Dimensions,TouchableOpacity, ScrollView,BackHandler } from 'react-native'
 import React, { useState, useEffect } from 'react'
 import { FlatListSlider } from 'react-native-flatlist-slider';
 import { Entypo } from '@expo/vector-icons';
@@ -17,7 +17,33 @@ const ProductInnerScreen = ({navigation}) => {
 const route=useRoute()  
 const [bannerImage, setBanner] = useState([])
 
+// useEffect(() => {
+//   const backAction = () => {
+//     // Ensure navigation is available and go back in the navigation stack
+//     if (navigation.canGoBack()) {
   
+//       console.log("goback")
+//       if(route.params?.screen){
+//         navigation.pop();
+//       }
+    
+
+//     } 
+
+//     return true; // Prevent the default back button behavior
+//   };
+
+//   const backHandler = BackHandler.addEventListener(
+//     'hardwareBackPress',
+//     backAction,
+//   );
+
+//   return () => {
+//     backHandler.remove(); // Clean up the event listener
+//   };
+// }, [navigation]);
+
+
 
     useEffect(()=>{
      getImage()

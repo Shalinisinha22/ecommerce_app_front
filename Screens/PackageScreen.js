@@ -36,7 +36,7 @@ const PackageScreen = ({navigation}) => {
 
   return (
     <View style={{flex:1,backgroundColor:"#fff"}}>
-         <Text
+         {/* <Text
         allowFontScaling={false}
         style={{
           height: 1,
@@ -44,24 +44,36 @@ const PackageScreen = ({navigation}) => {
           borderWidth: 2,
           marginBottm:10
         }}
-      />
-            <View style={{ alignItems: "center", marginTop: 15 }}>
-              <Text allowFontScaling={false} style={{ color: "#9e0059", fontSize: 15,letterSpacing:2 }}>
-                Explore Health Package
-              </Text>
-            </View>
-            <Text
-        allowFontScaling={false}
-        style={{
-          height: 1,
-          borderColor: "whitesmoke",
-          borderWidth: 2,
-          marginTop: 15,
-        }}
-      />
+      /> */}
+
+<View style={{flexDirection:"row",alignItems:"center",justifyContent:"space-around"}}>
+        <TouchableOpacity onPress={() => navigation.openDrawer()} style={{ paddingTop: 0,paddingLeft:0}}>
+<Entypo name="menu" size={40} color="#155d27" />
+   
+            </TouchableOpacity>
+
+         <View style={{ alignItems: "center", marginTop: 10 }}>
+           <Text allowFontScaling={false} style={{ color: "#9e0059", fontSize: 15,letterSpacing:2 }}>
+           Explore Health Package
+           </Text>
+         </View>
+         <Pressable onPress={()=>navigation.navigate("Home")}>
+              <Image source={require("../assets/logo.png")} style={{ height: 80, width: 80, resizeMode: "contain" }} />
+            </Pressable> 
+                     </View>
+         <Text
+     allowFontScaling={false}
+     style={{
+       height: 1,
+       borderColor: "whitesmoke",
+       borderWidth: 2,
+       marginTop: 10,
+     }}
+   />
+        <ScrollView>
 
 
-      {
+        {
         healthPackageProducts!=null ?
       healthPackageProducts.map((item)=>(
         <Pressable
@@ -80,7 +92,7 @@ const PackageScreen = ({navigation}) => {
       >
 
 <Image
-style={{ width: 250, height: 130, resizeMode: "contain" }}
+style={{ width: 250, height: 150, resizeMode: "contain" }}
 source={{ uri: `${imgUrl}/product/${item.image}` }}
 />
 
@@ -135,6 +147,10 @@ fontWeight: "bold",
 :
 <Text allowFontScaling={false} style={{textAlign:"center",letterSpacing:2,marginTop:20,marginBottom:20}}>No Products</Text>}
 
+          </ScrollView>  
+
+
+    
   
     </View>
   )
