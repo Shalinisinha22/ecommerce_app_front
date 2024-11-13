@@ -50,6 +50,10 @@ export const AppNavigator = () => {
    const shop=   useSelector(state => state.shop.shop ? state.shop.shop : null);
 // Alert.alert(userInfo)
 
+useEffect(()=>{
+
+},[shop])
+
    const [verify,setVerify]= useState(false)
 
 
@@ -160,22 +164,26 @@ url: "",},
 
 
     const dispatch = useDispatch();
-  const handleLogout = () => {
+    const handleLogout = () => {
     dispatch({ type: 'CLEAR_USER_INFO' });
   };
 
-    function StackNavigator() {
+    function MainStackNavigator() {
         return (
             <Stack.Navigator>
                 {verify && userInfo ? (
+                    <>
+                 
                     <Stack.Screen name="Home" component={HomeScreen} options={{ headerShown: false }} />
+
+                    </>
                 ) : (
                     <Stack.Screen name="Login" component={LoginScreen} options={{ headerShown: false }} />
                 )}
                 <Stack.Screen name="Search" component={SearchBar} options={{ headerShown: false }} />
                 <Stack.Screen name="cart" component={CartScreen} options={{ headerShown: false }} />
                 <Stack.Screen name="coming" component={ComingSoon} options={{ headerShown: false }} />
-                {/* <Stack.Screen name="products" component={ProductsScreen} options={{ headerShown: false }} /> */}
+                <Stack.Screen name="shop" component={ProductsScreen} options={{ headerShown: false }} />
                 <Stack.Screen name="productInner" component={ProductInnerScreen} options={{ headerShown: false }} />
                 <Stack.Screen name="kyc" component={KycScreen} options={{ headerShown: false }} />
                 <Stack.Screen name="updatePassword" component={UpdatePasswordScreen} options={{ headerShown: false }} />
@@ -194,6 +202,7 @@ url: "",},
                 <Stack.Screen name="orderHistory" component={OrderHistory} options={{ headerShown: false }} />
                 <Stack.Screen name="AllProducts" component={AllProducts} options={{ headerShown: false }} />
                 <Stack.Screen name="AllOrders" component={AllOrders} options={{ headerShown: false }} />
+                <Stack.Screen name="profile" component={Profile} options={{ headerShown: false }} />
 
             </Stack.Navigator>
         );
@@ -256,8 +265,8 @@ url: "",},
     const BottomNavigator = () => (
         <Tab.Navigator screenOptions={{ tabBarStyle: { elevation: 15, height: 60, borderTopWidth: 1, backgroundColor: "#9e0059", opacity: 1, paddingBottom: 0 } }}>
             <Tab.Screen
-                name="Home"
-                component={StackNavigator}
+                name="HomeStack"
+                component={MainStackNavigator}
                 options={{
                     tabBarLabel: "",
                     tabBarLabelStyle: { color: "#fff", fontSize: 10, fontWeight: 800, letterSpacing: 2 },
@@ -284,7 +293,7 @@ url: "",},
 <Tab.Screen
         name="shop"
         component={ProductsScreen}
-        options={({ route }) => ({
+        options={{
           tabBarLabel: "",
           tabBarLabelStyle: { color: "#fff", fontSize: 10, fontWeight: '600', letterSpacing: 2 },
           headerShown: false,
@@ -295,16 +304,9 @@ url: "",},
             ) : (
               <Ionicons name="bag-add" size={25} color="#D0D0D0" />
             ),
-        })}
+        }}
         
-        listeners={({ navigation }) => ({
-          tabPress: (e) => {
-            // Prevent default action
-            e.preventDefault();
-            // Open the modal
-            navigation.navigate("shop", { modalVisible: true });
-          },
-        })}
+      
       />
             <Tab.Screen
                 name="withdrawal"
@@ -333,18 +335,10 @@ url: "",},
                 }}
             />
 
-            {/* <Tab.Screen
-                name="profile"
-                component={Profile}
-                options={{
 
-                    tabBarAllowFontScaling:false,
-                    tabBarLabel: "Profile",
-                    tabBarLabelStyle: { color: "#fff", fontSize: 10, fontWeight: 600, letterSpacing: 2 },
-                    headerShown: false,
-                    tabBarIcon: ({ focused }) => focused ? <FontAwesome name="user-circle-o" size={25} color="#fff" /> : <FontAwesome name="user-circle-o" size={25} color="#D0D0D0" />,
-                }}
-            /> */}
+
+
+
 
 
 
@@ -355,12 +349,13 @@ url: "",},
         <NavigationContainer>
             {verify && userInfo ? (
               <Drawer.Navigator screenOptions={{swipeEnabled: false, drawerStyle: { backgroundColor: "#8ac926", width: 240, opacity: 0.95 } }} drawerContent={(props) => <DrawerContent {...props} />}>
-              <Drawer.Screen name="Home" component={BottomNavigator} options={{ headerShown: false }} />
+              <Drawer.Screen name="HomeStack" component={BottomNavigator} options={{ headerShown: false }} />
           </Drawer.Navigator>
             ) : (
                 // <ChooseShopScreen></ChooseShopScreen>
-              <StackNavigator></StackNavigator>
+              <MainStackNavigator></MainStackNavigator>
             )}
+            {/* {console.log(shop,"appnavigator")} */}
         </NavigationContainer>
     );
 };

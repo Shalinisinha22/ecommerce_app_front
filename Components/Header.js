@@ -13,7 +13,7 @@ const Header = ({navigation}) => {
 const route= useRoute()
   const [wallet,setWallet]= useState(null)
 
-  console.log(route.params?.wallet,"headerparams")
+  // console.log(route.params?.wallet,"headerparams")
 
 
 const dispatch=useDispatch()
@@ -41,7 +41,7 @@ const dispatch=useDispatch()
 
   const data = res.data
   if(data[0].mani_wallet){
-    console.log(data[0].mani_wallet,"wallet")
+    // console.log(data[0].mani_wallet,"wallet")
     setWallet(data[0].mani_wallet)
     user.mani_wallet= data[0].mani_wallet
     dispatch({ type: 'SET_USER_INFO', payload: user});
@@ -85,7 +85,7 @@ useEffect(()=>{
 :  <Entypo name="menu" size={40} color="#155d27" />}
               {/* */}
             </TouchableOpacity>
-            {console.log(profileImg,"proflrimg")}
+            {/* {console.log(profileImg,"proflrimg")} */}
             <View style={{justifyContent:"center"}}>
              {user &&  <Text allowFontScaling={false} style={{fontSize:10,fontWeight:"bold"}}>{user.first_name}</Text>} 
              {user &&  <Text allowFontScaling={false} style={{fontSize:8}}>{user.client_id}</Text> }

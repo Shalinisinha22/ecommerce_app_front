@@ -70,7 +70,7 @@ const PackageScreen = ({navigation}) => {
        marginTop: 10,
      }}
    />
-        <ScrollView>
+        <ScrollView  keyboardShouldPersistTaps='handled' >
 
 
         {

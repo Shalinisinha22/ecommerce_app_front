@@ -1,4 +1,4 @@
-import { View, Text, Dimensions, TouchableOpacity, FlatList, Pressable, Image, ScrollView, RefreshControl, StyleSheet,BackHandler } from 'react-native';
+import { View, Text, Dimensions, TouchableOpacity, FlatList, Pressable, Image, ScrollView, RefreshControl, StyleSheet } from 'react-native';
 import React, { useState, useEffect } from 'react';
 import { Entypo } from '@expo/vector-icons';
 import Header from '../Components/Header';
@@ -6,13 +6,17 @@ import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Picker } from '@react-native-picker/picker';
 import { useSelector, useDispatch } from 'react-redux';
-import { addToCart, handleIncrement, handleDecrement } from '../redux/actions/userActions';
+import { addToCart, handleIncrement, handleDecrement} from '../redux/actions/userActions';
 import { imgUrl } from '../Components/Image/ImageUrl';
 import { setShopType } from '../redux/actions/userActions';
-
+import { useCallback } from 'react';
+import getStoredState from 'redux-persist/lib/integration/getStoredStateMigrateV4';
+import { useShop } from '../Components/ShopContext';
 const width = Dimensions.get('screen').width;
 
 const ProductsScreen = ({ navigation }) => {
+
+const {globalshop,setShopGlobal}= useShop()  
   const [shopTypes, setShopTypes] = useState([]);
   const [selectedShopType, setSelectedShopType] = useState(null);
   const [shopId, setShopId] = useState('');
@@ -35,36 +39,46 @@ const ProductsScreen = ({ navigation }) => {
       console.error(err.message);
     }
   };
+  const dispatchShop=(item)=>{
+  dispatch(setShopType(item))
+  }
 
-  const handleSelectShopType = async (item) => {
+  const handleSelectShopType = (item) => {
     if (item) {
       setSelectedShopType(item);
       setShopName(item.business_name);
-      setShop(item)
-      await AsyncStorage.setItem("shopDetails", JSON.stringify(item));
-      await setShopId(item.client_id);
+      setShop(item);
+      setShopGlobal(item)
 
-
+      //  dispatchShop(item)
+  
+      // Saving shop details in AsyncStorage
+      AsyncStorage.setItem("shopDetails", JSON.stringify(item))
+        .then(() => {
+          setShopId(item.client_id);
+          // Dispatch action after setting state
+        })
+        .catch((err) => console.error("Error storing shop details:", err));
     }
+  }
+
+  const getProductsId = (client_id, callback) => {
+    AsyncStorage.getItem('shopDetails')
+      .then((id) => {
+        const shop = JSON.parse(id);
+        setShopName(shop.business_name);
+        return axios.get("https://mahilamediplex.com/mediplex/getProductId", {
+          params: { client_id: client_id || shop.client_id }
+        });
+      })
+      .then(async(res) => {
+        const pidArr = res.data.map(item => item.pid);
+        await getProducts(pidArr);
+        // callback(pidArr);
+      })
+      .catch((err) => console.error("Error fetching product IDs:", err.message));
   };
-
-  const getProductsId = async (client_id) => {
-
-    const id= JSON.parse(await AsyncStorage.getItem('shopDetails'))
-    setShopName(id.business_name)
-    
-
-    try {
-      const res = await axios.get("https://mahilamediplex.com/mediplex/getProductId", {
-        params: {client_id:client_id?client_id:id.client_id }
-      });
-      const pidArr = res.data.map(item => item.pid);
-      await getProducts(pidArr);
-    } catch (err) {
-      console.error("Error fetching product IDs:", err.message);
-    }
-  };
-
+  
   const getProducts = async (pidArr) => {
     try {
       const productPromises = pidArr.map(pid =>
@@ -116,55 +130,28 @@ const ProductsScreen = ({ navigation }) => {
     dispatch(handleDecrement({ id }));
   };
 
-
-
-
- 
-
-
-  const handleRefresh = async () => {
+  const handleRefresh = () => {
     setRefreshing(true);
-    await getShop();
-    setRefreshing(false);
+    getShop().finally(() => setRefreshing(false));
   };
 
   useEffect(() => {
     getShop();
   }, []);
 
-  useEffect(() => {
-    
-      getProductsId(shopId);
-      if(shop){
-        dispatch(setShopType(shop));
-      }
   
-  }, [shopId,shop]);
 
-  // useEffect(() => {
-  //   const backAction = () => {
-  //     // Ensure navigation is available and go back in the navigation stack
-  //     if (navigation.canGoBack()) {
-    
-      
-        
-  //     navigation.goBack();
-        
-  
-  //     } 
-     
-  //     return true; // Prevent the default back button behavior
-  //   };
-  
-  //   const backHandler = BackHandler.addEventListener(
-  //     'hardwareBackPress',
-  //     backAction,
-  //   );
-  
-  //   return () => {
-  //     backHandler.remove(); // Clean up the event listener
-  //   };
-  // }, [navigation]);
+  useEffect(() => {
+    getProductsId(shopId, getProducts);
+if(shop){
+    console.log(shop)
+    //   dispatch(setShopType(shop));
+   }
+  }, [shopId]);
+
+  const [hasNavigated, setHasNavigated] = useState(false);
+
+ 
   
 
   return (
@@ -209,7 +196,7 @@ const ProductsScreen = ({ navigation }) => {
                 <Pressable
                   key={item.id}
                   style={styles.productCard}
-                  onPress={() => navigation.navigate("productInner", { item, screen:"products" })}
+                  onPress={() => navigation.navigate("productInner", { item })}
                 >
                   <Image
                     style={styles.productImage}
@@ -217,7 +204,7 @@ const ProductsScreen = ({ navigation }) => {
                       uri: `${imgUrl}/eproduct/${item.sale_image?.[0] || item.product_image[0]}`,
                     }}
                   />
-                  {/* {console.log(item.category_name)} */}
+                  {/* {console.log(item.sale_image?.[0], item.product_image[0])} */}
                   <View style={{ marginTop: 8 }}>
                     <Text allowFontScaling={false} style={styles.productName} numberOfLines={2}>
                       {item.name}

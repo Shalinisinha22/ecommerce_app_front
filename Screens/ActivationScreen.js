@@ -35,7 +35,9 @@ const ActivationScreen = ({ navigation }) => {
   }, [])
 
   useEffect(() => {
-    setWalletBalance(mainWallet)
+    let value = Math.round(mainWallet)
+    console.log(value)
+    setWalletBalance(value)
   }, [userInfo])
 
 
@@ -230,7 +232,7 @@ ACTIVATE USER
        
  
 </View>
-<ScrollView>
+<ScrollView  keyboardShouldPersistTaps='handled' >
 <View style={{ marginTop: 40, padding: 15 }}>
         <View style={{ marginTop: 0 }}>
           <Text allowFontScaling={false}>Main Wallet Balance</Text>
@@ -243,6 +245,7 @@ ACTIVATE USER
                   allowFontScaling={false}
                   cursorColor={"white"}
                   autoFocus={true}
+                  keyboardType='numeric'
                   style={{
                     color: "white",
                     marginVertical: 5,
@@ -250,12 +253,10 @@ ACTIVATE USER
                     fontSize: 16,
                   }}
                   onBlur={onBlur}
-                  onChangeText={(text) => {
-                    onChange(text);
-                    setWalletBalance(text);
-                  }}
+                
                   editable={false}
-                  value={walletBalance}
+                  value={walletBalance.toString()}  // Convert to string for TextInput
+
                 />
               )}
             />

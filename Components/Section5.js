@@ -7,13 +7,15 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useSelector, useDispatch } from 'react-redux';
 import { addToCart, removeFromCart, updateQty ,handleIncrement,handleDecrement} from '../redux/actions/userActions';
 import { imgUrl } from './Image/ImageUrl';
+import { useShop } from './ShopContext';
 const Section5 = ({navigation}) => {
   const [shopId, setShopId] = useState('');
   const [products, setProducts] = useState([]);
   const [productId, setProductId] = useState([]);
 
 
-  const lmcId = useSelector((state)=>state.shop.shop? state.shop.shop:null)
+  const {globalshop}= useShop()  
+  const lmcId= globalshop  
   const [lmc_id,setLmc]= useState(lmcId)
  
   // console.log(lmcId,"lmcId")
@@ -172,7 +174,7 @@ setCarts(cart)
           </Text>
           </View>
           {products.length!=0 && <TouchableOpacity onPress={()=>navigation.navigate("AllProducts",{products:products})}  style={{paddingRight:20}}>
-  <Text style={{fontWeight:"bold"}}>VIEW ALL</Text>
+          <Text style={{fontWeight:"bold",color:"#0a7736"}}>VIEW ALL</Text>
 </TouchableOpacity> }
           {/* <TouchableOpacity onPress={()=>navigation.navigate("products")} style={{paddingHorizontal:15,paddingVertical:5,marginRight:8}}><Text allowFontScaling={false} style={{fontSize:12,textDecorationLine:"underline",color:"#8ac926",fontWeight:700}}>VIEW ALL</Text></TouchableOpacity> */}
           </View>

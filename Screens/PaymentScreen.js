@@ -94,7 +94,13 @@ const PaymentScreen = ({navigation}) => {
         console.log(transaction_id,"94",paymentSlip)
     
         if (transaction_id == null || paymentSlip == null) {
-
+               errors.transaction_id= transaction_id==null ?"Required":""
+                         errors.paymentSlip= paymentSlip==null ?"Required":""
+                         setErr(errors)
+                         setTimeout(() => {
+                           setErr("") 
+                         }, 2000);
+                     
             return;
             // if (transaction_id == null) {
             //     errors.transaction_id = "This field is required";
@@ -108,6 +114,7 @@ const PaymentScreen = ({navigation}) => {
             // }, 3000);
         } 
         else {
+            setErr("")
             await uploadImage(paymentSlip);
 
             console.log(transaction_id)
@@ -182,7 +189,7 @@ const PaymentScreen = ({navigation}) => {
                 }}
             />
 
-            <ScrollView>
+            <ScrollView  keyboardShouldPersistTaps='handled' >
                 <View style={{ width: width, marginTop: 20, padding: 10 }}>
                     {
                         bankDetails != null &&
@@ -262,7 +269,11 @@ const PaymentScreen = ({navigation}) => {
                                 fontSize: 18,
                                 fontWeight:"bold"
                             }} value={transaction_id} onChangeText={(text) => setTransaction_id(text)} ></TextInput>
+                        
                         </View>
+
+                        {console.log(err)}
+                        
                         {err.transaction_id && <Text allowFontScaling={false}style={{color:"red",fontSize:10,marginBottom:5}}>{err.transaction_id}</Text>}
                         <View style={{ width: width * 0.95, backgroundColor: "#f0f0f0", paddingVertical: 14, paddingHorizontal: 5, flexDirection: "row", gap: 15, alignItems: "center",flexWrap:"wrap" }}>
                             <Text allowFontScaling={false}style={{ color: "gray" }}>Payment Slip :</Text>
@@ -272,6 +283,7 @@ const PaymentScreen = ({navigation}) => {
                                 <Button title="Choose File" color="#155d27" onPress={pickImage} />
                             </View>
                         </View>
+                 
                         {err.paymentSlip && <Text allowFontScaling={false}style={{color:"red",fontSize:10,marginBottom:5}}>{err.paymentSlip}</Text>}
 
                     </View>

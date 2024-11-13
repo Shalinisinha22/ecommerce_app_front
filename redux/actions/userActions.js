@@ -14,10 +14,11 @@ export const clearUserInfo = () => ({
 });
 
 // actions/shopActions.js
-export const setShopType = (shop) => ({
+export const setShopType = (shopType) => ({
   type: 'SET_SHOP_TYPE',
-  payload: shop,
+  payload: shopType,
 });
+
 
 export const addToCart = ({ item, id }) => {
 

@@ -21,10 +21,10 @@ const OrderHistory = ({ navigation }) => {
           order_id: route.params?.order_id
         }
       });
-  
+
       // Access the orderDetails array from the response data
       let newArr = res.data.orderDetails;
-  
+
       // If orderDetails is an array, parse the `image` field for each item
       if (Array.isArray(newArr)) {
         newArr = newArr.map(item => ({
@@ -35,13 +35,12 @@ const OrderHistory = ({ navigation }) => {
         // If orderDetails is not an array, set it as an empty array
         newArr = [];
       }
-  
+
       setOrders(newArr);
     } catch (err) {
       console.error("Error fetching orders:", err.message);
     }
   };
-  
 
   useEffect(() => {
     getOrders();
@@ -50,7 +49,7 @@ const OrderHistory = ({ navigation }) => {
   const renderRow = ({ item }) => (
     <View style={styles.row}>
 
-<Text allowFontScaling={false} style={styles.cell}>{moment(route.params?.order_date).format('YYYY-MM-DD')}</Text>
+      <Text allowFontScaling={false} style={styles.cell}>{moment(route.params?.order_date).format('YYYY-MM-DD')}</Text>
 
       <View style={styles.imageContainer}>
         {item.image && item.image[0] ? (
@@ -87,7 +86,7 @@ const OrderHistory = ({ navigation }) => {
       <View style={styles.divider} />
       <View style={styles.tableContainer}>
         <View style={styles.headerRow}>
-        <Text style={styles.headerCell}>Date</Text>
+          <Text style={styles.headerCell}>Date</Text>
           <Text style={styles.headerCell}>Name</Text>
           <Text style={styles.headerCell}>Shop</Text>
           <Text style={styles.headerCell}>Qty</Text>
@@ -179,7 +178,7 @@ const styles = StyleSheet.create({
     fontSize: 8,
     // width: 60,
     textAlign: 'center',
-    
+
   },
   cell: {
     flex: 1,

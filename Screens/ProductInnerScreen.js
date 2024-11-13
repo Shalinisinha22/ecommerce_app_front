@@ -43,11 +43,11 @@ const [bannerImage, setBanner] = useState([])
 //   };
 // }, [navigation]);
 
-
+// console.log(route.params.item.sale_image[0],route.params.item.product_image[0])
 
     useEffect(()=>{
      getImage()
-    },[])
+    },[route])
 
 
     const getImage = async () => {
@@ -78,7 +78,6 @@ const [bannerImage, setBanner] = useState([])
           // console.log(imgArr);
         }
       }
-    
       setBanner(imgArr);
     };
     
@@ -158,6 +157,7 @@ const [bannerImage, setBanner] = useState([])
 
 
         <View style={{flex:1,backgroundColor:"#fff"}}>
+          {console.log(bannerImage)}
 
             <View style={{width:width,alignItems:"center"}}>
             <Header navigation={navigation}></Header>
@@ -229,7 +229,7 @@ const [bannerImage, setBanner] = useState([])
 <Text allowFontScaling={false} style={{fontSize:12,color:"gray",marginTop:5}}>Manufactured by {route.params.item.brand_name}</Text>
 <Text  allowFontScaling={false} style={{ textDecorationLine:"line-through",color:"gray",fontSize:10,marginTop:10}}>RS {route.params.item.mrp}</Text>
 <View style={{flexDirection:"row",alignItems:"center"}}>
-<Text  allowFontScaling={false} style={{ fontSize:16 }}>RS {route.params.item.mrp} </Text>
+<Text  allowFontScaling={false} style={{ fontSize:16 }}>RS {route.params.item.price} </Text>
 <Text  allowFontScaling={false} style={{ fontSize:10,color:"#0a7736" }}>OFFER PRICE</Text>
 </View>
 <Text  allowFontScaling={false} numberOfLines={4} style={{ fontSize:10,color:"gray",textAlign:"justify",marginTop:10}}>

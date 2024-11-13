@@ -113,7 +113,7 @@ const DailyIncome= ({navigation}) => {
        marginBottom:15
      }}
    />
-          <ScrollView>
+          <ScrollView  keyboardShouldPersistTaps='handled' >
        
 
 <View style={styles.table}>

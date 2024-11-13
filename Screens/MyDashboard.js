@@ -101,7 +101,7 @@ const MyDashboard = ({navigation}) => {
   </View>
     
                     <View >
-                     {item.income && <Text allowFontScaling={false} style={{textAlign:"center",fontSize:18,color:"#fff",fontWeight:"bold",marginBottom:8}}>{item.income}</Text>}   
+                     {item.income && <Text allowFontScaling={false} style={{textAlign:"center",fontSize:18,color:"#fff",fontWeight:"bold",marginBottom:8}}>{Math.round(item.income)}</Text>}   
                         <Text allowFontScaling={false} style={{textAlign:"center",fontSize:15,color:"#fff",letterSpacing:2}}>{item.name}</Text>
                     </View>
                     <View style={{marginTop:20,width:300,alignItems:"center",backgroundColor:"#0a7736",paddingVertical:12,borderWidth:1,borderColor:"#fff"}}>

@@ -9,16 +9,16 @@ import { useSelector, useDispatch } from 'react-redux';
 import { addToCart, removeFromCart, updateQty ,handleIncrement,handleDecrement} from '../redux/actions/userActions';
 import { imgUrl } from './Image/ImageUrl';
 import { useRoute } from '@react-navigation/native';
-
+import { useShop } from './ShopContext';
 
 const Section2 = ({navigation}) => {
 
 
-
+  const {globalshop}= useShop()  
   const [shopId, setShopId] = useState('');
   const [products, setProducts] = useState([]);
   const [productId, setProductId] = useState([]);
-  const lmcId = useSelector((state)=>state.shop.shop? state.shop.shop:null)
+  const lmcId = globalshop
   const [lmc_id,setLmc]= useState(lmcId)
 
  
@@ -203,7 +203,7 @@ setCarts(cart)
 </View>
 
 {products.length!=0 && <TouchableOpacity onPress={()=>navigation.navigate("AllProducts",{products:products})}  style={{paddingRight:20}}>
-  <Text style={{fontWeight:"bold"}}>VIEW ALL</Text>
+  <Text style={{fontWeight:"bold",color:"#0a7736"}}>VIEW ALL</Text>
 </TouchableOpacity> }
 
 

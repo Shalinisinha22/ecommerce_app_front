@@ -16,12 +16,12 @@ const CartPage = ({ navigation }) => {
   const cart = useSelector((state) => state.cart.cart);
   const [alertVisible, setAlertVisible] = useState(false);
   const [isPopupVisible, setPopupVisible] = useState(false);
-
   const [paymentType,setPamentType]= useState("")
 
   let userInfo = useSelector((state) => state.user.userInfo ? state.user.userInfo : null);
-const walletBalance = userInfo? userInfo.mani_wallet:0
-// console.log("walletbalance",walletBalance)
+let walletBalance = userInfo? userInfo.mani_wallet:0
+let shoppingWallet= userInfo? userInfo.shopping_wallet:0
+console.log("walletbalance",userInfo)
   const [flag,setFlag]= useState(false);
   const [lmc_id, setLMCId] = useState('');
   const [totalAmt, setTotalAmt] = useState(0);
@@ -37,57 +37,71 @@ const walletBalance = userInfo? userInfo.mani_wallet:0
   };
 
 
-  const handlePaymentTypeSelection = async(type) => {
+  const handlePaymentTypeSelection = async (type) => {
     setPopupVisible(false); // Close popup after selection
-       const orderAmount= getTotalAmt()
+    const orderAmount = getTotalAmt();
+    
     if (type === 'Cash') {
-      const success=   await proceedOrder(); 
-      if(success)// Proceed if wallet balance is sufficient
-      {
-      
-        setClicked(false); // Re-enable the button after success
-        showToast();
-        // Alert.alert("Success", "Your order is successfully placed!");
-        setAlertVisible(true); // Show custom alert
-
-  
-        cart.forEach((item) => {
-          dispatch(removeFromCart(item.pcode));
-        });
-        setTimeout(() => {
-          navigation.navigate("Home")
-
-      }, 1500);
-
+      const success = await proceedOrder();
+      if (success) {
+        finalizeOrder();
       }
     } else if (type === 'Wallet') {
-      if (walletBalance >= orderAmount) {
-      const success=   await proceedOrder(); 
-      if(success)// Proceed if wallet balance is sufficient
-      {
-        await  updateMainWallet()
-
-        setClicked(false); // Re-enable the button after success
-        showToast();
-        // Alert.alert("Success", "Your order is successfully placed!");
-        setAlertVisible(true); // Show custom alert
-
+      let remainingAmount = orderAmount;
+      let sufficientFunds = false;
   
-        cart.forEach((item) => {
-          dispatch(removeFromCart(item.pcode));
-        });
-
-        setTimeout(() => {
-          navigation.navigate("Home")
-
-      }, 1500);
-
+      if (shoppingWallet >= remainingAmount) {
+        // Deduct entirely from shopping wallet
+        shoppingWallet -= remainingAmount;
+        sufficientFunds = true;
+      } else if (shoppingWallet > 0 && shoppingWallet < remainingAmount) {
+        // Partially deduct from shopping wallet, rest from main wallet
+        remainingAmount -= shoppingWallet;
+        shoppingWallet = 0;
+        
+        if (walletBalance >= remainingAmount) {
+          walletBalance -= remainingAmount;
+          sufficientFunds = true;
+        }
+      } else if (walletBalance >= remainingAmount) {
+        // Deduct entirely from main wallet if shopping wallet is empty or insufficient
+        walletBalance -= remainingAmount;
+        sufficientFunds = true;
       }
+  
+      if (sufficientFunds) {
+        const success = await proceedOrder();
+        if (success) {
+          const updateShopping = await updateShoppingWallet();
+          const updateMain = await updateMainWallet();
+  
+          if (updateShopping && updateMain) {
+            finalizeOrder();
+          } else {
+            Alert.alert('', 'Network Issue.');
+            setClicked(false);
+          }
+        }
       } else {
-        Alert.alert("",'You have insufficient amount in your wallet.');
+        Alert.alert('', 'You have insufficient funds in your wallet.');
       }
     }
   };
+  
+  const finalizeOrder = () => {
+    setClicked(false); // Re-enable the button after success
+    showToast();
+    setAlertVisible(true); // Show custom alert
+  
+    cart.forEach((item) => {
+      dispatch(removeFromCart(item.pcode));
+    });
+  
+    setTimeout(() => {
+      navigation.navigate("Home");
+    }, 1500);
+  };
+  
 
 
   
@@ -166,25 +180,57 @@ const walletBalance = userInfo? userInfo.mani_wallet:0
     try {
       const res = await axios.get("https://mahilamediplex.com/mediplex/updateMainWallet", {
         params:{
-          newBalance: walletBalance - orderAmount ,
+          newBalance: walletBalance,
           client_id: userInfo.client_id
         }
        
       })
     
 
-      console.log(res.data.mani_wallet,155)
+      // console.log(res.data.mani_wallet,155)
     
         if(res.data.mani_wallet){
           // console.log(res.data.mani_wallet,"cartwallet")
           userInfo.mani_wallet=await res.data.mani_wallet
           dispatch({ type: 'SET_USER_INFO', payload: userInfo });
+          return true;
       
       }
      
     }
     catch (err) {
       console.log(err.message)
+      return false;
+    }
+  }
+
+  const updateShoppingWallet = async () => {
+    const orderAmount= getTotalAmt()
+
+    try {
+      const res = await axios.get("https://mahilamediplex.com/mediplex/updateShoppingWallet", {
+        params:{
+          newBalance: shoppingWallet,
+          client_id: userInfo.client_id
+        }
+       
+      })
+    
+
+  
+    
+        if(res.data.shopping_wallet){
+          // console.log(res.data.mani_wallet,"cartwallet")
+          userInfo.shopping_wallet=await res.data.shopping_wallet
+          dispatch({ type: 'SET_USER_INFO', payload: userInfo });
+          return true;
+      
+      }
+     
+    }
+    catch (err) {
+      console.log(err.message)
+      return false;
     }
   }
 
@@ -374,9 +420,16 @@ const walletBalance = userInfo? userInfo.mani_wallet:0
       <View style={styles.modalContent}>
         <Text style={styles.modalTitle}>Select Payment Type</Text>
 
+
+
+
         <TouchableOpacity style={styles.paymentOption} onPress={() => handlePaymentTypeSelection('Wallet')}>
           <Text style={styles.paymentOptionText}>Wallet</Text>
         </TouchableOpacity>
+
+        {/* <TouchableOpacity style={styles.paymentOption} onPress={() => handlePaymentTypeSelection('sWallet')}>
+          <Text style={styles.paymentOptionText}>Shopping Wallet</Text>
+        </TouchableOpacity> */}
 
         <TouchableOpacity style={styles.paymentOption} onPress={() => handlePaymentTypeSelection('Cash')}>
           <Text style={styles.paymentOptionText}>Cash on Delivery</Text>

@@ -100,7 +100,7 @@ const FundRequestStatus = ({navigation}) => {
        marginBottom:15
      }}
    />
-      <ScrollView>
+      <ScrollView  keyboardShouldPersistTaps='handled' >
 
 
         {/* <View>

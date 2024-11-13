@@ -1,22 +1,40 @@
-import { View, Text,Dimensions,TouchableOpacity,Image, ScrollView,StyleSheet,Pressable,RefreshControl } from 'react-native'
+import { View, Text,Dimensions,TouchableOpacity,Image, ScrollView,StyleSheet,Pressable,RefreshControl, Alert, Keyboard } from 'react-native'
 import React, {useState,useEffect} from 'react'
 import axios from 'axios'
 import { useSelector } from 'react-redux'
 import { TextInput } from 'react-native-gesture-handler'
 import { useForm, Controller } from "react-hook-form";
 import { Entypo } from '@expo/vector-icons'
+import Toast from 'react-native-toast-message'
 const width = Dimensions.get('screen').width
 const WithdrawalScreen = ({navigation}) => {
 
   const [amt,setAmt]= useState(0)
   const { control, handleSubmit, setValue, formState: { errors } } = useForm();
   const user= useSelector((state)=>state.user.userInfo?state.user.userInfo:null)
+  console.log(user,"withdraw")
   const [error,setError]= useState("")
   const [withdrawData,setWithdrawData]= useState([])
 
   console.log("userwithdraw",user.mani_wallet)
 
+  const showToast = () => {
+    Toast.show({
+      type: "success",
+      text1: "Your profile is updated.",
+    });
+  };
+
+
   const onSubmit= async()=>{
+    Keyboard.dismiss()
+      if(amt==0){
+        setError("Enter amount")
+        setTimeout(() => {
+          setError("")
+        }, 2000);
+        return;
+      }
      if(user.bank_name && user.bank_ac_no && user.bank_ifsc_code){
          setError("")
 
@@ -29,23 +47,30 @@ const WithdrawalScreen = ({navigation}) => {
               total:amt
             })
 
+            console.log(res.status)
+
             if(res.status==200){
               console.log("updated",res.data.result)
               setAmt("")
+              showToast()
              getWithdrawData()
+
             }
           }
           catch(err){
             console.log(err.message)
+            Alert.alert("","Network Issue")
           }
       
          }
          else{
+         
           setError("Invalid Amount")
          }
 
      }
      else{
+
       setError("Please update your bank Details")
      }
   }
@@ -130,7 +155,7 @@ const WithdrawalScreen = ({navigation}) => {
       }}
     />
 
-<ScrollView refreshControl={
+<ScrollView  keyboardShouldPersistTaps='handled' refreshControl={
       <RefreshControl refreshing={refreshing} onRefresh={handleRefresh} />
     }>
       <View style={{ width: width, alignItems: "center", marginTop: 40 }}>
@@ -251,6 +276,10 @@ item.status == 9 ?
         )}
 
     </ScrollView>
+    <Toast
+          position='bottom'
+          bottomOffset={150}
+        />
   </View>
 );
 }

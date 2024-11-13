@@ -159,7 +159,7 @@ export default function SearchBar({ navigation }) {
                     <View style={{ paddingLeft: 20, marginTop: 20 }}>
                         {/* <Text style={{ letterSpacing: 2, fontSize: 15 }}>Previously searched products</Text> */}
                     </View>
-                    <ScrollView style={{ marginTop: 20, padding: 10 }}>
+                    <ScrollView  keyboardShouldPersistTaps='handled'  style={{ marginTop: 20, padding: 10 }}>
                         {filteredProducts.map((product, index) => (
                             product && (
                                 

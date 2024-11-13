@@ -1,4 +1,4 @@
-import { View, Text, ScrollView,TextInput,TouchableOpacity, Dimensions,Image,Pressable } from 'react-native';
+import { View, Text, ScrollView,TextInput,TouchableOpacity, Dimensions,Image,Pressable, Keyboard } from 'react-native';
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import Node from '../Components/Node'; // Corrected import
@@ -82,6 +82,7 @@ catch(err){
 }
 
 const onSubmit= async()=>{
+  Keyboard.dismiss()
   if(userRootnode==""){
     getClientName(rootNode)
   }
@@ -132,7 +133,7 @@ const onSubmit= async()=>{
    />
  
 </View>
-      <ScrollView contentContainerStyle={{ alignItems: 'center' }}>
+      <ScrollView  keyboardShouldPersistTaps='handled'  contentContainerStyle={{ alignItems: 'center' }}>
  
       <View style={{ marginTop: 0,paddingTop:40 }}>
               <Text allowFontScaling={false}>  Enter USER ID</Text>

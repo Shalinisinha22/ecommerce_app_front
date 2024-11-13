@@ -26,6 +26,8 @@ import { EvilIcons } from "@expo/vector-icons";
 // import CountryPicker from 'react-native-country-picker-modal';
 import { Picker } from "@react-native-picker/picker";
 import RNPickerSelect from 'react-native-picker-select';
+import { Keyboard } from "react-native";
+import { TouchableWithoutFeedback } from "react-native";
 // import { Select } from "native-base";
 const ProfileScreen = ({ navigation }) => {
 
@@ -104,6 +106,10 @@ const dispatch= useDispatch()
   const [imageName, setImage] = useState("");
   const [photo, setPhoto] = useState(null);
   const [showDatePicker, setShowDatePicker] = useState(false);
+
+  let userData = useSelector(state => state.user.userInfo ? state.user.userInfo : null);
+
+
 
   const userInfo = useSelector(state => state.user.userInfo ? state.user.userInfo.client_id : null);
 
@@ -362,8 +368,21 @@ const dispatch= useDispatch()
     }
   };
 
+  const handleProfileUpdate = () => {
+    // Dismiss the keyboard first
+    console.log("Button Pressed - Preparing to dismiss keyboard");
+    Keyboard.dismiss();
+    console.log("called")
+
+    // Add a small delay before calling handleSubmit to ensure keyboard is fully closed
+    setTimeout(() => {
+        handleSubmit(onSubmit)();
+    }, 100); // 100ms delay should be enough to handle this
+};
 
   const onSubmit = async (data) => {
+
+  
     console.log(data, editableDob, editableCountry, photo)
 
     if (photo) {
@@ -410,9 +429,26 @@ const dispatch= useDispatch()
     //  console.log(imageName,editableProfileImage)
     }
 
+    if(editableBankName){
+  userData.bank_name= editableBankName
+  dispatch({ type: 'SET_USER_INFO', payload: userData})
+
+    }
+    if(editableIFSC){
+      userData.bank_ifsc_code= editableIFSC
+      dispatch({ type: 'SET_USER_INFO', payload: userData})
+    }
+
+    if(editableBankAccountNumber){
+      userData.bank_ac_no= editableBankAccountNumber
+      dispatch({ type: 'SET_USER_INFO', payload: userData})
+    }
+
     if(editableProfileImage){
       // console.log(imageName,editableProfileImage)
+      userData.user_image= editableProfileImage
       dispatch({ type: 'SET_USER_IMAGE', payload:editableProfileImage });
+      dispatch({ type: 'SET_USER_INFO', payload: userData})
 
     }
 
@@ -453,21 +489,23 @@ const dispatch= useDispatch()
 
 
   return (
-    <SafeAreaView style={{ backgroundColor: "white", paddingBottom: 0 }}>
-    
-      <ScrollView>
-        <View style={styles.safeArea}>
-          <KeyboardAvoidingView>
-          <Text
+    <>
+    <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+    <SafeAreaView style={styles.safeArea}>
+    <KeyboardAvoidingView behavior="padding" style={{ flex: 1 }}>
+      <ScrollView  keyboardShouldPersistTaps='handled' contentContainerStyle={styles.scrollViewContent}>
+        <View style={styles.container}>
+
+        <Text
         allowFontScaling={false}
         style={{
           height: 1,
           borderColor: "whitesmoke",
           borderWidth: 2,
-          marginBottm:0
+          marginBottom:0
         }}
       />
-        <View style={{flexDirection:"row",alignItems:"center",justifyContent:"space-around"}}>
+        <View style={styles.header}>
         <TouchableOpacity onPress={() => navigation.openDrawer()} style={{ paddingTop: 0,paddingLeft:0}}>
 <Entypo name="menu" size={40} color="#155d27" />
    
@@ -482,14 +520,18 @@ const dispatch= useDispatch()
             <Pressable onPress={()=>navigation.navigate("Home")}>
               <Image source={require("../assets/logo.png")} style={{ height: 80, width: 80, resizeMode: "contain" }} />
             </Pressable> 
-                        </View>
+            </View>
+{/*        
+        <View style={{flexDirection:"row",alignItems:"center",justifyContent:"space-around"}}>
+     
+                        </View> */}
             <Text
         allowFontScaling={false}
         style={{
           height: 1,
           borderColor: "whitesmoke",
           borderWidth: 2,
-          marginTop: 10,
+          marginTop: 0,
         }}
       />
 
@@ -1345,14 +1387,12 @@ const dispatch= useDispatch()
 
             <View style={{ marginTop: 30 }} />
 
-
+            
 
             <TouchableOpacity
               style={styles.button}
-              onPress={handleSubmit(onSubmit)}
+              onPress={handleProfileUpdate}>
 
-
-            >
               <Text allowFontScaling={false}
 
                 style={{
@@ -1366,15 +1406,20 @@ const dispatch= useDispatch()
               </Text>
             </TouchableOpacity>
 
-            <Toast
-              position='bottom'
-              bottomOffset={80}
-            />
-          </KeyboardAvoidingView>
+           
         </View>
+     
+ 
       </ScrollView>
-      <Toast />
+      </KeyboardAvoidingView>
     </SafeAreaView>
+    </TouchableWithoutFeedback>
+          <Toast
+          position='bottom'
+          bottomOffset={150}
+        />
+    
+         </>
   );
 };
 
@@ -1383,8 +1428,20 @@ const styles = StyleSheet.create({
   safeArea: {
     flex: 1,
     backgroundColor: "white",
-    marginTop: 0,
-    padding: 15
+  },
+  scrollViewContent: {
+    flexGrow: 1,
+    paddingBottom: 40,
+  },
+  container: {
+    paddingHorizontal: 15,
+    paddingTop: 20,
+  },
+  header: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    marginBottom: 0,
   },
   inputBoxCont: {
     flexDirection: "row",

@@ -143,7 +143,7 @@ const DownlineListScreen = ({navigation}) => {
   };
 
   return (
-    <ScrollView style={{ flex: 1, backgroundColor: '#fff' }}>
+    <ScrollView   keyboardShouldPersistTaps='handled' style={{ flex: 1, backgroundColor: '#fff' }}>
       <View>
         {/* <Text
           allowFontScaling={false}

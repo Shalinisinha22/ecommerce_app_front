@@ -12,22 +12,23 @@ import { useState,useEffect } from 'react';
 import { useDispatch } from 'react-redux';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Toast from 'react-native-toast-message';
+import { ShopProvider } from './Components/ShopContext';
 export default function App() {
 
 // AsyncStorage.clear()
 const [shopType,setShopType]= useState(null)
-const [modalVisible, setModalVisible] = useState(true);
+
 const [selectedShopType, setSelectedShopType] = useState('');
 const [selectedShopClientId,setselectedShopClientId]= useState('');
 
 const getShop= async()=>{
   const res = JSON.parse(await AsyncStorage.getItem('shopDetails'));
-  console.log("Shop Details APP:", res);
+  // console.log("Shop Details APP:", res);
 
  
 
   if(res){
-    console.log("res.cliient_id",res.client_id)
+    // console.log("res.cliient_id",res.client_id)
 
 
   }
@@ -37,7 +38,7 @@ const getShop= async()=>{
      
       const data= resp.data
   
-      console.log(data[0],"272 app")
+      // console.log(data[0],"272 app")
     
       await AsyncStorage.setItem("shopDetails",JSON.stringify(data[0]))
     }
@@ -72,9 +73,11 @@ await AsyncStorage.setItem("shopDetails",JSON.stringify(selectedShopType))
         <View style={styles.container}>
         <Toast ref={(ref) => Toast.setRef(ref)} />
 
-
+<ShopProvider>
+<AppNavigator></AppNavigator>
+</ShopProvider>
      
-   <AppNavigator></AppNavigator>
+
    
       <StatusBar
         backgroundColor='white'
