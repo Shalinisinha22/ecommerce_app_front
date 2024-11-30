@@ -40,9 +40,9 @@ const dispatch=useDispatch()
   })
 
   const data = res.data
-  if(data[0].mani_wallet){
-    // console.log(data[0].mani_wallet,"wallet")
-    setWallet(data[0].mani_wallet)
+  if(data[0].mani_wallet || data[0].shopping_wallet){
+    console.log(data[0],"wallet")
+    setWallet(data[0].mani_wallet + data[0].shopping_wallet)
     user.mani_wallet= data[0].mani_wallet
     dispatch({ type: 'SET_USER_INFO', payload: user});
 
@@ -95,7 +95,7 @@ useEffect(()=>{
             <View style={{ flexDirection:"row", alignItems:"center" }}>
               <TouchableOpacity style={{ flexDirection: "row", justifyContent: "space-around", borderWidth: 1, borderColor: "gray", height: 35, borderRadius: 15, paddingHorizontal: 15, alignItems: "center" }} onPress={() => navigation.navigate("wallet")}>
                 <FontAwesome5 name="wallet" size={20} color="#0a7736" />
-                <Text numberOfLines={2} allowFontScaling={false}style={{ color: "#a11463", fontSize: 10, fontWeight: '700' }}>  Rs {user?Math.round(user.mani_wallet):"0"}</Text>
+                <Text numberOfLines={2} allowFontScaling={false}style={{ color: "#a11463", fontSize: 10, fontWeight: '700' }}>  Rs {user?Math.round(user.mani_wallet) + Math.round(user.shopping_wallet):"0"}</Text>
               </TouchableOpacity>
            
             </View>

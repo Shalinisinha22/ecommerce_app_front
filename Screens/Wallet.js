@@ -16,10 +16,16 @@ const Wallet = ({navigation}) => {
 
 
   const [wallet, setWallet] = useState(user?.mani_wallet);
+  const [shoppingWallet, setShoppingWallet] = useState(user?.shopping_wallet);
+  const [totalAmt,setTotalAmt]= useState(user?.mani_wallet + user?.shopping_wallet)
+
 
   const getWallet = async () => {
     if (user?.mani_wallet) {
       setWallet(user.mani_wallet);
+    }
+   if(user?.shopping_wallet){
+      setShoppingWallet(user.shopping_wallet);
     }
   };
 
@@ -50,7 +56,6 @@ const Wallet = ({navigation}) => {
             </TouchableOpacity>
             <Pressable onPress={()=>navigation.navigate("Home")}>
             <Image  source={require("../assets/logo.png")} style={{height:80,width:80,resizemode:"contain",marginLeft:75}}></Image>
-
             </Pressable>
 
     </View>   
@@ -69,15 +74,13 @@ const Wallet = ({navigation}) => {
       <Text allowFontScaling={false} style={{ color: "#9e0059", fontSize: 18, letterSpacing: 2 }}>
       YOUR WALLET
       </Text>
-      <FontAwesome5 name="wallet" size={40} color="#0a7736" style={{marginTop:5}} />
+      {/* <FontAwesome5 name="wallet" size={40} color="#9e0059" style={{marginTop:5}} /> */}
     </View>
     {/* <Text
       allowFontScaling={false}
       style={{
         height: 1,
         borderColor: "whitesmoke",
-
-
         borderWidth: 2,
         marginTop: 15,
       }}
@@ -86,19 +89,115 @@ const Wallet = ({navigation}) => {
     <ScrollView refreshControl={
       <RefreshControl refreshing={refreshing} onRefresh={handleRefresh} />
     }>
-      <View style={{ width: width, alignItems: "center", marginTop: 40 }}>
-        <Text allowFontScaling={false} style={{ fontWeight: "bold", fontSize: 12, letterSpacing: 1.2 }}>Total Amount:</Text>
-        <Text allowFontScaling={false} style={{ fontSize: 18, marginTop: 5 }}>Rs {user.mani_wallet?Math.round(user.mani_wallet):"0"}</Text>
-        {/* <Text
-          allowFontScaling={false}
-          style={{
-            height: 1,
-            borderColor: "whitesmoke",
-            borderWidth: 2,
-            marginTop: 20,
-            width: Dimensions.get('screen').width
-          }}
-        /> */}
+      <View style={{ width: width, alignItems: "center", marginTop: 30 }}>
+       
+      <Text
+      allowFontScaling={false}
+      style={{
+        height: 1,
+        borderColor: "whitesmoke",
+        borderWidth: 2,
+        marginBottom: 12,
+        width:width
+      }}
+    />
+                <TouchableOpacity  style={{width:width * 0.7,paddingVertical:10,backgroundColor:"#006400",borderRadius:15,marginTop:12,elevation:5,borderWidth:2,borderColor:"#9e0059"}}>
+
+<View style={{flexDirection:"row",gap:5,alignItems:"center"}}>
+  <Image source={require("../assets/mediplex/wallet.png")} style={{height:40,width:75,resizeMode:"contain"}}></Image>
+<View>
+                 <Text allowFontScaling={false} style={{textAlign:"center",fontSize:15,color:"#fff",fontWeight:"bold",marginBottom:8}}>Rs {user?Math.round(user?.shopping_wallet):"0"}</Text>
+                    <Text allowFontScaling={false} style={{textAlign:"center",fontSize:18,color:"#fff",letterSpacing:2}}>Shopping wallet</Text>
+                </View>
+</View>
+             
+               
+
+            </TouchableOpacity>
+
+ <Text
+      allowFontScaling={false}
+      style={{
+        height: 1,
+        borderColor: "whitesmoke",
+        borderWidth: 2,
+        marginTop: 15,
+        width:width
+      }}
+    />
+         <TouchableOpacity  style={{width:width * 0.7,paddingVertical:10,backgroundColor:"#006400",borderRadius:15,marginTop:12,elevation:5,borderWidth:2,borderColor:"#9e0059"}}>
+
+<View style={{flexDirection:"row",gap:5,alignItems:"center"}}>
+  <Image source={require("../assets/mediplex/bank.png")} style={{height:50,width:75,resizeMode:"contain"}}></Image>
+                   <View >
+                 <Text allowFontScaling={false} style={{textAlign:"center",fontSize:15,color:"#fff",fontWeight:"bold",marginBottom:8}}>Rs {user?Math.round(user?.mani_wallet):"0"}</Text>
+                    <Text allowFontScaling={false} style={{textAlign:"center",fontSize:18,color:"#fff",letterSpacing:2}}>Main wallet</Text>
+                </View>
+</View>
+             
+               
+
+            </TouchableOpacity>
+
+            <Text
+      allowFontScaling={false}
+      style={{
+        height: 1,
+        borderColor: "whitesmoke",
+        borderWidth: 2,
+        marginTop: 15,
+        width:width
+      }}
+    />
+
+<TouchableOpacity  style={{width:width * 0.7,paddingHorizontal:0,paddingVertical:10,backgroundColor:"#006400",borderRadius:15,marginTop:10,elevation:5,borderWidth:2,borderColor:"#9e0059"}}>
+
+<View style={{flexDirection:"row",gap:5,alignItems:"center"}}>
+  <Image source={require("../assets/mediplex/total.png")} style={{height:50,width:75,resizeMode:"contain"}}></Image>
+<View >
+                 <Text allowFontScaling={false} style={{textAlign:"center",fontSize:15,color:"#fff",fontWeight:"bold",marginBottom:8}}>  Rs {Math.round(user?.mani_wallet) + Math.round(user?.shopping_wallet)}
+                 </Text>
+                    <Text allowFontScaling={false} style={{textAlign:"center",fontSize:18,color:"#fff",letterSpacing:2}}>Total Amount</Text>
+                </View>
+</View>
+             
+               
+
+            </TouchableOpacity>
+
+                <Text
+      allowFontScaling={false}
+      style={{
+        height: 1,
+        borderColor: "whitesmoke",
+        borderWidth: 2,
+        marginTop: 15,
+        width:width
+      }}
+    />
+                <TouchableOpacity onPress={()=>navigation.navigate("fundRequestScreen")}  style={{width:width * 0.7,paddingHorizontal:0,paddingVertical:10,backgroundColor:"#006400",borderRadius:15,marginTop:12,elevation:5,borderWidth:2,borderColor:"#9e0059"}}>
+
+<View style={{flexDirection:"row",gap:5,alignItems:"center"}}>
+  <Image source={require("../assets/mediplex/recharge.png")} style={{height:50,width:75,resizeMode:"contain"}}></Image>
+                   <View >
+                    <Text allowFontScaling={false} style={{textAlign:"center",fontSize:18,color:"#fff",letterSpacing:2}}>Recharge</Text>
+                </View>
+</View>
+             
+               
+
+            </TouchableOpacity>
+
+            <Text
+      allowFontScaling={false}
+      style={{
+        height: 1,
+        borderColor: "whitesmoke",
+        borderWidth: 2,
+        marginTop: 15,
+        width:width
+      }}
+    />
       </View>
 
    

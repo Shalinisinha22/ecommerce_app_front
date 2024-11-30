@@ -8,27 +8,29 @@ import moment from 'moment-timezone';
 
 const width = Dimensions.get('screen').width;
 
-const AllOrders = ({ navigation }) => {
+const PendingOrders = ({ navigation }) => {
   const [orders, setOrders] = useState([]);
 
   const userInfo = useSelector((state) => state.user.userInfo ? state.user.userInfo : null);
 
   const getOrders = async () => { 
     try {
-        const res = await axios.get("https://mahilamediplex.com/mediplex/allOrders", {
+        const res = await axios.get("https://mahilamediplex.com/mediplex/pendingSale", {
             params: {
                 uid: userInfo.client_id
             }
         });
 
-      
-let newArr= res.data
-        
+        // Filter the response data for status == 1
+        const newArr = res.data.filter((item) => item.status === 1);
+
+        // Update state with the filtered array
         setOrders(newArr);
     } catch (err) {
-        console.log(err.message);
+        console.error("Error fetching orders:", err.message);
     }
 };
+
 
 
   useEffect(() => {
@@ -38,19 +40,15 @@ let newArr= res.data
   const renderRow = ({ item }) => (
 
     <View style={styles.row}>
-      {console.log(item)}
-      <Text allowFontScaling={false} style={styles.cell}>{moment(item.order_date).format('YYYY-MM-DD')}</Text>
-      <Text allowFontScaling={false} style={styles.cell}>{item.order_id}</Text>
+      <Text allowFontScaling={false} style={styles.cell}>{moment(item.cdate).format('YYYY-MM-DD')}</Text>
+      <Text allowFontScaling={false} style={styles.cell}>{item.name}</Text>
       <Text allowFontScaling={false} style={styles.cell}>{item.business_name}</Text>
-      <Text allowFontScaling={false} style={styles.cell}>Rs{item.user_payable_amount}</Text>
-  
-      {/* Add a View Order button */}
-      <TouchableOpacity
-        style={styles.viewOrderButton}
-        onPress={() => navigation.navigate("orderHistory", { order_id: item.order_id,shop:item.business_name,order_date:item.order_date,delivery_date:item.delivery_date,payment_method:item.payment_method })}
-      >
-        <Text allowFontScaling={false} style={styles.viewOrderButtonText}>View Order</Text>
-      </TouchableOpacity>
+      <Text allowFontScaling={false} style={styles.cell}>Rs{item.batch_no}</Text>
+      <Text allowFontScaling={false} style={styles.cell}>Rs{item.price}</Text>
+      <Text allowFontScaling={false} style={[styles.cell,{color:"red"}]}>Pending</Text>
+
+
+
     </View>
   );
   
@@ -63,7 +61,7 @@ let newArr= res.data
         </TouchableOpacity>
         <View style={{ alignItems: "center", marginTop: 15 }}>
           <Text allowFontScaling={false} style={{ color: "gray", fontSize: 15, letterSpacing: 2 }}>
-            ORDER HISTORY
+            PENDING ORDER
           </Text>
         </View>
         <Pressable onPress={() => navigation.navigate("Home")}>
@@ -84,10 +82,12 @@ let newArr= res.data
       <View style={styles.container}>
         <View style={styles.headerRow}>
           <Text allowFontScaling={false} style={styles.headerCell}>Order_date</Text>
-          <Text allowFontScaling={false} style={styles.headerCell}>Order_id</Text>
+          <Text allowFontScaling={false} style={styles.headerCell}>Name</Text>
           <Text allowFontScaling={false} style={styles.headerCell}>Shop</Text>
+          <Text allowFontScaling={false} style={styles.headerCell}>Batch</Text>
           <Text allowFontScaling={false} style={styles.headerCell}>Amt</Text>
-          <Text allowFontScaling={false} style={styles.headerCell}></Text>
+          <Text allowFontScaling={false} style={styles.headerCell}>Status</Text>
+
 
           {/* <Text allowFontScaling={false} style={styles.headerCell}>Payment Type</Text> */}
           {/* <Text allowFontScaling={false} style={styles.headerCell}>Status</Text> */}
@@ -171,4 +171,4 @@ const styles = StyleSheet.create({
   
 });
 
-export default AllOrders;
+export default PendingOrders;

@@ -1,7 +1,7 @@
 {
   "expo": {
     "name": "MahilaMediplexUser",
-    "slug": "mahila-mediplex",
+    "slug": "MahilaMediplex",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
@@ -27,7 +27,7 @@
     },
     "extra": {
       "eas": {
-        "projectId": "99d291a8-582c-4da0-b51d-f6a7636d2314"
+        "projectId": "1e22f8b2-62c9-4d64-b042-ee12b7e90710"
       }
     },
     "runtimeVersion": {
@@ -36,6 +36,6 @@
     "updates": {
       "url": "https://u.expo.dev/1e22f8b2-62c9-4d64-b042-ee12b7e90710"
     },
-    "owner": "zenwebmaniasolution"
+    "owner": "zenwebmaniasolutions"
   }
 }

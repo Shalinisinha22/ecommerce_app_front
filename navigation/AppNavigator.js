@@ -40,6 +40,7 @@ import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import AllProducts from '../Screens/AllProducts';
 import AllOrders from '../Screens/AllOrders';
+import PendingOrders from '../Screens/PendingOrders';
 
 const Stack = createStackNavigator();
 const Drawer = createDrawerNavigator();
@@ -89,7 +90,7 @@ useEffect(()=>{
             url: "dashboard"
         },
         { id: 1,
-            name: "My Info",
+            name: "Profile",
             submenu: [
               { id: 0, name: "Update Profile", url: "profile" },
               { id: 1, name: "Update KYC", url: "kyc" },
@@ -100,6 +101,18 @@ useEffect(()=>{
             dropdownIcon: <AntDesign name="down" size={15} color="white" />,
             url: ""
         },
+
+        { id: 4,
+            name: "Credit/Loan",
+            submenu: [
+              { id: 0, name: "Loan Request", url: "coming" },
+              { id: 0, name: "Loan Status", url: "coming" },
+        
+      
+            ],
+            icon:<AntDesign name="arrowright" size={18} color="#9e0059" /> ,
+            dropdownIcon: <AntDesign name="down" size={15} color="white" />,
+url: "",},
 
        { id: 2,
                 name: "My Network",
@@ -128,17 +141,7 @@ useEffect(()=>{
                     dropdownIcon: <AntDesign name="down" size={15} color="white" />,
          url: "",},
 
-      { id: 4,
-                        name: "Fund Manager",
-                        submenu: [
-                          { id: 0, name: "Fund Request", url: "fundRequestScreen" },
-                          { id: 0, name: "Fund Request Status", url: "fundRequestStatus" },
-                    
-                  
-                        ],
-                        icon:<AntDesign name="arrowright" size={18} color="#9e0059" /> ,
-                        dropdownIcon: <AntDesign name="down" size={15} color="white" />,
-        url: "",},
+     
 
         
       { id: 5,
@@ -151,8 +154,10 @@ useEffect(()=>{
         icon:<AntDesign name="arrowright" size={18} color="#9e0059" /> ,
         dropdownIcon: <AntDesign name="down" size={15} color="white" />,
 url: "",},
+{ id: 8, name: "Recharge Status", url: "fundRequestStatus" },
 
-// { id: 6, name: "Order History", url: "orderHistory" },
+
+{ id: 6, name: "Pending Orders", url: "pending" },
 
  { id: 7, name: "Logout", url: "" }
 
@@ -203,6 +208,7 @@ url: "",},
                 <Stack.Screen name="AllProducts" component={AllProducts} options={{ headerShown: false }} />
                 <Stack.Screen name="AllOrders" component={AllOrders} options={{ headerShown: false }} />
                 <Stack.Screen name="profile" component={Profile} options={{ headerShown: false }} />
+                <Stack.Screen name="pending" component={PendingOrders} options={{ headerShown: false }} />
 
             </Stack.Navigator>
         );

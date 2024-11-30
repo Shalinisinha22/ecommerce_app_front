@@ -15,7 +15,7 @@ const initialCartState = {
                   ? { ...product, qty: product.qty + 1 }
                   : product
               )
-            : [...state.cart, { ...action.payload.item, qty: 1 }],
+            : [...state.cart, { ...action.payload.item, qty: 1,shop:action.payload.shop }],
         };
       }
 

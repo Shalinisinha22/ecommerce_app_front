@@ -168,6 +168,31 @@ const [bannerImage, setBanner] = useState([])
             <Text allowFontScaling={false}style={{marginLeft:15,marginTop:20}}>PRODUCT DETAILS</Text>
 
             <View style={{marginTop:40}}>
+
+                  <TouchableOpacity style={{
+                    position: "absolute",
+                    left: 5,
+                    top: -10,
+                    backgroundColor: "#111",
+                    borderRadius:20,
+                    paddingHorizontal:10,
+                    zIndex:1000
+                  }}>
+                    <Text
+                      allowFontScaling={false}
+                      style={{
+                        fontSize: 10,
+                        fontWeight: "bold",
+                        textAlign: "center",
+                        color: "#fff",
+
+                      }}
+                    >
+                      {Math.round(((route.params.item.mrp - route.params.item.price) / route.params.item.mrp) * 100)}% OFF
+                    </Text>
+                  </TouchableOpacity>
+
+                
       <Carousel
         loop
         width={width}

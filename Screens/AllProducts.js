@@ -56,6 +56,31 @@ const AllProducts = ({navigation}) => {
                   style={styles.productCard}
                   onPress={() => navigation.navigate("productInner", { item, screen:"products" })}
                 >
+                  
+                  <TouchableOpacity style={{
+                    position: "absolute",
+                    left: 5,
+                    top: 0,
+                    backgroundColor: "#111",
+                    borderRadius:20,
+                    paddingHorizontal:10,
+                    zIndex:1000
+                  }}>
+                    <Text
+                      allowFontScaling={false}
+                      style={{
+                        fontSize: 10,
+                        fontWeight: "bold",
+                        textAlign: "center",
+                        color: "#fff",
+
+                      }}
+                    >
+                      {Math.round(((item.mrp - item.price) / item.mrp) * 100)}% OFF
+                    </Text>
+                  </TouchableOpacity>
+
+              
                   <Image
                     style={styles.productImage}
                     source={{

@@ -20,13 +20,14 @@ export const setShopType = (shopType) => ({
 });
 
 
-export const addToCart = ({ item, id }) => {
+export const addToCart = ({ item, id,shop }) => {
 
   return {
     type: 'ADD_TO_CART',
     payload: {
       id: id, // Correctly assign id
       item: item,
+      shop:shop
     },
   };
 };

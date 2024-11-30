@@ -126,9 +126,11 @@ console.log("walletbalance",userInfo)
     
         const shopData = await AsyncStorage.getItem('shopDetails');
         let shop = null;
+
     
         if (shopData) {
           shop = JSON.parse(shopData);
+          // console.log(shop,"cartj")
           setLMCId(shop.client_id);
         } else {
           console.error("Shop details not found in AsyncStorage.");
@@ -347,12 +349,15 @@ console.log("walletbalance",userInfo)
 
   const renderCartItem = ({ item }) => (
     <View style={styles.cartItem}>
+      {console.log(item.shop)}
       <Image
         style={{ width: 70, height: 100, resizeMode: "contain" }}
         source={{ uri: `${imgUrl}/eproduct/${item.sale_image?.[0] || item.product_image?.[0]}` }}
       />
       <View style={styles.itemDetails}>
         <Text allowFontScaling={false} style={styles.itemName}>{item.name}</Text>
+        <Text allowFontScaling={false} style={[styles.itemName,{marginTop:2}]}>{item.shop}</Text>
+
         <View style={styles.quantityContainer}>
           <TouchableOpacity onPress={() => handleDecrementProduct(item.pcode)}>
             <Icon name="remove-circle-outline" size={24} color="black" />

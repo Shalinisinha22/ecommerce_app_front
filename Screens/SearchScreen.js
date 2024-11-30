@@ -6,15 +6,79 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useSelector, useDispatch } from 'react-redux';
 import { addToCart, handleIncrement, handleDecrement } from '../redux/actions/userActions';
 import { imgUrl } from "../Components/Image/ImageUrl";
+import Header from "../Components/Header";
+import { ImageBackground } from "react-native";
+import Section1 from '../Components/Section1';
+
 
 const width = Dimensions.get("screen").width;
 
 export default function SearchBar({ navigation }) {
+
+
+
+    const [profileImg,setProfileImg]= useState(null)
+  
+    let user=useSelector((state)=>state.user.userInfo?state.user.userInfo:null)
+  
+  
+  
+    const userImg= useSelector((state)=> state.user.userImg?state.user.userImg:null)
+  
+  const [wallet,setWallet]=useState(user?.mani_wallet + user?.shopping_wallet)
+   const getWallet = async()=>{
+    try{
+    const res= await axios.get("https://mahilamediplex.com/mediplex/wallet_amt",{
+      params:{
+        client_id:user.client_id
+      }
+    })
+  
+    const data = res.data
+    if(data[0].mani_wallet){
+      console.log(data[0],"wallet")
+      setWallet(data[0].mani_wallet + data[0].shopping_wallet)
+      user.mani_wallet= data[0].mani_wallet
+      dispatch({ type: 'SET_USER_INFO', payload: user});
+  
+    }
+    }
+    catch(err){
+      console.log(err.message,"headerwalleterr")
+    }
+   }
+  
+  const getProfileImg= async()=>{
+    try{
+      const res = await axios.get("https://mahilamediplex.com/mediplex/clientDetails", {
+        params: {
+          client_id: user.client_id,
+        },
+      });
+      const data= res.data[0]
+      setProfileImg(data.photo)
+    }
+    catch(err){
+      console.log(err.message,"header64")
+    }
+  }
+  useEffect(()=>{
+    getProfileImg()
+  },[userImg])
+  useEffect(()=>{
+    getWallet()
+  },[user])
+
+
+
+
+
     const [clicked, setClicked] = useState(false);
     const [searchPhrase, setSearchPhrase] = useState("");
     const [products, setProducts] = useState([]);
     const [previousSearches, setPreviousSearches] = useState([]);
     const [error, setError] = useState('');
+    const [shopName,setShopName]= useState("")
 
     const lmcId = useSelector((state) => state.shop.shop ? state.shop.shop : null);
 
@@ -26,7 +90,8 @@ export default function SearchBar({ navigation }) {
     const getProductsId = async () => {
         const id= JSON.parse(await AsyncStorage.getItem('shopDetails'))
         console.log(id.client_id,"36",lmcId)
-       
+        setShopName(id?id.business_name:lmcId.business_name)
+
         try {
             const res = await axios.get("https://mahilamediplex.com/mediplex/getProductId", {
                 params: { client_id: lmcId? lmcId.client_id:id.client_id }
@@ -124,8 +189,43 @@ export default function SearchBar({ navigation }) {
     };
 
     return (
-        <View style={{ flex: 1, backgroundColor: "#fff",paddingTop:10 }}>
-            <View style={styles.container}>
+        <View style={{ flex: 1, backgroundColor: "#fff"}}>
+            
+            <ImageBackground source={require("../assets/bg5.png")} style={{opacity:0.9,marginBottom:15}}>
+<View style={styles.container}>
+
+<View style={{ width: width, borderRadius: 30, borderWidth: 0, borderColor: "#a11463", flexDirection: "row", justifyContent: "space-around" }}>
+            <TouchableOpacity onPress={() => navigation.openDrawer()} style={{ paddingTop: 7}}>
+              {profileImg!==null?<Image  style={{width:50,height:50,resizeMode:"contain"}}   source={{ uri: `${imgUrl}/photo/${profileImg}`}}></Image>:user?.user_image?<Image  style={{width:50,height:50,resizeMode:"contain"}}   source={{ uri: `${imgUrl}/photo/${user.user_image}`}}></Image>
+:  <Entypo name="menu" size={40} color="#155d27" />}
+              {/* */}
+            </TouchableOpacity>
+            {/* {console.log(profileImg,"proflrimg")} */}
+            <View style={{justifyContent:"center"}}>
+             {user &&  <Text allowFontScaling={false} style={{fontSize:10,fontWeight:"bold"}}>{user.first_name}</Text>} 
+             {user &&  <Text allowFontScaling={false} style={{fontSize:8}}>{user.client_id}</Text> }
+            </View>
+            
+          
+            <View style={{ flexDirection:"row", alignItems:"center" }}>
+              <TouchableOpacity style={{ flexDirection: "row", justifyContent: "space-around", borderWidth: 1, borderColor: "gray", height: 35, borderRadius: 15, paddingHorizontal: 15, alignItems: "center" }} onPress={() => navigation.navigate("wallet")}>
+                <FontAwesome5 name="wallet" size={20} color="#0a7736" />
+                <Text numberOfLines={2} allowFontScaling={false}style={{ color: "#a11463", fontSize: 10, fontWeight: '700' }}>  Rs {user?Math.round(user.mani_wallet):"0"}</Text>
+              </TouchableOpacity>
+           
+            </View>
+            <View style={{justifyContent:"center"}}>
+            <TouchableOpacity style={{ alignItems: "center", marginLeft: 8, marginTop: 5 }} onPress={() => navigation.navigate("cart")}>
+                <FontAwesome5 name="shopping-cart" size={25} color="#b6306d" />
+                <Text allowFontScaling={false}style={{ color: "#0a7736", position: "absolute", top: -12, fontWeight: '700' }}>{cart.length}</Text>
+              </TouchableOpacity>
+            </View>
+           
+            <Pressable onPress={()=>navigation.navigate("Home")}>
+              <Image source={require("../assets/logo.png")} style={{ height: 65, width: 70, resizeMode: "contain" }} />
+            </Pressable>
+            
+          </View>
                 <View style={styles.searchBar__unclicked}>
                     <Feather name="search" size={20} color="black" style={{ marginLeft: 1 }} />
                     <TextInput
@@ -146,11 +246,14 @@ export default function SearchBar({ navigation }) {
                         />
                     )}
                 </View>
-                <TouchableOpacity style={{ alignItems: "center", marginLeft: 10 }} onPress={() => navigation.navigate("cart")}>
-                    <FontAwesome5 name="shopping-cart" size={28} color="#b6306d" />
-                    <Text allowFontScaling={false} style={{ color: "#0a7736", position: "absolute", top: -15, fontWeight: 700, fontSize: 15 }}>{cart.length}</Text>
-                </TouchableOpacity>
-            </View>
+</View>
+           
+             
+            </ImageBackground>
+
+
+
+            {/* <Section1 navigation={navigation}></Section1> */}
 
             {error ? (
                 <Text allowFontScaling={false} style={{ color: 'red', textAlign: 'center', marginTop: 20 }}>{error}</Text>
@@ -165,6 +268,30 @@ export default function SearchBar({ navigation }) {
                                 
                                 <Pressable key={index} onPress={() => navigation.navigate("productInner", { item: product })} style={styles.productContainer}>
                                    {/* {console.log(product,"search")} */}
+                  <TouchableOpacity style={{
+                    position: "absolute",
+                    left: 5,
+                    top: 0,
+                    backgroundColor: "#111",
+                    borderRadius:20,
+                    paddingHorizontal:10,
+                    zIndex:1000
+                  }}>
+                    <Text
+                      allowFontScaling={false}
+                      style={{
+                        fontSize: 10,
+                        fontWeight: "bold",
+                        textAlign: "center",
+                        color: "#fff",
+
+                      }}
+                    >
+                      {Math.round(((product.mrp - product.price) / product.mrp) * 100)}% OFF
+                    </Text>
+                  </TouchableOpacity>
+
+                
                                     <Image
                                         style={{ width: 150, height: 130, resizeMode: "contain" }}
                                         source={{ uri: `${imgUrl}/eproduct/${product.sale_image?.[0] || product.product_image?.[0]}` }}
@@ -188,7 +315,7 @@ export default function SearchBar({ navigation }) {
                                         </View>
                                     ) : (
                                         <TouchableOpacity
-                                            onPress={() => dispatch(addToCart({ item: product, id: product.pcode }))}
+                                            onPress={() => dispatch(addToCart({ item: product, id: product.pcode,shop:shopName }))}
                                             style={{
                                                 backgroundColor: "#9e0059",
                                                 paddingVertical: 10,
@@ -216,11 +343,13 @@ export default function SearchBar({ navigation }) {
 
 const styles = StyleSheet.create({
     container: {
-        margin: 15,
-        justifyContent: "center",
-        alignItems: "center",
-        flexDirection: "row",
-        width: "90%",
+        // margin: 15,
+        backgroundColor:"#fff",
+        // justifyContent: "center",
+        // alignItems: "center",
+        // flexDirection: "row",
+        width: width,
+  
     },
     searchBar__unclicked: {
         padding: 8,
@@ -232,6 +361,8 @@ const styles = StyleSheet.create({
         borderWidth: 1,
         borderColor: "gray",
         justifyContent: "space-evenly",
+        marginLeft:20,
+        marginTop:10
     },
     input: {
         fontSize: 14,

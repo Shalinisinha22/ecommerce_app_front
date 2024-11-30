@@ -1,4 +1,4 @@
-import { View, Text, Dimensions, TouchableOpacity, FlatList, Pressable, Image, ScrollView, RefreshControl, StyleSheet } from 'react-native';
+import { View, Text, Dimensions, TouchableOpacity, FlatList, Pressable, Image, ScrollView, RefreshControl, StyleSheet, ActivityIndicator } from 'react-native';
 import React, { useState, useEffect } from 'react';
 import { Entypo } from '@expo/vector-icons';
 import Header from '../Components/Header';
@@ -6,7 +6,7 @@ import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Picker } from '@react-native-picker/picker';
 import { useSelector, useDispatch } from 'react-redux';
-import { addToCart, handleIncrement, handleDecrement} from '../redux/actions/userActions';
+import { addToCart, handleIncrement, handleDecrement,removeFromCart} from '../redux/actions/userActions';
 import { imgUrl } from '../Components/Image/ImageUrl';
 import { setShopType } from '../redux/actions/userActions';
 import { useCallback } from 'react';
@@ -45,6 +45,17 @@ const {globalshop,setShopGlobal}= useShop()
 
   const handleSelectShopType = (item) => {
     if (item) {
+      // console.log(shop.client_id,item)
+
+      if (shopName && shopName !== item.business_name) {
+        setProducts([])
+        // Clear the cart if shop changes
+        cart.forEach((cartItem) => {
+          dispatch(removeFromCart(cartItem.pcode));
+        });
+      }
+
+
       setSelectedShopType(item);
       setShopName(item.business_name);
       setShop(item);
@@ -66,6 +77,7 @@ const {globalshop,setShopGlobal}= useShop()
     AsyncStorage.getItem('shopDetails')
       .then((id) => {
         const shop = JSON.parse(id);
+      
         setShopName(shop.business_name);
         return axios.get("https://mahilamediplex.com/mediplex/getProductId", {
           params: { client_id: client_id || shop.client_id }
@@ -118,8 +130,8 @@ const {globalshop,setShopGlobal}= useShop()
     return product ? product.qty : 0;
   };
 
-  const handleCart = (item, id) => {
-    dispatch(addToCart({ item, id }));
+  const handleCart = (item, id,shop) => {
+    dispatch(addToCart({ item, id,shop }));
   };
 
   const handleIncrementProduct = (id) => {
@@ -196,8 +208,33 @@ if(shop){
                 <Pressable
                   key={item.id}
                   style={styles.productCard}
-                  onPress={() => navigation.navigate("productInner", { item })}
+                  onPress={() => navigation.navigate("productInner", { item,shopName })}
                 >
+                              
+                  <TouchableOpacity style={{
+                    position: "absolute",
+                    left: 5,
+                    top: 0,
+                    backgroundColor: "#111",
+                    borderRadius:20,
+                    paddingHorizontal:8,
+                    zIndex:1000
+                  }}>
+                    <Text
+                      allowFontScaling={false}
+                      style={{
+                        fontSize: 8,
+                        fontWeight: "bold",
+                        textAlign: "center",
+                        color: "#fff",
+
+                      }}
+                    >
+                      {Math.round(((item.mrp - item.price) / item.mrp) * 100)}% OFF
+                    </Text>
+                  </TouchableOpacity>
+
+                
                   <Image
                     style={styles.productImage}
                     source={{
@@ -234,7 +271,7 @@ if(shop){
                     </View>
                   ) : (
                     <TouchableOpacity
-                      onPress={() => handleCart(item, item.pcode)}
+                      onPress={() => handleCart(item, item.pcode,shopName)}
                       style={styles.addToCartButton}
                     >
                       <Text allowFontScaling={false} style={styles.addToCartText}>
@@ -246,9 +283,7 @@ if(shop){
               )}
             />
           ) : (
-            <Text allowFontScaling={false} style={styles.noProductsText}>
-              No Products
-            </Text>
+<ActivityIndicator size={'large'}></ActivityIndicator>
           )}
         </View>
       </ScrollView>

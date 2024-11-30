@@ -28,6 +28,17 @@ const WithdrawalScreen = ({navigation}) => {
 
   const onSubmit= async()=>{
     Keyboard.dismiss()
+    const pendingRequest = withdrawData.find(item => item.status === 9);
+    if (pendingRequest) {
+      Alert.alert(
+        "Pending Withdrawal Request",
+        "Your previous withdrawal request is still pending. Please wait for it to be processed before making a new request.",
+        [
+          { text: "OK" }
+        ]
+      );
+      return;
+    }
       if(amt==0){
         setError("Enter amount")
         setTimeout(() => {
@@ -76,6 +87,8 @@ const WithdrawalScreen = ({navigation}) => {
   }
 
   const getWithdrawData= async()=>{
+
+   
     try{
       const withdrawRes= await axios.get("https://mahilamediplex.com/mediplex/getWithdrawData",{
         params:{
@@ -118,6 +131,8 @@ const WithdrawalScreen = ({navigation}) => {
     getWallet()
     setRefreshing(false);
   };
+
+ 
   return (
     <View style={{ flex: 1, backgroundColor: "#fff" }}>
     <Text

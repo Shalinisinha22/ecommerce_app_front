@@ -48,8 +48,8 @@ const OrderHistory = ({ navigation }) => {
 
   const renderRow = ({ item }) => (
     <View style={styles.row}>
-
-      <Text allowFontScaling={false} style={styles.cell}>{moment(route.params?.order_date).format('YYYY-MM-DD')}</Text>
+{console.log(item)}
+      <Text allowFontScaling={false} style={styles.cell}>{moment(route.params?.delivery_date).format('YYYY-MM-DD')}</Text>
 
       <View style={styles.imageContainer}>
         {item.image && item.image[0] ? (
@@ -58,14 +58,19 @@ const OrderHistory = ({ navigation }) => {
             style={styles.image}
           />
         ) : (
-          <Text style={styles.noImageText}>No Image</Text>
+          null
         )}
-        <Text numberOfLines={4} style={styles.productName}>{item.name}</Text>
+        <Text numberOfLines={2} style={styles.productName}>{item.name}</Text>
       </View>
       <Text style={styles.cell}>{route.params?.shop}</Text>
+      <Text style={styles.cell}>{item.batch_no}</Text>
 
-      <Text style={styles.cell}>{item.qty}</Text>
+      <Text style={styles.cell}>Rs{item.price}</Text>
+      <Text style={styles.cell}>Rs {Math.round(item.price - item.offer_price)}</Text>
+
       <Text style={styles.cell}>RS {item.offer_price * item.qty}</Text>
+      <Text style={styles.cell}>{route.params.payment_method}</Text>
+
       {/* Add more fields as needed */}
     </View>
   );
@@ -89,8 +94,14 @@ const OrderHistory = ({ navigation }) => {
           <Text style={styles.headerCell}>Date</Text>
           <Text style={styles.headerCell}>Name</Text>
           <Text style={styles.headerCell}>Shop</Text>
-          <Text style={styles.headerCell}>Qty</Text>
+          <Text style={styles.headerCell}>Batch</Text>
+
+          <Text style={styles.headerCell}>MRP</Text>
+          <Text style={styles.headerCell}>Discount</Text>
+
           <Text style={styles.headerCell}>Amt</Text>
+          <Text style={styles.headerCell}>Payment type</Text>
+
         </View>
         {orders.length ? (
           <FlatList
@@ -166,8 +177,8 @@ const styles = StyleSheet.create({
     alignItems: "center"
   },
   image: {
-    width: 30,
-    height: 30,
+    width: 20,
+    height: 20,
     resizeMode: "contain"
   },
   noImageText: {
@@ -175,9 +186,9 @@ const styles = StyleSheet.create({
     color: "gray"
   },
   productName: {
-    fontSize: 8,
+    fontSize: 6,
+    fontWeight:"bold"
     // width: 60,
-    textAlign: 'center',
 
   },
   cell: {

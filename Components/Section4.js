@@ -15,6 +15,7 @@ const Section4 = ({navigation}) => {
   const [productId, setProductId] = useState([]);
   const {globalshop}= useShop()  
   const lmcId= globalshop
+  const [shopName,setShopName]= useState("")
   // const lmcId = useSelector((state)=>state.shop.shop? state.shop.shop:null)
 
   // const getShopClientId = async () => {
@@ -42,6 +43,7 @@ const Section4 = ({navigation}) => {
     const id= JSON.parse(await AsyncStorage.getItem('shopDetails'))
     // console.log(id.client_id,"36",lmcId)
 
+    setShopName(id?id.business_name:lmcId.business_name)
 
 
     
@@ -210,9 +212,9 @@ const getQty = (id) => {
 
 
 
-const handleCart=(item,id)=>{
+const handleCart=(item,id,shop)=>{
 
-  dispatch(addToCart({ item, id: id }));
+  dispatch(addToCart({ item, id: id,shop }));
 
 }
 
@@ -254,7 +256,7 @@ setCarts(cart)
           </View>
 
 
-          {products.length!=0 && <TouchableOpacity onPress={()=>navigation.navigate("AllProducts",{products:products})}  style={{paddingRight:20}}>
+          {products.length!=0 && <TouchableOpacity onPress={()=>navigation.navigate("AllProducts",{products:products,shopName})}  style={{paddingRight:20}}>
   <Text style={{fontWeight:"bold",color:"#0a7736"}}>VIEW ALL</Text>
 </TouchableOpacity> }
   {/* <TouchableOpacity onPress={()=>navigation.navigate("products")} style={{paddingHorizontal:15,paddingVertical:5,marginRight:8}}><Text allowFontScaling={false} style={{fontSize:12,textDecorationLine:"underline",color:"#8ac926",fontWeight:700}}>VIEW ALL</Text></TouchableOpacity> */}
@@ -281,8 +283,34 @@ setCarts(cart)
           marginLeft: 10,
           marginTop: 10,
         }}
-        onPress={() => navigation.navigate("productInner", { item: item })}
+        onPress={() => navigation.navigate("productInner", { item: item,shopName })}
       >
+
+
+                  <TouchableOpacity style={{
+                    position: "absolute",
+                    left: 5,
+                    top: 0,
+                    backgroundColor: "#111",
+                    borderRadius:20,
+                    paddingHorizontal:10,
+                    zIndex:1000
+                  }}>
+                    <Text
+                      allowFontScaling={false}
+                      style={{
+                        fontSize: 10,
+                        fontWeight: "bold",
+                        textAlign: "center",
+                        color: "#fff",
+
+                      }}
+                    >
+                      {Math.round(((item.mrp - item.price) / item.mrp) * 100)}% OFF
+                    </Text>
+                  </TouchableOpacity>
+
+                
         {item.sale_image && item.sale_image.length > 0 ? (
           <Image
             style={{ width: 150, height: 130, resizeMode: "contain" }}
@@ -324,7 +352,7 @@ setCarts(cart)
           </View>
         ) : (
           <TouchableOpacity
-            onPress={() => handleCart(item, item.pcode)}
+            onPress={() => handleCart(item, item.pcode,shopName)}
             style={{
               backgroundColor: "#228B22",
               paddingVertical: 10,
