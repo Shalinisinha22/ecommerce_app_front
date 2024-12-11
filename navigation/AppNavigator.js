@@ -185,6 +185,8 @@ url: "",},
                 ) : (
                     <Stack.Screen name="Login" component={LoginScreen} options={{ headerShown: false }} />
                 )}
+                           <Stack.Screen name="wallet" component={Wallet} options={{ headerShown: false }} />
+
                 <Stack.Screen name="Search" component={SearchBar} options={{ headerShown: false }} />
                 <Stack.Screen name="cart" component={CartScreen} options={{ headerShown: false }} />
                 <Stack.Screen name="coming" component={ComingSoon} options={{ headerShown: false }} />
@@ -283,13 +285,13 @@ url: "",},
                 }}
             />
             <Tab.Screen
-                name="wallet"
-                component={Wallet}
+                name="dashboard"
+                component={MyDashboard}
                 options={{
                     tabBarLabel: "",
                     tabBarLabelStyle: { color: "#fff", fontSize: 10, fontWeight: 600, letterSpacing: 2 },
                     headerShown: false,
-                    tabBarIcon: ({ focused }) => focused ? <Entypo name="wallet" size={30} color="#fff" /> : <Entypo name="wallet" size={25} color="#D0D0D0" />,
+                    tabBarIcon: ({ focused }) => focused ? <MaterialCommunityIcons name="view-dashboard" size={30} color="#fff" /> : <MaterialCommunityIcons name="view-dashboard" size={25} color="#D0D0D0" />,
                     tabBarAllowFontScaling:false,
 
                 }}

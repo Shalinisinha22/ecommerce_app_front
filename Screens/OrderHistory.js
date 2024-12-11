@@ -1,4 +1,4 @@
-import { View, Text, Dimensions, StyleSheet, FlatList, Image, Pressable, TouchableOpacity } from 'react-native';
+import { View, Text, Dimensions, StyleSheet, FlatList, Image, Pressable, TouchableOpacity, ActivityIndicator } from 'react-native';
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { Entypo } from '@expo/vector-icons';
@@ -69,7 +69,11 @@ const OrderHistory = ({ navigation }) => {
       <Text style={styles.cell}>Rs {Math.round(item.price - item.offer_price)}</Text>
 
       <Text style={styles.cell}>RS {item.offer_price * item.qty}</Text>
+      <View>
       <Text style={styles.cell}>{route.params.payment_method}</Text>
+<TouchableOpacity style={{backgroundColor:"red",paddingHorizontal:10,paddingVertical:2}}><Text style={{color:"#fff",fontSize:8}}>Cancel</Text></TouchableOpacity>
+      </View>
+
 
       {/* Add more fields as needed */}
     </View>
@@ -110,8 +114,9 @@ const OrderHistory = ({ navigation }) => {
             keyExtractor={(item, index) => index.toString()}
           />
         ) : (
-          <Text style={styles.noOrdersText}>No Orders</Text>
-        )}
+<ActivityIndicator size={'large'}>
+  </ActivityIndicator>  
+      )}
       </View>
     </View>
   );

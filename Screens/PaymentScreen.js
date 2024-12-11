@@ -213,6 +213,8 @@ const PaymentScreen = ({navigation}) => {
 
 
 
+
+
                         </>
                     }
 

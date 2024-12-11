@@ -9,6 +9,7 @@ import { addToCart, removeFromCart, updateQty ,handleIncrement,handleDecrement} 
 import { imgUrl } from './Image/ImageUrl';
 import { useShop } from './ShopContext';
 const Section7 = ({navigation}) => {
+  
   const [shopId, setShopId] = useState('');
   const [products, setProducts] = useState([]);
   const [productId, setProductId] = useState([]);

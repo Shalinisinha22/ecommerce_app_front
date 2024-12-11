@@ -32,6 +32,7 @@ const dispatch=useDispatch()
 
 
  const getWallet = async()=>{
+  console.log("hello from wallet")
   try{
   const res= await axios.get("https://mahilamediplex.com/mediplex/wallet_amt",{
     params:{

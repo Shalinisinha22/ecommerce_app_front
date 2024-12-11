@@ -200,8 +200,6 @@ const Wallet = ({navigation}) => {
     />
       </View>
 
-   
-
     </ScrollView>
   </View>
 );

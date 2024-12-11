@@ -6,7 +6,7 @@ import { max } from 'moment-timezone';
 const Node = ({ node, data, level = 0, maxLevel = 2, type,name }) => {
 
 
-  console.log(name,"name")
+  // console.log(name,"name")
 
   const [rootName, setRootName] = useState("No Node");
   const [leftChildName, setLeftChildName] = useState("No Node");

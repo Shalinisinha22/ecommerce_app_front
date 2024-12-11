@@ -88,7 +88,7 @@ const UpdatePasswordScreen = ({navigation}) => {
 
       <View style={{flexDirection:"row",alignItems:"center",justifyContent:"space-around"}}>
         <TouchableOpacity onPress={() => navigation.openDrawer()} style={{ paddingTop: 0,paddingLeft:0}}>
-<Entypo name="menu" size={40} color="#155d27" />
+             <Entypo name="menu" size={40} color="#155d27" />
    
             </TouchableOpacity>
 

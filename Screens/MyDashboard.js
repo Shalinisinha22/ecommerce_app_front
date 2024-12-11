@@ -17,7 +17,8 @@ const MyDashboard = ({navigation}) => {
     {
         id:0,
         income:user.shopping_wallet? user.shopping_wallet:"0",
-        name:"Shopping Wallet",
+        // name:"Shopping Wallet",
+        name:"Loan/credit Amount",
         url:null,
         icon:<Fontisto name="shopping-bag" size={20} style={{textAlign:"center"}} color="white" />
 
@@ -27,7 +28,8 @@ const MyDashboard = ({navigation}) => {
     {
         id:1,
         income:user.mani_wallet?user.mani_wallet:"0",
-        name:"Main Wallet",
+        // name:"Main Wallet",
+        name:"Fixed Amount",
         url:null,
         icon:<Entypo name="wallet" size={20} style={{textAlign:"center"}} color="white" />
     },
@@ -69,28 +71,28 @@ const MyDashboard = ({navigation}) => {
    
             </TouchableOpacity>
   <View style={{ alignItems: "center", marginTop: 0, marginLeft:0 }}>
-          <Text allowFontScaling={false} style={{ color: "gray", fontSize: 15, letterSpacing: 2 }}>
+          <Text allowFontScaling={false} style={{ color: "#0a7736", fontSize: 15, letterSpacing: 2 }}>
      MY DASHBOARD
           </Text>
         </View>
         <Pressable onPress={()=>navigation.navigate("Home")}>
-              <Image source={require("../assets/logo.png")} style={{ height: 80, width: 80, resizeMode: "contain" }} />
+              <Image source={require("../assets/logo.png")} style={{ height: 80, width: 70, resizeMode: "contain" }} />
             </Pressable> 
-                    </View>
+        </View>
        
-        {/* <Text
+        <Text
           allowFontScaling={false}
           style={{
             height: 1,
             borderColor: "whitesmoke",
             borderWidth: 2,
-            marginTop: 12,
+            marginTop: 2,
             width: width
           }}
-        /> */}
+        />
 
         <ScrollView>
-            <View style={{width:width,alignItems:"center",marginTop:20}}>
+            <View style={{width:width,alignItems:"center",marginTop:5}}>
 
     {
         dashboard.map((item)=>(
@@ -101,14 +103,21 @@ const MyDashboard = ({navigation}) => {
   </View>
     
                     <View >
-                     {item.income && <Text allowFontScaling={false} style={{textAlign:"center",fontSize:18,color:"#fff",fontWeight:"bold",marginBottom:8}}>{Math.round(item.income)}</Text>}   
-                        <Text allowFontScaling={false} style={{textAlign:"center",fontSize:15,color:"#fff",letterSpacing:2,marginBottom:20,}}>{item.name}</Text>
+                     {item.income && <Text allowFontScaling={false} style={{textAlign:"center",fontSize:18,color:"#fff",fontWeight:"bold",marginBottom:8}}>Rs {Math.round(item.income)}</Text>}   
+                      {item.url && <Text allowFontScaling={false} style={{textAlign:"center",fontSize:15,color:"#fff",letterSpacing:2,marginBottom:20,}}>{item.name}</Text> }  
                     </View>
-                    {item.url &&
+                    {item.url?
                                         <View style={{width:300,alignItems:"center",backgroundColor:"#0a7736",paddingVertical:12,borderWidth:1,borderColor:"#fff"}}>
                                         <TouchableOpacity 
                                         onPress={()=>{item.url ? navigation.navigate(item.url):null}} style={{alignItems:"center"}}><Text allowFontScaling={false} style={{color:"#fff",letterSpacing:1}}>More Info   <Entypo name="arrow-with-circle-right" size={20} color="white" /></Text></TouchableOpacity>
                                     </View>
+                                    :
+
+                                    <View style={{width:300,alignItems:"center",backgroundColor:"#0a7736",paddingVertical:12,borderWidth:1,borderColor:"#fff"}}>
+                                    <TouchableOpacity 
+                                    style={{alignItems:"center"}}><Text allowFontScaling={false} style={{color:"#fff",letterSpacing:1}}>{item.name}</Text></TouchableOpacity>
+                                </View>
+
                     }
 
                 </View>

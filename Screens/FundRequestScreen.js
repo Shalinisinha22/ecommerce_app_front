@@ -88,9 +88,9 @@ const FundRequestScreen = ({navigation}) => {
         } catch (error) {
           console.error('Upload failed:', error);
         }
-      };
+    };
 
-      const handleSubmit = async (event) => {
+    const handleSubmit = async (event) => {
      
         let errors = {};
     

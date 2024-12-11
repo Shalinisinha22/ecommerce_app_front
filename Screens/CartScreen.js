@@ -244,7 +244,7 @@ console.log("walletbalance",userInfo)
   //   try {
   //     const res = await axios.get("https://mahilamediplex.com/mediplex/updateMainWallet", {
   //       params:{
-  //         newBalance: 200,
+  //         newBalance: 400,
   //         client_id: userInfo.client_id
   //       }
        
@@ -267,19 +267,18 @@ console.log("walletbalance",userInfo)
   // updateWallet()
   
   const makeOrder = async (item, lmcId) => {
-   const random = Math.floor(1000 + Math.random() * 9000);
-    try {
-      const res = await axios.post("https://mahilamediplex.com/mediplex/orderDetails", {
-        uid: userInfo.client_id,
-        lmc_id: lmc_id || lmcId,
-        pid: item.sale_id,
-        qty: item.qty,
-        barcode: item.barcode,
-        cby: lmc_id || lmcId,
-        image:item.prescription === 'yes'?`${random}${userInfo.client_id}${item.pcode}.jpg`:null,
-        payment_type:paymentType
+    const random = Math.floor(1000 + Math.random() * 9000);
+     try {
+       const res = await axios.post("https://mahilamediplex.com/mediplex/orderDetails", {
+         uid: userInfo.client_id,
+         lmc_id: lmc_id || lmcId,
+         pid: item.sale_id,
+         qty: item.qty,
+         barcode: item.barcode,
+         cby: lmc_id || lmcId,
+         image:item.prescription === 'yes'?`${random}${userInfo.client_id}${item.pcode}.jpg`:null,
+         payment_type:paymentType
       });
-
       return true;  
     } catch (err) {
       console.log(err.message);

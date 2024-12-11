@@ -79,7 +79,7 @@ const getProducts = async (pidArr) => {
             });
         }).flat();
         let filterProduct=[]
-        filterProduct= productArr.filter((item)=>item.category_name=="SURGICAL")
+        filterProduct= productArr.filter((item)=>item.category_name=="SURGICAL PRODUCT")
         // console.log("Final Product Array:", filterProduct);
 
         setProducts(filterProduct);

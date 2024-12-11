@@ -234,6 +234,8 @@ if(shop){
                     </Text>
                   </TouchableOpacity>
 
+
+{/* {console.log(item.category_name)} */}
                 
                   <Image
                     style={styles.productImage}

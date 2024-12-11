@@ -5,6 +5,7 @@ import { Entypo } from '@expo/vector-icons';
 import { useSelector } from 'react-redux';
 import { imgUrl } from '../Components/Image/ImageUrl';
 import moment from 'moment-timezone';
+import { ActivityIndicator } from 'react-native';
 
 const width = Dimensions.get('screen').width;
 
@@ -102,7 +103,8 @@ let newArr= res.data
             keyExtractor={(item, index) => index.toString()}
           />
         ) : (
-          <Text style={{ textAlign: "center", marginTop: 10 }}>No Orders</Text>
+<ActivityIndicator size={'large'}>
+</ActivityIndicator>  
         )}
       </View>
     </View>
