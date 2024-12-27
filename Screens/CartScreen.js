@@ -11,17 +11,22 @@ import Toast from 'react-native-toast-message';
 import * as ImagePicker from 'expo-image-picker';  // Import for image picker
 import uuid from 'react-native-uuid';
 
+
+
 const CartPage = ({ navigation }) => {
   const dispatch = useDispatch();
   const cart = useSelector((state) => state.cart.cart);
   const [alertVisible, setAlertVisible] = useState(false);
   const [isPopupVisible, setPopupVisible] = useState(false);
-  const [paymentType,setPamentType]= useState("")
+  const [paymentType,setPaymentType]= useState("")
+  const [usedShoppingWallet, setUsedShoppingWallet] = useState(0);
+  const [usedMainWallet, setUsedMainWallet] = useState(0);
+  const [walletType,setWalletType]= useState(null)
+
 
   let userInfo = useSelector((state) => state.user.userInfo ? state.user.userInfo : null);
 let walletBalance = userInfo? userInfo.mani_wallet:0
 let shoppingWallet= userInfo? userInfo.shopping_wallet:0
-console.log("walletbalance",userInfo)
   const [flag,setFlag]= useState(false);
   const [lmc_id, setLMCId] = useState('');
   const [totalAmt, setTotalAmt] = useState(0);
@@ -36,57 +41,42 @@ console.log("walletbalance",userInfo)
     return price;
   };
 
-
   const handlePaymentTypeSelection = async (type) => {
+    setPaymentType(type)
     setPopupVisible(false); // Close popup after selection
+
+
+
     const orderAmount = getTotalAmt();
-    
+  
+  
+  
     if (type === 'Cash') {
       const success = await proceedOrder();
       if (success) {
         finalizeOrder();
       }
-    } else if (type === 'Wallet') {
-      let remainingAmount = orderAmount;
-      let sufficientFunds = false;
-  
-      if (shoppingWallet >= remainingAmount) {
-        // Deduct entirely from shopping wallet
-        shoppingWallet -= remainingAmount;
-        sufficientFunds = true;
-      } else if (shoppingWallet > 0 && shoppingWallet < remainingAmount) {
-        // Partially deduct from shopping wallet, rest from main wallet
-        remainingAmount -= shoppingWallet;
-        shoppingWallet = 0;
-        
-        if (walletBalance >= remainingAmount) {
-          walletBalance -= remainingAmount;
-          sufficientFunds = true;
-        }
-      } else if (walletBalance >= remainingAmount) {
-        // Deduct entirely from main wallet if shopping wallet is empty or insufficient
-        walletBalance -= remainingAmount;
-        sufficientFunds = true;
-      }
-  
-      if (sufficientFunds) {
-        const success = await proceedOrder();
+    } 
+    else if (type === 'Wallet') {
+    
+        const success = await proceedOrder(type);
         if (success) {
           const updateShopping = await updateShoppingWallet();
           const updateMain = await updateMainWallet();
-  
-          if (updateShopping && updateMain) {
+
+          if (updateShopping || updateMain) {
             finalizeOrder();
           } else {
             Alert.alert('', 'Network Issue.');
             setClicked(false);
           }
         }
-      } else {
-        Alert.alert('', 'You have insufficient funds in your wallet.');
-      }
-    }
-  };
+        else{
+          Alert.alert("Failed", "Your order is not successfully placed!");
+
+        }
+      } 
+  }
   
   const finalizeOrder = () => {
     setClicked(false); // Re-enable the button after success
@@ -102,15 +92,11 @@ console.log("walletbalance",userInfo)
     }, 1500);
   };
   
-
-
-  
-
   const handleCheckOut = async () => {
     setPopupVisible(true)
   };
 
-  const proceedOrder= async()=>{
+  const proceedOrder= async(type)=>{
   
       setClicked(true); // Disable the checkout button and show indicator
       try {
@@ -123,6 +109,9 @@ console.log("walletbalance",userInfo)
           setClicked(false); // Re-enable the button if validation fails
           return;
         }
+
+
+
     
         const shopData = await AsyncStorage.getItem('shopDetails');
         let shop = null;
@@ -130,7 +119,6 @@ console.log("walletbalance",userInfo)
     
         if (shopData) {
           shop = JSON.parse(shopData);
-          // console.log(shop,"cartj")
           setLMCId(shop.client_id);
         } else {
           console.error("Shop details not found in AsyncStorage.");
@@ -148,18 +136,20 @@ console.log("walletbalance",userInfo)
               break;
             }
           }
-          const orderResult = await makeOrder(item, shop.client_id);
+
+             
+          const orderResult = await makeOrder(item, shop.client_id,type);
           if (!orderResult) {
             orderSuccess = false;
-            Alert.alert("Failed", "Your order is not successfull!");
+            Alert.alert("Failed", "Your order is not successfully placed!");
+            setClicked(false);
+
             break;
           }
         }
     
         if (orderSuccess) {
          return orderSuccess;
-         
-          
           // navigation.navigate("Home");
         }
     
@@ -167,14 +157,11 @@ console.log("walletbalance",userInfo)
         console.error("Error during checkout:", error);
   
         setClicked(false); // Re-enable the button on error
-        Alert.alert("Failed", "Your order is not successfull!");
+        Alert.alert("Failed", "Your order is not successfully placed!");
   
       }
   
   }
-
-
-
 
   const updateMainWallet = async () => {
     const orderAmount= getTotalAmt()
@@ -236,55 +223,154 @@ console.log("walletbalance",userInfo)
     }
   }
 
-
-  
-  // const updateWallet = async () => {
+  const updateWallet = async () => {
 
 
-  //   try {
-  //     const res = await axios.get("https://mahilamediplex.com/mediplex/updateMainWallet", {
-  //       params:{
-  //         newBalance: 400,
-  //         client_id: userInfo.client_id
-  //       }
+    try {
+      const res = await axios.get("https://mahilamediplex.com/mediplex/updateShoppingWallet", {
+        params:{
+          newBalance: 100,
+          client_id: userInfo.client_id
+        }
        
-  //     })
+      })
     
 
     
-  //       if(res.data.mani_wallet){
+        if(res.data.shopping_wallet){
         
-  //        userInfo.mani_wallet= await res.data.mani_wallet
-  //       await  dispatch({ type: 'SET_USER_INFO', payload: userInfo });
+         userInfo.shopping_wallet= await res.data.shopping_wallet
+        await  dispatch({ type: 'SET_USER_INFO', payload: userInfo });
       
-  //     }
+      }
      
-  //   }
-  //   catch (err) {
-  //     console.log(err.message)
-  //   }
-  // }
+    }
+    catch (err) {
+      console.log(err.message,"266")
+    }
+  }
+  const updateWallets = async () => {
+
+
+    try {
+      const res = await axios.get("https://mahilamediplex.com/mediplex/updateMainWallet", {
+        params:{
+          newBalance: 100,
+          client_id: userInfo.client_id
+        }
+       
+      })
+    
+
+    
+        if(res.data.mani_wallet){
+        
+         userInfo.mani_wallet= await res.data.mani_wallet
+        await  dispatch({ type: 'SET_USER_INFO', payload: userInfo });
+      
+      }
+     
+    }
+    catch (err) {
+      console.log(err.message,"266")
+    }
+  }
   // updateWallet()
+  // updateWallets()
   
-  const makeOrder = async (item, lmcId) => {
+  const makeOrder = async (item, lmcId, type) => {
+    // Generate a unique order ID
     const random = Math.floor(1000 + Math.random() * 9000);
-     try {
-       const res = await axios.post("https://mahilamediplex.com/mediplex/orderDetails", {
-         uid: userInfo.client_id,
-         lmc_id: lmc_id || lmcId,
-         pid: item.sale_id,
-         qty: item.qty,
-         barcode: item.barcode,
-         cby: lmc_id || lmcId,
-         image:item.prescription === 'yes'?`${random}${userInfo.client_id}${item.pcode}.jpg`:null,
-         payment_type:paymentType
-      });
-      return true;  
-    } catch (err) {
-      console.log(err.message);
+    const order_id = `ORD${random}`;
+  
+    console.log("Wallet Type:", walletType);
+    console.log("Used Shopping Wallet:", usedShoppingWallet);
+    console.log("Used Main Wallet:", usedMainWallet);
+    console.log("Item Price:", item.price, "Payment Type:", paymentType, type, shoppingWallet,walletBalance,remainingAmount);
+  
+    let remainingAmount = Math.round(item.price * item.qty); // Total item price
+    let shoppingUsed = 0; // Amount deducted from shopping wallet
+    let mainUsed = 0; // Amount deducted from main wallet
+    let sufficientFunds = false; // Wallet balance status
+    let walletType = "";
+
+    console.log(Number(walletBalance)>Number(item.price))
+  
+    // Wallet Deduction Logic
+    if (type === "Wallet") {
+      if (Number(shoppingWallet) >= Number(remainingAmount)) {
+        // Deduct entirely from shopping wallet
+        shoppingUsed = remainingAmount;
+        shoppingWallet -= remainingAmount;
+        walletType = "Shopping Wallet";
+        sufficientFunds = true;
+      } else if (Number(shoppingWallet) > 0 && Number(shoppingWallet)  <= Number(remainingAmount)) {
+        // Partially deduct from shopping wallet, rest from main wallet
+        shoppingUsed = shoppingWallet;
+        remainingAmount -= shoppingWallet;
+        shoppingWallet = 0;
+  
+        if (Number(walletBalance) >= Number(remainingAmount)) {
+          mainUsed = remainingAmount;
+          walletBalance -= remainingAmount;
+          sufficientFunds = true;
+          walletType = "Shopping + Main Wallet";
+        }
+
+      } else if (Number(walletBalance) >= Number(remainingAmount)) {
+        console.log(walletBalance,"walletBalance")
+        // Deduct entirely from main wallet if shopping wallet is empty or insufficient
+        mainUsed = remainingAmount;
+        walletBalance -= remainingAmount;
+        sufficientFunds = true;
+        walletType = "Main Wallet";
+      }
+  
+      if (sufficientFunds) {
+        setUsedShoppingWallet(shoppingUsed); // Track shopping wallet usage
+        setUsedMainWallet(mainUsed); // Track main wallet usage
+      } 
+      else {
+        Alert.alert('', 'You have insufficient funds in your wallet.');
+        return false;
+      }
+    }
+  
+    // Order Submission
+    try {
+      const payload = {
+        uid: userInfo.client_id,
+        order_id,
+        lmc_id: lmcId || lmcId,
+        pid: item.sale_id,
+        qty: item.qty,
+        wallet_type: walletType,
+        shoppingWallet: shoppingUsed,
+        mainWallet: mainUsed,
+        barcode: item.barcode,
+        cby: lmcId || lmcId,
+        image: item.prescription === "yes" ? `${random}${userInfo.client_id}${item.pcode}.jpg` : null,
+        payment_type:type?type:"Cash",
+      };
+  
+      const res = await axios.post("https://mahilamediplex.com/mediplex/orderDetails", payload);
+  
+      console.log("Order successfully placed:", res.data);
+      if(res.data){
+        return true;
+
+      }
+      else{
+        return false;
+      }
+    } catch (error) {
+      console.error("Error placing order:", error.message);
       return false;
     }
   };
+  
+
+
   
   const handleIncrementProduct = (id) => {
     dispatch(handleIncrement({ id }));
@@ -334,7 +420,7 @@ console.log("walletbalance",userInfo)
         },
         params: { imgName: "prescription" },
       });
-      console.log('Upload success:', response.data);
+      // console.log('Upload success:', response.data);
       return response.data;
     } catch (error) {
       console.error('Upload failed:', error);
@@ -348,7 +434,7 @@ console.log("walletbalance",userInfo)
 
   const renderCartItem = ({ item }) => (
     <View style={styles.cartItem}>
-      {console.log(item.shop)}
+      {/* {console.log(item.shop)} */}
       <Image
         style={{ width: 70, height: 100, resizeMode: "contain" }}
         source={{ uri: `${imgUrl}/eproduct/${item.sale_image?.[0] || item.product_image?.[0]}` }}
@@ -515,7 +601,10 @@ console.log("walletbalance",userInfo)
 
     </View>
   );
-};
+
+
+}
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,

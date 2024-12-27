@@ -18,19 +18,26 @@ const HomeScreen = ({ navigation }) => {
   const width = Dimensions.get('screen').width;
 
   const userInfo = useSelector((state) => state.user.userInfo ? state.user.userInfo : null);
-  console.log("home",userInfo.mani_wallet)
+
   const [wallet, setWallet] = useState(userInfo?.mani_wallet);
+  const [shoppingWallet, setShoppingWallet] = useState(userInfo?.shopping_wallet);
+
 
   const getWallet = async () => {
+    console.log(userInfo)
     if (userInfo?.mani_wallet) {
       setWallet(userInfo.mani_wallet);
+    
+    }
+    if (userInfo?.shopping_wallet) {
+      setShoppingWallet(userInfo.shoppingWallet);
+    
     }
   };
 
   useEffect(() => {
     getWallet();
-    console.log("homewallet", userInfo?.mani_wallet); // Now logs when userInfo changes
-  }, [userInfo]);
+  },[userInfo]);
 
   const scrollY = useRef(new Animated.Value(0)).current;
 
@@ -39,9 +46,37 @@ const HomeScreen = ({ navigation }) => {
 
   const handleRefresh = async () => {
     setRefreshing(true);
-    getWallet()
+    try{
+      const res= await axios.get("https://mahilamediplex.com/mediplex/wallet_amt",{
+        params:{
+          client_id:userInfo?.client_id
+        }
+      })
+    
+      const data = res.data
+      console.log("header hme",data[0])
+      if(data[0].mani_wallet || data[0].shopping_wallet){
+        console.log(data[0],"wallet")
+        setWallet(Math.round(userInfo?.mani_wallet || 0) + Math.round(userInfo?.shopping_wallet || 0))
+        userInfo.mani_wallet= data[0].mani_wallet
+        userInfo.shopping_wallet= data[0].shopping_wallet
+        dispatch({ type: 'SET_USER_INFO', payload: user});
+    
+      }
+      }
+      catch(err){
+        console.log(err.message,"headerwalleterr")
+      }
     setRefreshing(false);
   };
+  
+  useEffect(() => {
+    if (userInfo) {
+      setWallet(userInfo?.mani_wallet);
+      setShoppingWallet(userInfo?.shopping_wallet);
+    }
+  }, [userInfo]); // Sync local state when Redux state changes
+  
 
   const cart = useSelector((state) => state.cart ? state.cart.cart : null);
 
@@ -68,11 +103,14 @@ const HomeScreen = ({ navigation }) => {
       });
     }
   }, [cart]);
+  useEffect(()=>{
+
+  },[])
 
   return (
     <ImageBackground style={{ width: width, flex: 1, backgroundColor: "#fff", opacity: 1 }}>
       <Header navigation={navigation} wallet={wallet} />
-
+{/* <Text style={{margin:10}}>{userInfo?.shopping_wallet}</Text> */}
       <Animated.ScrollView
         refreshControl={
           <RefreshControl refreshing={refreshing} onRefresh={handleRefresh} />

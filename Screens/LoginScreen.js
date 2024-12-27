@@ -117,7 +117,7 @@ const LoginScreen = ({ navigation }) => {
                     onBlur={() => setIsIdFocused(false)}
                     style={{
                       color: "black",
-                      marginVertical: 10,
+                      marginVertical: 2,
                       width: 300,
                       fontSize: 18,
                     }}
@@ -141,7 +141,7 @@ const LoginScreen = ({ navigation }) => {
                     secureTextEntry={hidePass ? true : false}
                     style={{
                       color: "black",
-                      marginVertical: 10,
+                      marginVertical: 2,
                       width: 300,
                       fontSize:18,
                     }}
@@ -171,14 +171,14 @@ const LoginScreen = ({ navigation }) => {
                 </Text>
               </TouchableOpacity>
 
-              {/* <TouchableOpacity
+              <TouchableOpacity
                 onPress={() => navigation.navigate("RegisterScreen")}
                 style={{ marginTop: 15 }}
               >
-                <Text allowFontScaling={false}  style={{ textAlign: "center", color: "black", fontSize: 16, fontWeight: 800 }}>
+                <Text allowFontScaling={false}  style={{ textAlign: "center", color: "black", fontSize: 10, fontWeight: 800 }}>
                   Don't have an account? Sign Up
                 </Text>
-              </TouchableOpacity> */}
+              </TouchableOpacity>
             </View>
           </KeyboardAvoidingView>
         </ScrollView>

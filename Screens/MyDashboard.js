@@ -1,5 +1,5 @@
-import { View, Text,Dimensions,TouchableOpacity,ScrollView,Image,Pressable } from 'react-native'
-import React,{useState,useEffect} from 'react'
+import { View, Text,Dimensions,TouchableOpacity,ScrollView,Image,Pressable,RefreshControl,Animated } from 'react-native'
+import React,{useState,useEffect,useRef} from 'react'
 import { useSelector } from 'react-redux'
 import { Entypo,Fontisto,AntDesign } from '@expo/vector-icons'
 
@@ -10,48 +10,60 @@ const MyDashboard = ({navigation}) => {
    
 
   const user= useSelector((state)=>state.user.userInfo?state.user.userInfo:null)
-  console.log(user.shopping_wallet, user.mani_wallet)
+  console.log(user)
+
+  const [wallet, setWallet] = useState(user?.mani_wallet);
+  const [shoppingWallet, setShoppingWallet] = useState(user?.shopping_wallet);
+
+const [dashboard,setDashboard]=useState([{
+  id:0,
+  income:shoppingWallet? shoppingWallet:"0",
+  // name:"Shopping Wallet",
+  name:"Loan/credit Amount",
+  url:null,
+  icon:<Fontisto name="shopping-bag" size={20} style={{textAlign:"center"}} color="white" />
 
 
-  const dashboard=[
-    {
-        id:0,
-        income:user.shopping_wallet? user.shopping_wallet:"0",
-        // name:"Shopping Wallet",
-        name:"Loan/credit Amount",
-        url:null,
-        icon:<Fontisto name="shopping-bag" size={20} style={{textAlign:"center"}} color="white" />
+},
+
+{
+  id:1,
+  income:wallet?wallet:"0",
+  // name:"Main Wallet",
+  name:"Fixed Amount",
+  url:null,
+  icon:<Entypo name="wallet" size={20} style={{textAlign:"center"}} color="white" />
+},
+
+{
+  id:2,
+  income:null,
+  name:"Sponsor Income",
+  url:"sponsorIncome",
+  icon:<AntDesign name="linechart" size={20} style={{textAlign:"center"}} color="white" />
+},
 
 
-    },
+{
+  id:3,
+  income:null,
+  name:"Daily Income",
+  url:"dailyIncome",
+  icon:<AntDesign name="linechart" size={20} style={{textAlign:"center"}} color="white" />
+},])
+  const scrollY = useRef(new Animated.Value(0)).current;
 
-    {
-        id:1,
-        income:user.mani_wallet?user.mani_wallet:"0",
-        // name:"Main Wallet",
-        name:"Fixed Amount",
-        url:null,
-        icon:<Entypo name="wallet" size={20} style={{textAlign:"center"}} color="white" />
-    },
+ const [refreshing, setRefreshing] = useState(false);
 
-    {
-        id:2,
-        income:null,
-        name:"Sponsor Income",
-        url:"sponsorIncome",
-        icon:<AntDesign name="linechart" size={20} style={{textAlign:"center"}} color="white" />
-    },
+  const handleRefresh = async () => {
+    setRefreshing(true);
+    setWallet(user?.mani_wallet)
+    setShoppingWallet(user?.shopping_wallet)
+    setRefreshing(false);
+  };
 
-    
-    {
-        id:3,
-        income:null,
-        name:"Daily Income",
-        url:"dailyIncome",
-        icon:<AntDesign name="linechart" size={20} style={{textAlign:"center"}} color="white" />
-    },
+ 
 
-]
   return (
     <View style={{flex:1,backgroundColor:"#fff"}}>
 
@@ -91,7 +103,16 @@ const MyDashboard = ({navigation}) => {
           }}
         />
 
-        <ScrollView>
+       <Animated.ScrollView
+              refreshControl={
+                <RefreshControl refreshing={refreshing} onRefresh={handleRefresh} />
+              }
+              onScroll={Animated.event(
+                [{ nativeEvent: { contentOffset: { y: scrollY } } }],
+                { useNativeDriver: false }
+              )}
+              scrollEventThrottle={16}
+            >
             <View style={{width:width,alignItems:"center",marginTop:5}}>
 
     {
@@ -103,7 +124,7 @@ const MyDashboard = ({navigation}) => {
   </View>
     
                     <View >
-                     {item.income && <Text allowFontScaling={false} style={{textAlign:"center",fontSize:18,color:"#fff",fontWeight:"bold",marginBottom:8}}>Rs {Math.round(item.income)}</Text>}   
+                     {item.income && <Text allowFontScaling={false} style={{textAlign:"center",fontSize:18,color:"#fff",fontWeight:"bold",marginBottom:8}}>Rs{item.id==0? Math.round(user?.shopping_wallet):Math.round(user?.mani_wallet)}</Text>}   
                       {item.url && <Text allowFontScaling={false} style={{textAlign:"center",fontSize:15,color:"#fff",letterSpacing:2,marginBottom:20,}}>{item.name}</Text> }  
                     </View>
                     {item.url?
@@ -127,7 +148,7 @@ const MyDashboard = ({navigation}) => {
                 
 
             </View>
-        </ScrollView>
+        </Animated.ScrollView>
     </View>
   )
 }

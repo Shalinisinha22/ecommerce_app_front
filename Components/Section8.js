@@ -255,11 +255,24 @@ setCarts(cart)
                    
     
     
-    {isItemInCart(item.pcode)? <View style={{flexDirection:"row",width:200,justifyContent:"space-between",marginTop:10}}>
-    <TouchableOpacity onPress={()=>handleDecrementProduct(item.pcode)} style={{paddingVertical:2,borderWidth:1,borderColor:"#D0D0D0",paddingHorizontal:15}}><Text allowFontScaling={false} style={{fontSize:15}}>-</Text></TouchableOpacity>
-    <TouchableOpacity style={{paddingVertical:2,borderWidth:1,borderColor:"#D0D0D0",paddingHorizontal:35}}><Text>{getQty(item.pcode)}</Text></TouchableOpacity>
-    <TouchableOpacity onPress={()=>handleIncrementProduct(item.pcode)} style={{paddingVertical:2,borderWidth:1,borderColor:"#D0D0D0",paddingHorizontal:15}}><Text allowFontScaling={false} >+</Text></TouchableOpacity>
-    </View>:     <TouchableOpacity
+    {isItemInCart(item.pcode)? 
+    
+      <View style={{ flexDirection: "row", width: 200, justifyContent: "space-between", marginTop: 10 }}>
+                            <TouchableOpacity onPress={() => handleDecrementProduct(item.pcode)} style={{ paddingVertical: 2, borderWidth: 1, borderColor: "#D0D0D0", paddingHorizontal: 15,backgroundColor:getQty(item.pcode)==1?"#D0D0D0":null }}>
+                            <Text style={{color:getQty(item.pcode)==1?"gray":"black",fontSize:15}} allowFontScaling={false} >-</Text>
+                            </TouchableOpacity>
+                            <TouchableOpacity style={{ paddingVertical: 2, borderWidth: 1, borderColor: "#D0D0D0", paddingHorizontal: 35 }}>
+                              <Text>{getQty(item.pcode)}</Text>
+                            </TouchableOpacity>
+                            <TouchableOpacity onPress={() => handleIncrementProduct(item.pcode)} style={{ paddingVertical: 2, borderWidth: 1, borderColor: "#D0D0D0", paddingHorizontal: 15,backgroundColor:getQty(item.pcode)==item.cart_limit?"#D0D0D0":null }}>
+        
+                              <Text style={{color:getQty(item.pcode)==item.cart_limit?"gray":"black"}} allowFontScaling={false}>+</Text>
+                              {/* {console.log(getQty(item.pcode),item)} */}
+                            </TouchableOpacity>
+                          </View>
+    
+    :    
+     <TouchableOpacity
     
     onPress={()=>handleCart(item,item.pcode,shopName)}
       style={{

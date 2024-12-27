@@ -1,5 +1,5 @@
-import { View, Text, Dimensions, StyleSheet, FlatList, Image, Pressable, TouchableOpacity } from 'react-native';
-import React, { useState, useEffect } from 'react';
+import { View, Text, Dimensions, StyleSheet, FlatList, Image, Pressable, TouchableOpacity, RefreshControl,Animated,ScrollView } from 'react-native';
+import React, { useState, useEffect,useRef } from 'react';
 import axios from 'axios';
 import { Entypo } from '@expo/vector-icons';
 import { useSelector } from 'react-redux';
@@ -23,7 +23,7 @@ const AllOrders = ({ navigation }) => {
         });
 
       
-let newArr= res.data
+        let newArr= res.data
         
         setOrders(newArr);
     } catch (err) {
@@ -35,6 +35,17 @@ let newArr= res.data
   useEffect(() => {
     getOrders();
   }, []);
+
+
+   const scrollY = useRef(new Animated.Value(0)).current;
+  
+   const [refreshing, setRefreshing] = useState(false);
+  
+    const handleRefresh = async () => {
+      setRefreshing(true);
+      getOrders()
+      setRefreshing(false);
+    };
 
   const renderRow = ({ item }) => (
 
@@ -48,7 +59,7 @@ let newArr= res.data
       {/* Add a View Order button */}
       <TouchableOpacity
         style={styles.viewOrderButton}
-        onPress={() => navigation.navigate("orderHistory", { order_id: item.order_id,shop:item.business_name,order_date:item.order_date,delivery_date:item.delivery_date,payment_method:item.payment_method })}
+        onPress={() => navigation.navigate("orderHistory", { order_id: item.order_id,shop:item.business_name,order_date:item.order_date,delivery_date:item.delivery_new_date,payment_method:item.payment_method })}
       >
         <Text allowFontScaling={false} style={styles.viewOrderButtonText}>View Order</Text>
       </TouchableOpacity>
@@ -81,6 +92,16 @@ let newArr= res.data
           width: width
         }}
       />
+       <Animated.ScrollView
+                    refreshControl={
+                      <RefreshControl refreshing={refreshing} onRefresh={handleRefresh} />
+                    }
+                    onScroll={Animated.event(
+                      [{ nativeEvent: { contentOffset: { y: scrollY } } }],
+                      { useNativeDriver: false }
+                    )}
+                    scrollEventThrottle={16}
+                  >
 
       <View style={styles.container}>
         <View style={styles.headerRow}>
@@ -107,6 +128,7 @@ let newArr= res.data
 </ActivityIndicator>  
         )}
       </View>
+      </Animated.ScrollView>
     </View>
   );
 };

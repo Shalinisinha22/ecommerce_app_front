@@ -128,7 +128,8 @@ const WithdrawalScreen = ({navigation}) => {
 
   const handleRefresh = async () => {
     setRefreshing(true);
-    getWallet()
+    getWallet();
+    getWithdrawData();
     setRefreshing(false);
   };
 
@@ -265,8 +266,8 @@ const WithdrawalScreen = ({navigation}) => {
         {withdrawData.length > 0 ? (
           withdrawData.map((item, index) => (
             <View key={item.id} style={{ flexDirection: 'row', borderBottomWidth: 1, borderColor: 'lightgray' }}>
-              <Text allowFontScaling={false}style={styles.columnData}>{item.cdate}</Text>
-              <Text allowFontScaling={false}style={styles.columnData}>{item.updated_date}</Text>
+              <Text numberOfLines={2} allowFontScaling={false}style={styles.columnData}>{item.cdate}</Text>
+              <Text numberOfLines={2} allowFontScaling={false}style={styles.columnData}>{item.updated_date}</Text>
               <Text allowFontScaling={false}style={styles.columnData}>Rs {item.total}</Text>
        
            
@@ -310,7 +311,7 @@ const styles = StyleSheet.create({
   columnData: {
     flex: 1,
     padding: 8,
-    textAlign: 'center',
+    textAlign: 'justify',
     fontSize: 9,
     fontWeight: "bold"
   },

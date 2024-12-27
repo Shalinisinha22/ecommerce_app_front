@@ -51,7 +51,7 @@ const OrderHistory = ({ navigation }) => {
 {console.log(item)}
       <Text allowFontScaling={false} style={styles.cell}>{moment(route.params?.delivery_date).format('YYYY-MM-DD')}</Text>
 
-      <View style={styles.imageContainer}>
+      <View  style={styles.imageContainer}>
         {item.image && item.image[0] ? (
           <Image
             source={{ uri: `${imgUrl}/eproduct/${item.image[0]}` }}
@@ -62,16 +62,14 @@ const OrderHistory = ({ navigation }) => {
         )}
         <Text numberOfLines={2} style={styles.productName}>{item.name}</Text>
       </View>
-      <Text style={styles.cell}>{route.params?.shop}</Text>
-      <Text style={styles.cell}>{item.batch_no}</Text>
-
+      <Text numberOfLines={2} style={styles.cell}>{route.params?.shop}</Text>
+      <Text numberOfLines={2} style={styles.cell}>{item.batch_no}</Text>
       <Text style={styles.cell}>Rs{item.price}</Text>
-      <Text style={styles.cell}>Rs {Math.round(item.price - item.offer_price)}</Text>
-
-      <Text style={styles.cell}>RS {item.offer_price * item.qty}</Text>
+      <Text style={styles.cell}>Rs{Math.round(item.price - item.offer_price)}</Text>
+      <Text style={styles.cell}>Rs{item.offer_price * item.qty}</Text>
       <View>
       <Text style={styles.cell}>{route.params.payment_method}</Text>
-<TouchableOpacity style={{backgroundColor:"red",paddingHorizontal:10,paddingVertical:2}}><Text style={{color:"#fff",fontSize:8}}>Cancel</Text></TouchableOpacity>
+{/* <TouchableOpacity style={{backgroundColor:"red",paddingHorizontal:10,paddingVertical:2}}><Text style={{color:"#fff",fontSize:8}}>Cancel</Text></TouchableOpacity> */}
       </View>
 
 
@@ -99,10 +97,8 @@ const OrderHistory = ({ navigation }) => {
           <Text style={styles.headerCell}>Name</Text>
           <Text style={styles.headerCell}>Shop</Text>
           <Text style={styles.headerCell}>Batch</Text>
-
           <Text style={styles.headerCell}>MRP</Text>
           <Text style={styles.headerCell}>Discount</Text>
-
           <Text style={styles.headerCell}>Amt</Text>
           <Text style={styles.headerCell}>Payment type</Text>
 
@@ -159,7 +155,7 @@ const styles = StyleSheet.create({
   },
   tableContainer: {
     flex: 1,
-    padding: 10
+    paddingTop: 10
   },
   headerRow: {
     flexDirection: 'row',
@@ -170,7 +166,7 @@ const styles = StyleSheet.create({
     flex: 1,
     fontWeight: 'bold',
     textAlign: 'center',
-    fontSize: 10
+    fontSize: 8
   },
   row: {
     flexDirection: 'row',
@@ -198,8 +194,8 @@ const styles = StyleSheet.create({
   },
   cell: {
     flex: 1,
-    textAlign: 'center',
-    fontSize: 8,
+    // textAlign: 'center',
+    fontSize: 10,
     letterSpacing: 0.5
   },
   noOrdersText: {

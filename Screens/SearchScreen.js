@@ -197,7 +197,8 @@ export default function SearchBar({ navigation }) {
 <View style={{ width: width, borderRadius: 30, borderWidth: 0, borderColor: "#a11463", flexDirection: "row", justifyContent: "space-around" }}>
             <TouchableOpacity onPress={() => navigation.openDrawer()} style={{ paddingTop: 7}}>
               {profileImg!==null?<Image  style={{width:50,height:50,resizeMode:"contain"}}   source={{ uri: `${imgUrl}/photo/${profileImg}`}}></Image>:user?.user_image?<Image  style={{width:50,height:50,resizeMode:"contain"}}   source={{ uri: `${imgUrl}/photo/${user.user_image}`}}></Image>
-:  <Entypo name="menu" size={40} color="#155d27" />}
+:  
+<Entypo name="menu" size={40} color="#155d27" />}
               {/* */}
             </TouchableOpacity>
             {/* {console.log(profileImg,"proflrimg")} */}
@@ -210,7 +211,7 @@ export default function SearchBar({ navigation }) {
             <View style={{ flexDirection:"row", alignItems:"center" }}>
               <TouchableOpacity style={{ flexDirection: "row", justifyContent: "space-around", borderWidth: 1, borderColor: "gray", height: 35, borderRadius: 15, paddingHorizontal: 15, alignItems: "center" }} onPress={() => navigation.navigate("wallet")}>
                 <FontAwesome5 name="wallet" size={20} color="#0a7736" />
-                <Text numberOfLines={2} allowFontScaling={false}style={{ color: "#a11463", fontSize: 10, fontWeight: '700' }}>  Rs {user?Math.round(user.mani_wallet):"0"}</Text>
+            <Text numberOfLines={2} allowFontScaling={false}style={{ color: "#a11463", fontSize: 10, fontWeight: '700' }}>  Rs {user?Math.round(user.mani_wallet) + Math.round(user.shopping_wallet):"0"}</Text>
               </TouchableOpacity>
            
             </View>
@@ -229,6 +230,7 @@ export default function SearchBar({ navigation }) {
                 <View style={styles.searchBar__unclicked}>
                     <Feather name="search" size={20} color="black" style={{ marginLeft: 1 }} />
                     <TextInput
+                    multiline
                         style={styles.input}
                         placeholder="Search"
                         value={searchPhrase}
@@ -313,7 +315,9 @@ export default function SearchBar({ navigation }) {
                                                 <Text allowFontScaling={false} >+</Text>
                                             </TouchableOpacity>
                                         </View>
-                                    ) : (
+                                    ) 
+                                    : 
+                                    (
                                         <TouchableOpacity
                                             onPress={() => dispatch(addToCart({ item: product, id: product.pcode,shop:shopName }))}
                                             style={{
@@ -354,7 +358,7 @@ const styles = StyleSheet.create({
     searchBar__unclicked: {
         padding: 8,
         flexDirection: "row",
-        width: "85%",
+        width: "90%",
         backgroundColor: "#fff",
         borderRadius: 15,
         alignItems: "center",
@@ -367,7 +371,7 @@ const styles = StyleSheet.create({
     input: {
         fontSize: 14,
         marginLeft: 10,
-        width: "90%",
+        width: "80%",
         backgroundColor: "#fff",
     },
     productContainer: {

@@ -1,14 +1,16 @@
-import { View, Text, Dimensions, StyleSheet, FlatList, Image, Pressable, TouchableOpacity } from 'react-native';
-import React, { useState, useEffect } from 'react';
+import { View, Text, Dimensions, StyleSheet, FlatList, Image, Pressable, TouchableOpacity,Alert,RefreshControl,Animated,ScrollView } from 'react-native';
+import React, { useState, useEffect,useRef } from 'react';
 import axios from 'axios';
 import { Entypo } from '@expo/vector-icons';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { imgUrl } from '../Components/Image/ImageUrl';
 import moment from 'moment-timezone';
+import Toast from 'react-native-toast-message';
 
 const width = Dimensions.get('screen').width;
 
 const PendingOrders = ({ navigation }) => {
+  const dispatch= useDispatch()
   const [orders, setOrders] = useState([]);
 
   const userInfo = useSelector((state) => state.user.userInfo ? state.user.userInfo : null);
@@ -36,16 +38,84 @@ const PendingOrders = ({ navigation }) => {
   useEffect(() => {
     getOrders();
   }, []);
+  const cancelOrders = async (item) => {
+    try {
+      const res = await axios.post("https://mahilamediplex.com/mediplex/cancelOrder", {
+        user_id: userInfo?.client_id, // Ensure userInfo is defined
+        order_id: item?.temp_order_id, // Ensure item is defined
+      });
+  
+      if (res.status === 200) {
+        const { added_main_wallet, added_shopping_wallet } = res.data;
+
+        if(added_shopping_wallet){
+          userInfo.shopping_wallet=await added_shopping_wallet
+          dispatch({ type: 'SET_USER_INFO', payload: userInfo });
+        }
+        if(added_main_wallet){
+          userInfo.mani_wallet=await added_main_wallet
+          dispatch({ type: 'SET_USER_INFO', payload: userInfo });
+        }
+  
+       
+  
+        // Fetch updated order list
+        getOrders();
+    showToast()
+        // Display success message to user (optional)
+        // Alert.alert("Order cancelled successfully!",'Your amount will reflect in your wallet after some time.');
+      }
+    } catch (err) {
+      console.error("Error canceling order:", err.message);
+      if (err.response) {
+        console.error("Server Response:", err.response.data);
+        Alert.alert('',`Failed to cancel order: ${err.response.data.error}`);
+      } else {
+        Alert.alert('',"Failed to cancel order. Please try again later.");
+      }
+    }
+  };
+
+
+   const showToast = () => {
+      Toast.show({
+        type: "success",
+        text1: "Your Order is cancelled.",
+        text2:'Your amount will reflect in your wallet after some time.'
+      });
+    };
+
+
+
+     const scrollY = useRef(new Animated.Value(0)).current;
+    
+     const [refreshing, setRefreshing] = useState(false);
+    
+      const handleRefresh = async () => {
+        setRefreshing(true);
+    
+      getOrders()
+        setRefreshing(false);
+      };
+  
 
   const renderRow = ({ item }) => (
 
     <View style={styles.row}>
       <Text allowFontScaling={false} style={styles.cell}>{moment(item.cdate).format('YYYY-MM-DD')}</Text>
-      <Text allowFontScaling={false} style={styles.cell}>{item.name}</Text>
-      <Text allowFontScaling={false} style={styles.cell}>{item.business_name}</Text>
-      <Text allowFontScaling={false} style={styles.cell}>Rs{item.batch_no}</Text>
+      <Text allowFontScaling={false} style={styles.cell}>{item.temp_order_id}</Text>
+      <Text numberOfLines={5} allowFontScaling={false} style={styles.cell}>{item.name}</Text>
+      <Text numberOfLines={5} allowFontScaling={false} style={styles.cell}>{item.business_name}</Text>
+      {/* <Text allowFontScaling={false} style={styles.cell}>Rs{item.batch_no}</Text> */}
       <Text allowFontScaling={false} style={styles.cell}>Rs{item.price}</Text>
+      <Text allowFontScaling={false} style={styles.cell}>{item.payment_type}</Text>
+
+      <View>
       <Text allowFontScaling={false} style={[styles.cell,{color:"red"}]}>Pending</Text>
+      {!item.batch_details && <TouchableOpacity onPress={()=>cancelOrders(item)} style={{backgroundColor:"red",paddingHorizontal:10,paddingVertical:2}}><Text style={{color:"#fff",fontSize:8}}>Cancel</Text></TouchableOpacity>
+ }
+      </View>
+    
 
 
 
@@ -78,14 +148,28 @@ const PendingOrders = ({ navigation }) => {
           width: width
         }}
       />
+      <Animated.ScrollView
+                          refreshControl={
+                            <RefreshControl refreshing={refreshing} onRefresh={handleRefresh} />
+                          }
+                          onScroll={Animated.event(
+                            [{ nativeEvent: { contentOffset: { y: scrollY } } }],
+                            { useNativeDriver: false }
+                          )}
+                          scrollEventThrottle={16}
+                        >
 
       <View style={styles.container}>
         <View style={styles.headerRow}>
           <Text allowFontScaling={false} style={styles.headerCell}>Order_date</Text>
+          <Text allowFontScaling={false} style={styles.headerCell}>Order_id</Text>
+
           <Text allowFontScaling={false} style={styles.headerCell}>Name</Text>
           <Text allowFontScaling={false} style={styles.headerCell}>Shop</Text>
-          <Text allowFontScaling={false} style={styles.headerCell}>Batch</Text>
+          {/* <Text allowFontScaling={false} style={styles.headerCell}>Batch</Text> */}
           <Text allowFontScaling={false} style={styles.headerCell}>Amt</Text>
+          <Text allowFontScaling={false} style={styles.headerCell}>Payment type</Text>
+
           <Text allowFontScaling={false} style={styles.headerCell}>Status</Text>
 
 
@@ -105,6 +189,11 @@ const PendingOrders = ({ navigation }) => {
           <Text style={{ textAlign: "center", marginTop: 10 }}>No Orders</Text>
         )}
       </View>
+      </Animated.ScrollView>
+       <Toast
+                position='top'
+                topOffset={250}
+              />
     </View>
   );
 };
@@ -123,7 +212,7 @@ const styles = StyleSheet.create({
     flex: 1,
     fontWeight: 'bold',
     textAlign: 'center',
-    fontSize: 10
+    fontSize: 8
   },
   row: {
     flexDirection: 'row',
@@ -135,13 +224,13 @@ const styles = StyleSheet.create({
     flex: 1,
     textAlign: 'center',
     fontSize: 8,
-    letterSpacing: 0.5
+    // letterSpacing: 0.5
   },
-  image: {
-    width: 30,
-    height: 30,
-    resizeMode: "contain"
-  },
+  // image: {
+  //   width: 30,
+  //   height: 30,
+  //   resizeMode: "contain"
+  // },
   statusButton: {
     paddingVertical: 5,
     paddingHorizontal: 18,

@@ -41,6 +41,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import AllProducts from '../Screens/AllProducts';
 import AllOrders from '../Screens/AllOrders';
 import PendingOrders from '../Screens/PendingOrders';
+import RegisterScreen from '../Screens/RegisterScreen';
 
 const Stack = createStackNavigator();
 const Drawer = createDrawerNavigator();
@@ -183,10 +184,14 @@ url: "",},
 
                     </>
                 ) : (
-                    <Stack.Screen name="Login" component={LoginScreen} options={{ headerShown: false }} />
-                )}
-                           <Stack.Screen name="wallet" component={Wallet} options={{ headerShown: false }} />
+                    <>
+                     <Stack.Screen name="Login" component={LoginScreen} options={{ headerShown: false }} />
+                    <Stack.Screen name="RegisterScreen" component={RegisterScreen} options={{ headerShown: false }} />
 
+                    </>
+                   
+                )}
+                <Stack.Screen name="wallet" component={Wallet} options={{ headerShown: false }} />
                 <Stack.Screen name="Search" component={SearchBar} options={{ headerShown: false }} />
                 <Stack.Screen name="cart" component={CartScreen} options={{ headerShown: false }} />
                 <Stack.Screen name="coming" component={ComingSoon} options={{ headerShown: false }} />
