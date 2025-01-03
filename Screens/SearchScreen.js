@@ -23,7 +23,9 @@ export default function SearchBar({ navigation }) {
   
   
   
-    const userImg= useSelector((state)=> state.user.userImg?state.user.userImg:null)
+    const userImg= useSelector((state)=> state.user.userImg?state.user.image:null)
+
+    console.log(user,"header")
   
   const [wallet,setWallet]=useState(user?.mani_wallet + user?.shopping_wallet)
    const getWallet = async()=>{
@@ -56,7 +58,7 @@ export default function SearchBar({ navigation }) {
         },
       });
       const data= res.data[0]
-      setProfileImg(data.photo)
+      setProfileImg(data.image)
     }
     catch(err){
       console.log(err.message,"header64")
@@ -190,21 +192,24 @@ export default function SearchBar({ navigation }) {
 
     return (
         <View style={{ flex: 1, backgroundColor: "#fff"}}>
+
             
             <ImageBackground source={require("../assets/bg5.png")} style={{opacity:0.9,marginBottom:15}}>
 <View style={styles.container}>
 
 <View style={{ width: width, borderRadius: 30, borderWidth: 0, borderColor: "#a11463", flexDirection: "row", justifyContent: "space-around" }}>
             <TouchableOpacity onPress={() => navigation.openDrawer()} style={{ paddingTop: 7}}>
-              {profileImg!==null?<Image  style={{width:50,height:50,resizeMode:"contain"}}   source={{ uri: `${imgUrl}/photo/${profileImg}`}}></Image>:user?.user_image?<Image  style={{width:50,height:50,resizeMode:"contain"}}   source={{ uri: `${imgUrl}/photo/${user.user_image}`}}></Image>
+              {profileImg!==null?<Image  style={{width:50,height:50,resizeMode:"contain"}}   source={{ uri: `${imgUrl}/photo/${profileImg}`}}></Image>:user?.image?<Image  style={{width:50,height:50,resizeMode:"contain"}}   source={{ uri: `${imgUrl}/photo/${user.image}`}}></Image>
 :  
 <Entypo name="menu" size={40} color="#155d27" />}
               {/* */}
             </TouchableOpacity>
             {/* {console.log(profileImg,"proflrimg")} */}
             <View style={{justifyContent:"center"}}>
-             {user &&  <Text allowFontScaling={false} style={{fontSize:10,fontWeight:"bold"}}>{user.first_name}</Text>} 
-             {user &&  <Text allowFontScaling={false} style={{fontSize:8}}>{user.client_id}</Text> }
+             {user &&  <Text allowFontScaling={false} style={{fontSize:10,fontWeight:"bold"}}>{user.client_entry_name}</Text>} 
+             {/* {user &&  <Text allowFontScaling={false} style={{fontSize:8}}>{user.client_id}</Text> } */}
+             {user &&  <Text allowFontScaling={false} style={{fontSize:10,fontWeight:"bold"}}>{user?.location?.area},{user?.location?.city}</Text>} 
+
             </View>
             
           

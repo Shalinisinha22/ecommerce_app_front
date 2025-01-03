@@ -121,7 +121,7 @@ const HomeScreen = ({ navigation }) => {
         )}
         scrollEventThrottle={16}
       >
-        <Section1 navigation={navigation} />
+         <Section1 navigation={navigation} /> 
         <Section2 navigation={navigation} />
         <Section4 navigation={navigation} />
         <Section3 navigation={navigation} />
@@ -129,7 +129,7 @@ const HomeScreen = ({ navigation }) => {
         <Section6 navigation={navigation} />
         <Section7 navigation={navigation} />
         <Section8 navigation={navigation} />
-      </Animated.ScrollView>
+        </Animated.ScrollView>
     </ImageBackground>
   );
 };

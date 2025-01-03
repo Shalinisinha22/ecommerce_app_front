@@ -7,6 +7,7 @@ import { useSelector } from 'react-redux'
 import { TextInput } from 'react-native-gesture-handler'
 import * as ImagePicker from 'expo-image-picker';
 import { Entypo } from '@expo/vector-icons'
+import { useForm, Controller } from 'react-hook-form'
 
 const width = Dimensions.get('screen').width
 
@@ -90,51 +91,49 @@ const FundRequestScreen = ({navigation}) => {
         }
     };
 
-    const handleSubmit = async (event) => {
-     
+    const handleSubmit = async () => {
         let errors = {};
+        
+        if (!transaction_id) {
+            errors.transaction_id = "Transaction ID is required.";
+        }
+        if (!paymentSlip) {
+            errors.paymentSlip = "Payment slip is required.";
+        }
+        if (!amt) {
+            errors.amt = "Amount is required.";
+        }
     
-        if (transaction_id === "" && paymentSlip === null) {
-            if (transaction_id === "") {
-                errors.transaction_id = "This field is required";
-            } else if (paymentSlip === null) {
-                errors.paymentSlip = "This field is required";
-            }
-    
+        if (Object.keys(errors).length > 0) {
             setErr(errors);
             setTimeout(() => {
-                setErr("");
+                setErr({});
             }, 3000);
-        } else {
-            await uploadImage(paymentSlip);
-
-
-            console.log("110",amt)
+            return;
+        }
     
-            try {
-                const res = await axios.post("https://mahilamediplex.com/mediplex/fund-request", {
-                    name: userInfo.first_name,
-                    mobile_no: userInfo.mobile,
-                    client_id: userInfo.client_id,
-                    user_id: userInfo.id,
-                    slip: paymentSlipName,
-                    paid_amt: amt,
-                    txt_no: transaction_id,
-                    package: "",
-                });
-
-
-                console.log(res.data)
+        await uploadImage(paymentSlip);
     
-                if (res.data.message === "Data inserted successfully") {
-                    Alert.alert("Success");
-                    setPaymentSlip(null)
-                    setTransaction_id("")
-                    setAmt(null)
-                }
-            } catch (err) {
-                console.log(err.message);
+        try {
+            const res = await axios.post("https://mahilamediplex.com/mediplex/fund-request", {
+                name: userInfo.client_entry_name,
+                mobile_no: userInfo.mobile,
+                client_id: userInfo.client_id,
+                user_id: userInfo.id,
+                slip: paymentSlipName,
+                paid_amt: amt,
+                txt_no: transaction_id,
+                package: "",
+            });
+            if (res.data.message === "Data inserted successfully") {
+                Alert.alert("Success", "Fund request submitted successfully.");
+                setPaymentSlip(null);
+                setTransaction_id("");
+                setAmt("");
+                navigation.navigate("Home");
             }
+        } catch (err) {
+            console.error("Error submitting fund request:", err.message);
         }
     };
     
@@ -252,7 +251,7 @@ const FundRequestScreen = ({navigation}) => {
                     <View style={{ width: width, marginTop: 0, padding: 10 }}>
                         <View style={{ width: width * 0.95, backgroundColor: "#D0D0D0", paddingVertical: 14, paddingHorizontal: 5, flexDirection: "row", gap: 15 }}>
                             <Text allowFontScaling={false} style={{ color: "gray" }}>Full Name :</Text>
-                            <Text allowFontScaling={false} style={{ fontWeight: 'bold' }}>{userInfo.first_name}</Text>
+                            <Text allowFontScaling={false} style={{ fontWeight: 'bold' }}>{userInfo.client_entry_name}</Text>
                         </View>
 
                         <View style={{ width: width * 0.95, backgroundColor: "#f0f0f0", paddingVertical: 14, paddingHorizontal: 5, flexDirection: "row", gap: 15, marginTop: 0 }}>
@@ -274,6 +273,7 @@ const FundRequestScreen = ({navigation}) => {
                                 fontWeight:"bold"
                             }} value={amt} onChangeText={(text) => setAmt(text)} ></TextInput>
                         </View>
+                        {err.amt && <Text allowFontScaling={false} style={{color:"red",fontSize:10,marginBottom:5}}>{err.amt}</Text>}
 
                         <View style={{ width: width * 0.95, backgroundColor: "#D0D0D0", paddingVertical: 14, paddingHorizontal: 5, flexDirection: "row", gap: 15, alignItems: "center",flexWrap:"wrap" }}>
                             <Text allowFontScaling={false} style={{ color: "gray" }}>Transaction_id :</Text>

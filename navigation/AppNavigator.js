@@ -42,6 +42,7 @@ import AllProducts from '../Screens/AllProducts';
 import AllOrders from '../Screens/AllOrders';
 import PendingOrders from '../Screens/PendingOrders';
 import RegisterScreen from '../Screens/RegisterScreen';
+import DeliveryReport from '../Screens/DeliveryReport';
 
 const Stack = createStackNavigator();
 const Drawer = createDrawerNavigator();
@@ -86,15 +87,15 @@ useEffect(()=>{
     const drawerMenu = [
 
 
-        { id: 0,
-            name: "My Dashboard",
-            url: "dashboard"
-        },
+        // { id: 0,
+        //     name: "My Dashboard",
+        //     url: "dashboard"
+        // },
         { id: 1,
             name: "Profile",
             submenu: [
               { id: 0, name: "Update Profile", url: "profile" },
-              { id: 1, name: "Update KYC", url: "kyc" },
+              //   { id: 1, name: "Update KYC", url: "kyc" },
               { id: 2, name: "Update Password", url: "updatePassword" }
       
             ],
@@ -102,7 +103,6 @@ useEffect(()=>{
             dropdownIcon: <AntDesign name="down" size={15} color="white" />,
             url: ""
         },
-
         { id: 4,
             name: "Credit/Loan",
             submenu: [
@@ -113,58 +113,54 @@ useEffect(()=>{
             ],
             icon:<AntDesign name="arrowright" size={18} color="#9e0059" /> ,
             dropdownIcon: <AntDesign name="down" size={15} color="white" />,
-url: "",},
+          url: "",},
 
-       { id: 2,
-                name: "My Network",
-                submenu: [
-                  { id: 0, name: "Genealogy Tree", url: "genealogy" },
-                  { id: 1, name: "Direct member", url: "directMember" },
-                  { id: 2, name: "Downline list", url: "Downline" },
-                  { id: 2, name: "Active Member", url: "ActiveMember" },
+//        { id: 2,
+//                 name: "My Network",
+//                 submenu: [
+//                   { id: 0, name: "Genealogy Tree", url: "genealogy" },
+//                   { id: 1, name: "Direct member", url: "directMember" },
+//                   { id: 2, name: "Downline list", url: "Downline" },
+//                   { id: 2, name: "Active Member", url: "ActiveMember" },
           
-                ],
-                icon:<AntDesign name="arrowright" size={18} color="#9e0059" /> ,
-                dropdownIcon: <AntDesign name="down" size={15} color="white" />,
-                url: "",},
+//                 ],
+//                 icon:<AntDesign name="arrowright" size={18} color="#9e0059" /> ,
+//                 dropdownIcon: <AntDesign name="down" size={15} color="white" />,
+//                 url: "",},
 
 
-       { id: 3,
-                    name: "Activation",
+//        { id: 3,
+//                     name: "Activation",
 
-                    submenu: [
-                      { id: 0, name: "Package", url: "healthPackage" },
-                      { id: 1, name: "Activation", url: "activationScreen" },
+//                     submenu: [
+//                       { id: 0, name: "Package", url: "healthPackage" },
+//                       { id: 1, name: "Activation", url: "activationScreen" },
                 
               
-                    ],
-                    icon:<AntDesign name="arrowright" size={18} color="#9e0059" /> ,
-                    dropdownIcon: <AntDesign name="down" size={15} color="white" />,
-         url: "",},
+//                     ],
+//                     icon:<AntDesign name="arrowright" size={18} color="#9e0059" /> ,
+//                     dropdownIcon: <AntDesign name="down" size={15} color="white" />,
+//          url: "",},
 
      
 
         
-      { id: 5,
-        name: "Income Report",
-        submenu: [
-       { id: 1, name: "Sponsor Income", url: "sponsorIncome" },
-        { id: 2, name: "Daily Income", url: "dailyIncome" }
+//       { id: 5,
+//         name: "Income Report",
+//         submenu: [
+//        { id: 1, name: "Sponsor Income", url: "sponsorIncome" },
+//         { id: 2, name: "Daily Income", url: "dailyIncome" }
     
-        ],
-        icon:<AntDesign name="arrowright" size={18} color="#9e0059" /> ,
-        dropdownIcon: <AntDesign name="down" size={15} color="white" />,
-url: "",},
+//         ],
+//         icon:<AntDesign name="arrowright" size={18} color="#9e0059" /> ,
+//         dropdownIcon: <AntDesign name="down" size={15} color="white" />,
+// url: "",},
 { id: 8, name: "Recharge Status", url: "fundRequestStatus" },
 
-
-{ id: 6, name: "Pending Orders", url: "pending" },
+// { id: 6, name: "Pending Orders", url: "pending" },
+{ id: 9, name: "Delivery Report", url: "deliveryReport" },
 
  { id: 7, name: "Logout", url: "" }
-
-
-
-
   
     ];
 
@@ -172,6 +168,7 @@ url: "",},
     const dispatch = useDispatch();
     const handleLogout = () => {
     dispatch({ type: 'CLEAR_USER_INFO' });
+   
   };
 
     function MainStackNavigator() {
@@ -186,8 +183,7 @@ url: "",},
                 ) : (
                     <>
                      <Stack.Screen name="Login" component={LoginScreen} options={{ headerShown: false }} />
-                    <Stack.Screen name="RegisterScreen" component={RegisterScreen} options={{ headerShown: false }} />
-
+                     <Stack.Screen name="RegisterScreen" component={RegisterScreen} options={{ headerShown: false }} />
                     </>
                    
                 )}
@@ -216,6 +212,7 @@ url: "",},
                 <Stack.Screen name="AllOrders" component={AllOrders} options={{ headerShown: false }} />
                 <Stack.Screen name="profile" component={Profile} options={{ headerShown: false }} />
                 <Stack.Screen name="pending" component={PendingOrders} options={{ headerShown: false }} />
+                <Stack.Screen name="deliveryReport" component={DeliveryReport} options={{ headerShown: false }} />
 
             </Stack.Navigator>
         );
@@ -322,13 +319,13 @@ url: "",},
       
       />
             <Tab.Screen
-                name="withdrawal"
-                component={WithdrawalScreen}
+                name="Profile"
+                component={Profile}
                 options={{
                     tabBarLabel: "",
                     tabBarLabelStyle: { color: "#fff", fontSize: 10, fontWeight: 600, letterSpacing: 2 },
                     headerShown: false,
-                    tabBarIcon: ({ focused }) => focused ? <MaterialCommunityIcons name="piggy-bank" size={30} color="#fff" /> : <MaterialCommunityIcons name="piggy-bank-outline" size={25} color="#D0D0D0" />,
+                    tabBarIcon: ({ focused }) => focused ? <FontAwesome name="user-circle-o" size={30} color="#fff" /> : <FontAwesome name="user-circle-o" size={25} color="#D0D0D0" />,
                     tabBarAllowFontScaling:false,
 
                 }}
@@ -337,7 +334,7 @@ url: "",},
    
    <Tab.Screen
                 name="AllOrders"
-                component={AllOrders}
+                component={PendingOrders}
                 options={{
 
                     tabBarAllowFontScaling:false,

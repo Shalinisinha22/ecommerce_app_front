@@ -22,6 +22,7 @@ const PendingOrders = ({ navigation }) => {
                 uid: userInfo.client_id
             }
         });
+        console.log(res.data) 
 
         // Filter the response data for status == 1
         const newArr = res.data.filter((item) => item.status === 1);
@@ -109,7 +110,6 @@ const PendingOrders = ({ navigation }) => {
       {/* <Text allowFontScaling={false} style={styles.cell}>Rs{item.batch_no}</Text> */}
       <Text allowFontScaling={false} style={styles.cell}>Rs{item.price}</Text>
       <Text allowFontScaling={false} style={styles.cell}>{item.payment_type}</Text>
-
       <View>
       <Text allowFontScaling={false} style={[styles.cell,{color:"red"}]}>Pending</Text>
       {!item.batch_details && <TouchableOpacity onPress={()=>cancelOrders(item)} style={{backgroundColor:"red",paddingHorizontal:10,paddingVertical:2}}><Text style={{color:"#fff",fontSize:8}}>Cancel</Text></TouchableOpacity>

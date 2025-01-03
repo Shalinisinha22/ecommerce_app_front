@@ -21,6 +21,7 @@ import { Fontisto, Entypo } from '@expo/vector-icons';
 import { useDispatch } from 'react-redux';
 import { setUser } from "../redux/actions/userActions";
 import axios from "axios";
+import { useForm, Controller } from "react-hook-form";
 
 const height = Dimensions.get("screen").height;
 const width = Dimensions.get('screen').width;
@@ -29,7 +30,7 @@ const LoginScreen = ({ navigation }) => {
   const dispatch = useDispatch();
   const [hidePass, setHidePass] = useState(true);
   const [id, setId] = useState("");
-  const [isIdFocused, setIsIdFocused] = useState(false);
+  const [isNameFocused, setIsNameFocused] = useState(false);
   const [password, setPassword] = useState("");
   const [error, setErr] = useState("");
   const [isFormValid, setIsFormValid] = useState(false);
@@ -38,59 +39,52 @@ const LoginScreen = ({ navigation }) => {
 
   const [isPasswordFocused, setIsPasswordFocused] = useState(false);
 
-  useEffect(() => {
-    validateForm();
-  }, [password, id]);
 
-  const validateForm = async () => {
-    let errors = {};
 
-    if (id == '') {
-      errors.id = "Enter ID";
-    }
+  const { control, handleSubmit, formState: { errors } } = useForm({
+    defaultValues: {
+      name: '',  
+      password: '',
+    },
+  });
 
-    if (password == '') {
-      errors.password = "Enter password";
-    }
-
-    setErr(errors);
-    setIsFormValid(Object.keys(errors).length === 0);
-  };
-
-  const verifyUser = async () => {
-    let errors = {};
-
-    const res = await axios.get("https://mahilamediplex.com/mediplex/login", {
-      params: {
-        userId: id,
-        password: password
-      }
-    }).then(response => {
-      console.log("131", response.data);
-      if (response.data) {
-        dispatch({ type: 'SET_USER_INFO', payload: response.data });
+  const onSubmit = async (data) => {
+    console.log(data);
   
+    // Validate input fields
+    if (!data.name || !data.password) {
+      Alert.alert("Validation Error", "All fields are required.");
+      return;
+    }
+  
+    try {
+      // Make a GET request with query parameters
+      const response = await axios.get("https://mahilamediplex.com/mediplex/userlogin", {
+        params: { name: data.name, password: data.password },
+      });
+  
+      // Check the response status
+      if (response.status === 200) {
+        const userData = response.data;
+        Alert.alert("Success", `Welcome, ${userData.client_entry_name}`);
+        dispatch({ type: "SET_USER_INFO", payload: userData });
+      } else if (response.status === 404) {
+        Alert.alert("Error", "User not found.");
+      } else {
+        Alert.alert("Error", "Login failed.");
       }
-    }).catch(error => {
-      console.error(error);
-      if (error.response && error.response.status === 404) {
-        errors.message = 'You have entered wrong credentials!';
-      }
-      errors.message = 'You have entered wrong credentials!';
-    });
-
-    setErr(errors);
-  };
-
-  const handleSubmit = async () => {
-    console.log(isFormValid, "formvalid");
-
-    if (isFormValid) {
-      await verifyUser();
-    } else {
-      setFlag(true);
+    } catch (error) {
+      console.error("Error during login:", error);
+      Alert.alert("Error", "An error occurred. Please try again later.");
     }
   };
+  
+
+
+  const onError: SubmitErrorHandler<FormValues> = (errors, e) => {
+    setErr(errors)
+    return console.log(errors)
+  }
 
   return (
     <View style={{ backgroundColor: "white" }}>
@@ -102,64 +96,87 @@ const LoginScreen = ({ navigation }) => {
 
           <KeyboardAvoidingView>
             <View style={{ alignItems: "center" }}>
-              <Text allowFontScaling={false}  style={styles.heading}>Login to your Account</Text>
-              {error.message && <Text allowFontScaling={false}  style={{ color: "red", marginTop: 10 }}>{error.message}</Text>}
+              <Text allowFontScaling={false} style={styles.heading}>Login to your Account</Text>
+              {error.message && <Text allowFontScaling={false} style={{ color: "red", marginTop: 10 }}>{error.message}</Text>}
             </View>
 
             <View style={{ width: width, alignItems: "center" }}>
               <View style={{ marginTop: 20 }}>
-                <View style={[styles.inputBoxCont, isIdFocused && styles.inputBoxFocused]}>
-                <FontAwesome name="id-card" size={24} color="black" style={{ marginLeft: 8 }}  />
-                  <TextInput
-                    value={id}
-                    onChangeText={(text) => setId(text)}
-                    onFocus={() => setIsIdFocused(true)}
-                    onBlur={() => setIsIdFocused(false)}
-                    style={{
-                      color: "black",
-                      marginVertical: 2,
-                      width: 300,
-                      fontSize: 18,
-                    }}
-                    placeholder="Enter your ID"
+                <View style={[styles.inputBoxCont, isNameFocused && styles.inputBoxFocused]}>
+                  <Ionicons name="person-outline" size={20} color="#C93393" style={styles.icon} />
+                  <Controller
+                    control={control}
+                    render={({ field: { onChange, onBlur, value } }) => (
+                      <TextInput
+                        placeholder="Name"
+                        placeholderTextColor="#333"
+                        style={{
+                          color: "black",
+                          width: 300,
+                          fontSize: 14,
+                          marginVertical: 2,
+                        }}
+                        onFocus={() => setIsNameFocused(true)}
+                        onBlur={() => setIsNameFocused(false)}
+                        onChangeText={value => onChange(value)}
+                        value={value}
+                      
+
+                      />
+                    )}
+                    name="name"
+                    rules={{ required: true, message: "Enter your name" }}
                   />
                 </View>
-                {error.id && flag && <Text allowFontScaling={false}  style={{ color: "red" }}>{error.id}</Text>}
+                {errors.name && <Text allowFontScaling={false} style={{ color: "red" }}>Name is required</Text>}
               </View>
 
               <View>
                 <View style={[styles.inputBoxCont, isPasswordFocused && styles.inputBoxFocused]}>
                   {
-                    hidePass ? <Entypo name="eye-with-line" onPress={() => setHidePass(!hidePass)} size={24} color="black" style={{ marginLeft: 8 }} />
-                      : <Entypo name="eye" onPress={() => setHidePass(!hidePass)} size={24} color="black" style={{ marginLeft: 8 }} />
+                    hidePass ? <Entypo name="eye-with-line" onPress={() => setHidePass(!hidePass)} size={20} color="#C93393" style={{ marginLeft: 8 }} />
+                      : <Entypo name="eye" onPress={() => setHidePass(!hidePass)} size={20} color="#C93393" style={{ marginLeft: 8 }} />
                   }
-                  <TextInput
-                    value={password}
-                    onChangeText={(text) => setPassword(text)}
-                    onFocus={() => setIsPasswordFocused(true)}
-                    onBlur={() => setIsPasswordFocused(false)}
-                    secureTextEntry={hidePass ? true : false}
-                    style={{
-                      color: "black",
-                      marginVertical: 2,
-                      width: 300,
-                      fontSize:18,
+
+                  <Controller
+                    control={control}
+                    render={({ field: { onChange, onBlur, value } }) => (
+                      <TextInput
+                        placeholder="Password"
+                        onFocus={() => setIsPasswordFocused(true)}
+                        onBlur={() => setIsPasswordFocused(false)}
+                        secureTextEntry={hidePass ? true : false}
+                        style={{
+                          color: "black",
+                          marginVertical: 2,
+                          width: 300,
+                          fontSize: 14,
+                        }}
+                        onChangeText={value => onChange(value)}
+                        value={value}
+                      />
+                    )}
+
+                    name="password"
+                    rules={{
+                      required: "Password is required",
+                      
+                      message: "Enter your password"
                     }}
-                    placeholder="enter your Password"
-                    
                   />
+
                 </View>
-                {error.password && flag && <Text allowFontScaling={false}  style={{ color: "red" }}>{error.password}</Text>}
+                {errors.password?.message && <Text allowFontScaling={false} style={{ color: "red" }}>{errors.password?.message}</Text>}
               </View>
 
-            
+
 
               <View style={{ marginTop: 40 }} />
 
               <TouchableOpacity style={styles.button}
-                onPress={handleSubmit}
-               >
-                <Text allowFontScaling={false} 
+                onPress={handleSubmit(onSubmit)}
+              >
+                <Text allowFontScaling={false}
                   style={{
                     textAlign: "center",
                     color: "white",
@@ -175,7 +192,7 @@ const LoginScreen = ({ navigation }) => {
                 onPress={() => navigation.navigate("RegisterScreen")}
                 style={{ marginTop: 15 }}
               >
-                <Text allowFontScaling={false}  style={{ textAlign: "center", color: "black", fontSize: 10, fontWeight: 800 }}>
+                <Text allowFontScaling={false} style={{ textAlign: "center", color: "black", fontSize: 12, fontWeight: 800 }}>
                   Don't have an account? Sign Up
                 </Text>
               </TouchableOpacity>
@@ -209,6 +226,7 @@ const styles = StyleSheet.create({
     paddingVertical: 5,
     borderRadius: 5,
     marginTop: 20,
+    paddingHorizontal: 10,
   },
   inputBoxFocused: {
     borderColor: "#008000",

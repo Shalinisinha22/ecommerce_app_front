@@ -32,13 +32,7 @@ import { TouchableWithoutFeedback } from "react-native";
 const ProfileScreen = ({ navigation }) => {
 
 
-  const accountTypes= [{
-    id:0,
-    type:"current"
-  },
-{id:1,
-  type:"saving"
-}]
+
 
 const dispatch= useDispatch()
 
@@ -60,52 +54,16 @@ const dispatch= useDispatch()
   const [editableAddress, setEditableAddress] = useState("");
   const [editableProfileImage, setEditableProfileImage] = useState("")
 
-  const [editableNomineeName, setEditableNomineeName] = useState("")
-  const [editableNomineeAge, setEditableNomineeAge] = useState("")
-  const [editableNomineeRelation, setEditableNomineeRelation] = useState("")
-  const [editableNomineeMobile, setEditableNomineeMobile] = useState("")
-
-
-  const [editableBankName, setEditableBankName] = useState("")
-  const [editableAccountHolderName, setEditableAccountHolderName] = useState("")
-  const [editableBranchName, setEditableBranchName] = useState("")
-  const [editableBankAccountNumber, setEditableBankAccountNumber] = useState("")
-  const [editableIFSC, setEditableIFSC] = useState("")
-  const [editablePanNumber, setEditablePanNumber] = useState("")
-  const [editableAadharNumber, setEditableAadharNumber] = useState("")
-  const [editableAccountType, setEditableAccountType] = useState("")
-  const [accountType, setAccountType] = useState("")
-  const [allRelation, setAllrelation] = useState(null)
-  const [relation, setRelation] = useState(null)
-
-
-  const [state,setState]= useState(null)
-  const [stateId,setStateId] = useState(null)
-  const [districtValue,setDistrict]= useState(null)
-  const [districtValueId,setDistrictId]= useState(null)
-  const [subDivison,setSubDivision] = useState(null)
-  const [subDivisonId,setSubDivisionId] = useState(null)
-  const [block,setBlock]= useState(null)
-  const [blockId,setBlockId]= useState(null)
-  const [panchayat,setPanchayat]= useState(null)
 
 
 
-  const [allStates,setAllStates] = useState([])
-  const [allDistrict,setAllDistrict]= useState(null)
-  const [allBlock,setAllBlock]= useState(null)
-  const [allPanchayat,setAllPanchayat]= useState(null)
-
-
-
-
+  
   const [profileData, setProfile] = useState(null);
   const [dob, setDob] = useState(new Date())
   const [countryName, setCountryName] = useState("")
   const [imageDetail, setImageDetail] = useState(null)
   const [imageName, setImage] = useState("");
   const [photo, setPhoto] = useState(null);
-  const [showDatePicker, setShowDatePicker] = useState(false);
 
   let userData = useSelector(state => state.user.userInfo ? state.user.userInfo : null);
 
@@ -115,141 +73,9 @@ const dispatch= useDispatch()
 
   const [isPickerVisible, setIsPickerVisible] = useState(false);
   const { control, handleSubmit, setValue, formState: { errors } } = useForm();
-  const [selectedStateId, setSelectedStateId] = useState(null);
-
-  const [stateIdNameMap, setStateIdNameMap] = useState({});
-
-  const getAllState = async () => {
-    try {
-      const res = await axios.get("https://mahilamediplex.com/mediplex/state");
-      const data = res.data;
-  
-      // Create a mapping of state IDs to names
-      const stateMap = {};
-      data.forEach(state => {
-        stateMap[state.id] = state.state;
-      });
-  
-      setAllStates(data);
-      setStateIdNameMap(stateMap);
-    } catch (err) {
-      console.log(err.message);
-    }
-  };
-
-  const [allDistricts, setAllDistricts] = useState([]);
-  const [districtIdNameMap, setDistrictIdNameMap] = useState({});
-  const [selectedDistrictId, setSelectedDistrictId] = useState(null);
 
 
 
-   const getAllDistrict = async (id) => {
-    // console.log(id,"124")
-    
-    try {
-      const res = await axios.get("https://mahilamediplex.com/mediplex/district", {
-        params: {
-          state_id: id
-        },
-      });
-      const data = res.data;
-      // console.log(data)
-  
-      // Create a mapping of district IDs to names
-      const districtMap = {};
-      data.forEach(district => {
-        
-        districtMap[district.district_code] = district.name;
-      });
-      //  console.log("141",districtIdNameMap[364])
-      setAllDistricts(data);
-      setDistrictIdNameMap(districtMap);
-    } catch (err) {
-      console.log(err.message);
-    }
-  };
-
-//   useEffect(()=>{
-// getAllDistrict(selectedStateId)
-//   },[selectedStateId])
-
-
-
-  const [allSubDivision, setAllSubDivision] = useState([]);
-  const [subDivisonIdNameMap, setSubDivisionIdNameMap] = useState({});
-  const [selectedSubDivisionId, setSelectedSubDivisionId] = useState(null);
-
-
-  
-   const getAllSubDivision = async (id) => {
-    console.log(id,"163")
-    
-    try {
-      const res = await axios.get("https://mahilamediplex.com/mediplex/subDivision", {
-        params: {
-          district_id: id.district_code
-        },
-      });
-      const data = res.data;
-      console.log(data,"187")
-  
-      // Create a mapping of district IDs to names
-      const subDivisionMap = {};
-      data.forEach(division => {
-        
-        subDivisionMap[district.district_code] = district.name;
-      });
-      //  console.log("141",districtIdNameMap[364])
-      setAllSubDivision(data);
-      setSubDivisionIdNameMap(subDivisionMap,"184");
-    } catch (err) {
-      console.log(err.message);
-    }
-  };
-
-//   useEffect(()=>{
-// getAllDistrict(selectedStateId)
-//   },[editableState,state])
-
-
-   useEffect(()=>{
-    getAllSubDivision(selectedDistrictId)
-      },[editableDistrict])
-
-
-  
-
-  const getAllRelation = async () => {
-    try {
-      const res = await axios.get("https://mahilamediplex.com/mediplex/relation")
-      const data = res.data
-      setAllrelation(data)
-    }
-    catch (err) {
-      console.log(err.message, "error")
-    }
-  }
-
-
-  useEffect(() => {
-    getAllState()
-    getAllRelation()
-  }, [])
-  const showDatepicker = () => {
-    setShowDatePicker(!showDatePicker);
-  };
-
-  const onDateChange = (event, selectedDate) => {
-    if (selectedDate) {
-      setDob(selectedDate);
-      setEditableDob(selectedDate)
-      setShowDatePicker(false);
-    }
-  };
-  const handleCountryCodeChange = (country) => {
-    setCountryCode(country.cca2);
-    setEditableCountry(country.name);
-  };
 
   const pickImage = async () => {
     let result = await ImagePicker.launchImageLibraryAsync({
@@ -281,40 +107,18 @@ const dispatch= useDispatch()
         },
       });
 
+      console.log(res.data[0])
+
       if (res.data) {
         const initialProfile = res.data[0];
-        districtIdNameMap[initialProfile.district]
-        console.log(initialProfile.photo)
+      
         setProfile(initialProfile);
-        setEditableFullName(initialProfile.first_name || "");
-        setEditableFatherName(initialProfile.m_father_name || "");
-        setEditableMobile(initialProfile.m_mobile || "");
-        setEditableWhatsapp(initialProfile.whatsapp || "");
-        setEditableCity(initialProfile.m_city || "");
-        setEditableState(stateIdNameMap[initialProfile.m_state]);
-        setSelectedStateId(selectedStateId?selectedStateId:initialProfile.m_state || null);
-        setEditableDistrict(districtIdNameMap[initialProfile.district] || "");
-        setSelectedDistrictId(selectedDistrictId?selectedDistrictId:initialProfile.district || null);
-        setEditableSubDivision(subDivisonIdNameMap[initialProfile.sub_division] || "");
-        setSelectedSubDivisionId(initialProfile.sub_division || null);
-        setEditableCountry(initialProfile.m_country || "");
-        setEditableEmail(initialProfile.m_email || "");
-        setEditablePincode(initialProfile.m_pin || "");
-        setEditableProfileImage(initialProfile.photo || "");
-        setEditableAddress(initialProfile.m_address || "");
-        setEditableDob(initialProfile.m_dob || "")
-        setEditableNomineeName(initialProfile.nominee_name || "")
-        setEditableNomineeAge(initialProfile.nominee_age || "")
-        setEditableNomineeRelation(initialProfile.nominee_relation || "")
-        setRelation(initialProfile.nominee_relation || "")
-        setEditableNomineeMobile(initialProfile.nominee_mobile || "")
-        setEditableBankName(initialProfile.bank_name || "")
-        setEditableBankAccountNumber(initialProfile.bank_ac_holder || "")
-        setEditableBranchName(initialProfile.bank_branch || "")
-        setAccountType(initialProfile.bank_account_type || "")
-        setEditableAccountType(initialProfile.bank_account_type || "")
-        setEditableIFSC(initialProfile.bank_ifsc_code || "")
-        setEditablePanNumber(initialProfile.m_pan || "")
+        setEditableFullName(initialProfile.client_entry_name || "");
+        setEditableMobile(initialProfile.mobile || "");
+        setEditableEmail(initialProfile.email || "");
+        setEditableProfileImage(initialProfile.image || "");
+        setEditableAddress(initialProfile.address || "");
+    
       }
 
    
@@ -326,22 +130,10 @@ const dispatch= useDispatch()
 
   useEffect(() => {
     getProfileData();
-  }, [stateIdNameMap,districtIdNameMap,subDivisonIdNameMap]);
+  }, []);
 
 
-  const handleStateChange = (itemValue,id) => {
-    // Find the state ID based on the selected state name
-    // console.log("goa id",id)
-    const selectedId = allStates.find(state => state.state === itemValue)?.id;
-    setSelectedStateId(id);
-    setEditableState(itemValue);
-    setState(itemValue)
-    setStateId(id)
-    if(selectedId){
-      getAllDistrict(id)
-    }
-   
-  };
+
   const uploadImage = async (imageUri) => {
     const formData = new FormData();
     formData.append('image', {
@@ -383,7 +175,6 @@ const dispatch= useDispatch()
   const onSubmit = async (data) => {
 
   
-    console.log(data, editableDob, editableCountry, photo)
 
     if (photo) {
       await uploadImage(photo)
@@ -391,35 +182,14 @@ const dispatch= useDispatch()
 
 
 
-    console.log("299",selectedStateId,selectedDistrictId,state,stateId,data.bankName)
 
     const res = await axios.post("https://mahilamediplex.com/mediplex/updateProfile", {
 
       first_name: data.fullname ? data.fullname : editableFullName,
-      m_dob: dob ? moment(dob).format('YYYY-MM-DD') : moment(editableDob).format('YYYY-MM-DD'),
-      m_father_name: data.fathername ? data.fathername : editableFatherName,
       m_address: data.address ? data.address : editableAddress,
-      m_city: data.city ? data.city : editableCity,
-      m_state: stateId ? stateId : selectedStateId,
-      district:districtValueId?districtValueId:selectedDistrictId.district_code,
-      sub_division: selectedSubDivisionId.sub_div_id || editableSubDivision,
-      m_pin: data.pincode ? data.pincode : editablePincode,
-      m_country: countryName ? countryName : editableCountry,
       m_mobile: data.phone ? data.phone : editableMobile,
       m_email: data.email ? data.email : editableEmail,
       photo: imageName ? imageName : editableProfileImage,
-      whatsapp: data.whatsapp ? data.whatsapp : editableWhatsapp,
-      nominee_name:data.nomineeName? data.nomineeName : editableNomineeName,
-      nominee_age:data.nomineeAge? data.nomineeAge: editableNomineeAge,
-      nominee_relation: relation? relation : "",
-      nominee_mobile: data.nomineePhone ? data.nomineePhone : editableNomineeMobile,
-      bank_ac_holder: data.accountholderName ? data.accountHolderName : editableAccountHolderName,
-      bank_branch: data.branchName? data.branchName: editableBranchName,
-      bank_account_type: accountType? accountType: "current",
-      bank_ifsc_code: data.ifsc?data.ifsc:editableIFSC,
-      bank_account_number:data.bankAccountNumber?data.bankAccountNumber:editableBankAccountNumber,
-      bank_name: data.bankName? data.bankName: editableBankName,
-      m_pan:data.pan?data.pan:editablePanNumber,
       client_id: userInfo
 
     });
@@ -429,24 +199,25 @@ const dispatch= useDispatch()
     //  console.log(imageName,editableProfileImage)
     }
 
-    if(editableBankName){
-  userData.bank_name= editableBankName
-  dispatch({ type: 'SET_USER_INFO', payload: userData})
+  //   if(editableBankName){
+  // userData.bank_name= editableBankName
+  // dispatch({ type: 'SET_USER_INFO', payload: userData})
 
-    }
-    if(editableIFSC){
-      userData.bank_ifsc_code= editableIFSC
-      dispatch({ type: 'SET_USER_INFO', payload: userData})
-    }
+  //   }
+  //   if(editableIFSC){
+  //     userData.bank_ifsc_code= editableIFSC
+  //     dispatch({ type: 'SET_USER_INFO', payload: userData})
+  //   }
 
-    if(editableBankAccountNumber){
-      userData.bank_ac_no= editableBankAccountNumber
-      dispatch({ type: 'SET_USER_INFO', payload: userData})
-    }
+  //   if(editableBankAccountNumber){
+  //     userData.bank_ac_no= editableBankAccountNumber
+  //     dispatch({ type: 'SET_USER_INFO', payload: userData})
+  //   }
 
     if(editableProfileImage){
+      console.log(userData)
       // console.log(imageName,editableProfileImage)
-      userData.user_image= editableProfileImage
+      userData.image= editableProfileImage
       dispatch({ type: 'SET_USER_IMAGE', payload:editableProfileImage });
       dispatch({ type: 'SET_USER_INFO', payload: userData})
 
@@ -461,32 +232,6 @@ const dispatch= useDispatch()
       text1: "Your profile is updated.",
     });
   };
-
-
-  const handleDistrictChange =(itemValue) => {
-   
-       
-    // Find the district ID based on the selected district name
-    const selectedId =allDistricts.find(district => district.name == itemValue);
-    setSelectedDistrictId(selectedId);
-    setDistrictId(selectedId?.district_code)
-    setDistrict(itemValue)
-    setEditableDistrict(itemValue);
-
-    // console.log(selectedDistrictId)
-    getAllSubDivision(selectedDistrictId)
-  };
-
-  const handleSubDivisionChange =(itemValue) => {
-   
-       
-    // Find the district ID based on the selected district name
-    const selectedId =allSubDivision.find(division => division.name == itemValue);
-    console.log("subdivision",selectedId)
-    setSelectedSubDivisionId(selectedId);
-    setEditableSubDivision(itemValue);
-  };
-
 
   return (
     <>
@@ -567,38 +312,12 @@ const dispatch= useDispatch()
                   )}
                   name="fullname"
                 />
+
+{/* <EvilIcons name="lock" size={30} color="white" /> */}
               </View>
             </View>
 
-            <View style={{ marginTop: 0 }}>
-              <Text allowFontScaling={false}>Father's Name</Text>
-              <View style={styles.inputBoxCont}>
-                <Controller
-                  control={control}
-                  editable
-                  render={({ field: { onChange, onBlur, value } }) => (
-                    <TextInput
-                      allowFontScaling={false}
-                      cursorColor={"white"}
-                      autoFocus={true}
-                      style={{
-                        color: "white",
-                        marginVertical: 5,
-                        width: 300,
-                        fontSize: 16,
-                      }}
-                      onBlur={onBlur}
-                      onChangeText={(value) => {
-                        setEditableFatherName(value);
-                        onChange(value);
-                      }}
-                      value={editableFatherName}
-                    />
-                  )}
-                  name="fathername"
-                />
-              </View>
-            </View>
+         
 
             <View style={styles.inputCont}>
   <Text allowFontScaling={false}>Mobile Number</Text>
@@ -647,61 +366,18 @@ const dispatch= useDispatch()
       )}
       name="phone"
     />
+
+{/* <EvilIcons name="lock" size={30} color="white" /> */}
+
   </View>
-  {errors.phone && <Text allowFontScaling={false} style={styles.errorText}>{errors.phone.message}</Text>}
+  {/* {errors.phone && <Text allowFontScaling={false} style={styles.errorText}>{errors.phone.message}</Text>} */}
 
 </View>
 
   
 
 
-            <View style={styles.inputCont}>
-              <Text allowFontScaling={false}>WhatsApp</Text>
-              <View style={styles.inputBoxCont}>
-                <Controller
-                  control={control}
-                  rules={{
-                    // required: "Mobile number is required", // Required field with message
-                    minLength: {
-                      value: 10,
-                      message: "Mobile number must be 10 digits long",
-                    },
-                    maxLength: {
-                      value: 10,
-                      message: "Mobile number must be 10 digits long",
-                    },
-                    pattern: {
-                      value: /^[0-9]+$/, // Only allow numbers
-                      message: "Mobile number can only contain digits",
-                    },
-                  }}
-                  render={({ field: { onChange, onBlur, value }, fieldState: { error } }) => (
-                    <TextInput
-                      allowFontScaling={false}
-                      cursorColor={"white"}
-                      keyboardType="numeric"
-                      autoFocus={true}
-                      style={{
-                        color: "white",
-                        marginVertical: 5,
-                        width: 300,
-                        fontSize: 16,
-                      }}
-                      onBlur={onBlur}
-                      onChangeText={(value) => {
-                        setEditableWhatsapp(value)
-                        onChange(value)
-                      }}
-                      value={editableWhatsapp}
-                    />
-                  )}
-                  name="whatsapp"
-                />
-              </View>
-
-              {errors.whatsapp && <Text  allowFontScaling={false} style={styles.errorText}>{errors.whatsapp.message}</Text>}
-
-            </View>
+           
 
             <View style={styles.inputCont}>
               <Text allowFontScaling={false}>Email</Text>
@@ -736,34 +412,18 @@ const dispatch= useDispatch()
                   )}
                   name="email"
                 />
+
+                {/* <Image source={require("../assets/mail.png")} style={{ width: 35, height: 45, resizeMode: "contain" }} /> */}
               </View>
-              {errors.email && <Text allowFontScaling={false} style={styles.errorText}>{errors.email.message}</Text>}
+              {/* {errors.email && <Text allowFontScaling={false} style={styles.errorText}>{errors.email.message}</Text>} */}
 
             </View>
 
 
-            {/* <View style={styles.inputCont}>
-              <Text style={{ fontWeight: 500, fontSize: 16 }}>Date of birth</Text>
-              <Pressable style={[styles.inputBoxCont, { padding: 20 }]} onPress={showDatepicker}>
-                <Text style={{ margin: 10 }}>
-
-                  <EvilIcons name="calendar" size={24} color="#fff" onPress={showDatepicker} />
-                </Text>
-                {showDatePicker && (
-                  <DateTimePicker
-                    value={dob}
-                    mode="date"
-                    // display="default"
-                    onChange={onDateChange}
-                  />
-                )}
-
-                <Text style={{ color: "#fff", fontSize: 16 }}>{editableDob ? moment(editableDob).format('YYYY-MM-DD') : dob ? moment(dob).format('YYYY-MM-DD') : null}</Text>
-              </Pressable>
-            </View> */}
+          
 
             <View style={styles.inputCont}>
-              <Text allowFontScaling={false}>Address</Text>
+              <Text allowFontScaling={false}>Received Address</Text>
               <View style={styles.addressInputContainer}>
                 <Controller
                   control={control}
@@ -791,225 +451,13 @@ const dispatch= useDispatch()
                   )}
                   name="address"
                 />
+
+<Image source={require("../assets/delivery.png")} style={{ width: 35, height: 45, resizeMode: "contain" }} />
+
               </View>
             </View>
 
-            <View style={styles.inputCont}>
-              <Text allowFontScaling={false}>City</Text>
-              <View style={styles.inputBoxCont}>
-                <Controller
-                  control={control}
-                  render={({ field: { onChange, onBlur, value } }) => (
-                    <TextInput
-                      allowFontScaling={false}
-                      cursorColor={"white"}
-                      autoFocus={true}
-                      style={{
-                        color: "white",
-                        marginVertical: 5,
-                        width: 300,
-                        fontSize: 16,
-                      }}
-                      onBlur={onBlur}
-                      onChangeText={(value) => {
-                        setEditableCity(value)
-                        onChange(value)
-                      }}
-                      value={editableCity}
-                    />
-                  )}
-                  name="city"
-                />
-              </View>
-            </View>
-
-            {/* state */}
-            <View style={styles.inputCont}>
-    <Text allowFontScaling={false} style={{ fontWeight: '500', fontSize: 16 }}>State</Text>
-    <RNPickerSelect
-      style={{
-        inputIOS: { backgroundColor: "#17842b", color: "white", fontSize: 18 },
-        inputAndroid: { backgroundColor: "#17842b", color: "white", fontSize: 18 },
-      }}
-      placeholder={{
-        label: "Select a state",
-        value: null,
-        color: "#9EA0A4",
-      }}
-      value={state?state:editableState}
-      onValueChange={(itemValue,id)=>handleStateChange(itemValue,id)}
-      items={allStates.map((item) => ({
-        label: item.state,
-        value: item.state,
-        key: item.id,
-      }))}
-    />
-  </View>
-
-  {/* district */}
-
-
-   {allDistricts.length!=0 && 
-  <View style={styles.inputCont}>
-    <Text allowFontScaling={false} style={{ fontWeight: '500', fontSize: 16 }}>District </Text>
-    <RNPickerSelect
-      style={{
-        inputIOS: { backgroundColor: "#17842b", color: "white", fontSize: 18 },
-        inputAndroid: { backgroundColor: "#17842b", color: "white", fontSize: 18 },
-      }}
-      placeholder={{
-        label: "Select a District",
-        value: null,
-        color: "#9EA0A4",
-      }}
-      value={districtValue?districtValue:editableDistrict}
-      onValueChange={(itemValue)=>handleDistrictChange(itemValue)}
-      items={allDistricts.map((item) => ({
-        label: item.name,
-        value: item.name,
-        key: item.name,
-      }))}
-    />
-  </View>} 
-
-
-  {/* subDivision */}
-
-  {allSubDivision.length!=0 && 
-  <View style={styles.inputCont}>
-    <Text allowFontScaling={false} style={{ fontWeight: '500', fontSize: 16 }}>SubDivision</Text>
-    <RNPickerSelect
-      style={{
-        inputIOS: { backgroundColor: "#17842b", color: "white", fontSize: 18 },
-        inputAndroid: { backgroundColor: "#17842b", color: "white", fontSize: 18 },
-      }}
-      placeholder={{
-        label: "Select a SubDivision",
-        value: null,
-        color: "#9EA0A4",
-      }}
-      value={subdivsionValue?subdivsionValue:editableSubDivision}
-      onValueChange={(itemValue)=>handleSubDivisionChange(itemValue)}
-      items={allSubDivision.map((item) => ({
-        label: item.name,
-        value: item.name,
-        key: item.name,
-      }))}
-    />
-  </View>} 
-
-
- {/* {allBlock.length!=0 && 
-  <View style={styles.inputCont}>
-    <Text style={{ fontWeight: '500', fontSize: 16 }}>Block</Text>
-    <RNPickerSelect
-      style={{
-        inputIOS: { backgroundColor: "#17842b", color: "white", fontSize: 18 },
-        inputAndroid: { backgroundColor: "#17842b", color: "white", fontSize: 18 },
-      }}
-      placeholder={{
-        label: "Select a Block",
-        value: null,
-        color: "#9EA0A4",
-      }}
-      value={editableBlock}
-      onValueChange={(itemValue)=>setEditableBlock(itemValue)}
-      items={allBlock.map((item) => ({
-        label: item.name,
-        value: item.name,
-        key: item.name,
-      }))}
-    />
-  </View>}   */}
-
-
-            {/* <View style={styles.inputCont}>
-              <Text allowFontScaling={false}>State</Text>
-              <View style={styles.inputBoxCont}>
-                <Controller
-                  control={control}
-                  render={({ field: { onChange, onBlur, value } }) => (
-                    <TextInput
-                      allowFontScaling={false}
-                      cursorColor={"white"}
-                      autoFocus={true}
-                      style={{
-                        color: "white",
-                        marginVertical: 5,
-                        width: 300,
-                        fontSize: 16,
-                      }}
-                      onBlur={onBlur}
-                      onChangeText={(value) => {
-                        setEditableState(value)
-                        onChange(value)
-                      }}
-                      value={editableState}
-                    />
-                  )}
-                  name="state"
-                />
-              </View>
-            </View> */}
-
-          {/* <View style={styles.inputCont}>
-              <Text allowFontScaling={false}>Country</Text>
-              <TouchableOpacity onPress={() => setIsPickerVisible(true)} style={[styles.inputBoxCont, { paddingVertical: 15 }]}>
-                {console.log(editableCountry)}
-                <Text style={{ color: "white", fontSize: 16 }}>
-                  {editableCountry ? editableCountry : "Select Country"}
-                </Text>
-                {
-                  isPickerVisible &&
-                  <CountryPicker
-                    countryCode={countryCode}
-                    withFilter
-                    withAlphaFilter
-                    withCallingCode
-                    onSelect={handleCountryCodeChange}
-                    visible={isPickerVisible}
-                    onClose={() => setIsPickerVisible(false)}
-
-                  />
-                }
-
-              {/* </TouchableOpacity>
-            </View>  */} 
-
-
-
-            <View style={styles.inputCont}>
-              <Text allowFontScaling={false}>Pincode</Text>
-              <View style={styles.inputBoxCont}>
-                <Controller
-                  control={control}
-                  render={({ field: { onChange, onBlur, value } }) => (
-                    <TextInput
-                      allowFontScaling={false}
-                      cursorColor={"white"}
-                      keyboardType="numeric"
-                      autoFocus={true}
-                      style={{
-                        color: "white",
-                        marginVertical: 5,
-                        width: 300,
-                        fontSize: 16,
-                      }}
-                      onBlur={onBlur}
-                      onChangeText={(value) => {
-                        setEditablePincode(value)
-                        onChange(value);
-                      }}
-                      value={editablePincode}
-                    />
-                  )}
-                  name="pincode"
-                />
-              </View>
-            </View>
-
-
-
+    
             <View style={styles.inputCont}>
               <Text allowFontScaling={false}>Upload Photo</Text>
               <View style={[styles.inputBoxCont, { backgroundColor: "white" }]}>
@@ -1018,151 +466,12 @@ const dispatch= useDispatch()
               </View>
             </View>
 
-            <View style={{ marginTop: 20 }}></View>
-            <Text allowFontScaling={false}  style={{ letterSpacing: 2, fontSize: 18, fontWeight: 800 }}>NOMINEE DETAILS</Text>
-
-
-
-            <View style={{ marginTop: 20 }}></View>
-
-            {/* nominee name */}
-            <View style={{ marginTop: 0 }}>
-              <Text allowFontScaling={false}>Nominee Name</Text>
-              <View style={styles.inputBoxCont}>
-                <Controller
-                  control={control}
-                  editable
-                  render={({ field: { onChange, onBlur, value } }) => (
-                    <TextInput
-                      allowFontScaling={false}
-                      cursorColor={"white"}
-                      autoFocus={true}
-                      style={{
-                        color: "white",
-                        marginVertical: 5,
-                        width: 300,
-                        fontSize: 16,
-                      }}
-                      onBlur={onBlur}
-                      onChangeText={(value) => {
-                        setEditableNomineeName(value);
-                        onChange(value);
-                      }}
-                      value={editableNomineeName}
-                    />
-                  )}
-                  name="nomineeName"
-                />
-              </View>
-            </View>
-
-
-            {/* age */}
-
-            <View style={{ marginTop: 0 }}>
-              <Text allowFontScaling={false}>Nominee Age</Text>
-              <View style={styles.inputBoxCont}>
-                <Controller
-                  control={control}
-                  editable
-                  render={({ field: { onChange, onBlur, value } }) => (
-                    <TextInput
-                      allowFontScaling={false}
-                      cursorColor={"white"}
-                      keyboardType="numeric"
-                      autoFocus={true}
-                      style={{
-                        color: "white",
-                        marginVertical: 5,
-                        width: 300,
-                        fontSize: 16,
-                      }}
-                      onBlur={onBlur}
-                      onChangeText={(value) => {
-                        setEditableNomineeAge(value);
-                        onChange(value);
-                      }}
-                      value={editableNomineeAge}
-                    />
-                  )}
-                  name="nomineeAge"
-                />
-              </View>
-            </View>
-            {/* relation */}
-       <View style={styles.inputCont}>
-              <Text allowFontScaling={false} style={{ fontWeight: 500, fontSize: 16 }}>Relation </Text>
-         <Picker
-  style={{ backgroundColor: "#17842b", color: "white", fontSize: 18 }}
-  selectedValue={editableNomineeRelation}
-  onValueChange={(itemValue) => {
-    setRelation(itemValue);
-    setEditableNomineeRelation(itemValue);
-  }}
->
-  {allRelation != null && allRelation.map((item) => (
-    <Picker.Item key={item.id} label={item.name} value={item.name} />
-  ))}
-</Picker>
-            </View>
-
-
-            {/* mobile */}
-            <View style={styles.inputCont}>
-              <Text allowFontScaling={false}>Nominee Mobile</Text>
-              <View style={styles.inputBoxCont}>
-                <Controller
-                  control={control}
-                  rules={{
-                    // required: "Mobile number is required", // Required field with message
-                    minLength: {
-                      value: 10,
-                      message: "Mobile number must be 10 digits long",
-                    },
-                    maxLength: {
-                      value: 10,
-                      message: "Mobile number must be 10 digits long",
-                    },
-                    pattern: {
-                      value: /^[0-9]+$/, // Only allow numbers
-                      message: "Mobile number can only contain digits",
-                    },
-                  }}
-
-                  render={({ field: { onChange, onBlur, value }, fieldState: { error } }) => (
-                    <TextInput
-                      allowFontScaling={false}
-                      cursorColor={"white"}
-                      keyboardType="numeric"
-                      autoFocus={true}
-                      style={{
-                        color: "white",
-                        marginVertical: 5,
-                        width: 300,
-                        fontSize: 16,
-                      }}
-                      onBlur={onBlur}
-                      onChangeText={(value) => {
-                        setEditableNomineeMobile(value)
-                        onChange(value)
-                      }}
-                      value={editableNomineeMobile}
-                    />
-                  )}
-                  name="nomineePhone"
-                />
-              </View>
-              {errors.nomineePhone && <Text allowFontScaling={false} style={styles.errorText}>{errors.nomineePhone.message}</Text>}
-
-            </View>
-
-
-            <View style={{ marginTop: 20 }}></View>
+       
+            {/* <View style={{ marginTop: 20 }}></View>
             <Text allowFontScaling={false} style={{ letterSpacing: 2, fontSize: 18, fontWeight: 800 }}>BANK DETAILS</Text>
-
-            <View style={{ marginTop: 20 }}></View>
+            <View style={{ marginTop: 20 }}></View> */}
             {/* bank name */}
-            <View style={{ marginTop: 0 }}>
+            {/* <View style={{ marginTop: 0 }}>
               <Text allowFontScaling={false}>Bank Name</Text>
               <View style={styles.inputBoxCont}>
                 <Controller
@@ -1190,9 +499,9 @@ const dispatch= useDispatch()
                   name="bankName"
                 />
               </View>
-            </View>
+            </View> */}
             {/* account holder name */}
-            <View style={{ marginTop: 0 }}>
+            {/* <View style={{ marginTop: 0 }}>
               <Text allowFontScaling={false}>Account Holder Name</Text>
               <View style={styles.inputBoxCont}>
                 <Controller
@@ -1220,11 +529,9 @@ const dispatch= useDispatch()
                   name="accountHolderName"
                 />
               </View>
-            </View>
-
+            </View> */}
             {/* branch name */}
-
-            <View style={{ marginTop: 0 }}>
+            {/* <View style={{ marginTop: 0 }}>
               <Text allowFontScaling={false}>Branch Name</Text>
               <View style={styles.inputBoxCont}>
                 <Controller
@@ -1252,10 +559,9 @@ const dispatch= useDispatch()
                   name="branchName"
                 />
               </View>
-            </View>
-
+            </View> */}
             {/* bank account number */}
-            <View style={styles.inputCont}>
+            {/* <View style={styles.inputCont}>
               <Text allowFontScaling={false}>Bank Account Number</Text>
               <View style={styles.inputBoxCont}>
                 <Controller
@@ -1283,11 +589,9 @@ const dispatch= useDispatch()
                   name="bankAccountNumber"
                 />
               </View>
-            </View>
-
+            </View> */}
             {/* IFSC code */}
-
-            <View style={{ marginTop: 0 }}>
+            {/* <View style={{ marginTop: 0 }}>
               <Text allowFontScaling={false}>IFSC Code</Text>
               <View style={styles.inputBoxCont}>
                 <Controller
@@ -1315,11 +619,9 @@ const dispatch= useDispatch()
                   name="ifsc"
                 />
               </View>
-            </View>
-
+            </View> */}
             {/* Pan number */}
-
-            <View style={{ marginTop: 0 }}>
+            {/* <View style={{ marginTop: 0 }}>
               <Text allowFontScaling={false}>PAN Number</Text>
               <View style={styles.inputBoxCont}>
                 <Controller
@@ -1360,11 +662,9 @@ const dispatch= useDispatch()
 
               {errors.pan && <Text allowFontScaling={false} style={styles.errorText}>{errors.pan.message}</Text>}
 
-            </View>
-
-
+            </View> */}
             {/* Account Type */}
-            <View style={styles.inputCont}>
+            {/* <View style={styles.inputCont}>
       <Text allowFontScaling={false} style={{ fontWeight: '500', fontSize: 16 }}>
         Account Type 
       </Text>
@@ -1383,7 +683,7 @@ const dispatch= useDispatch()
           ))}
         </Picker>
    
-    </View>
+    </View> */}
 
             <View style={{ marginTop: 30 }} />
 
@@ -1430,8 +730,8 @@ const styles = StyleSheet.create({
     backgroundColor: "white",
   },
   scrollViewContent: {
-    flexGrow: 1,
-    paddingBottom: 40,
+    // flexGrow: 1,
+    // paddingBottom: 40,
   },
   container: {
     paddingHorizontal: 15,

@@ -10,6 +10,7 @@ import { imgUrl } from '../Components/Image/ImageUrl';
 import Toast from 'react-native-toast-message';
 import * as ImagePicker from 'expo-image-picker';  // Import for image picker
 import uuid from 'react-native-uuid';
+import * as Location from 'expo-location';
 
 
 
@@ -22,7 +23,7 @@ const CartPage = ({ navigation }) => {
   const [usedShoppingWallet, setUsedShoppingWallet] = useState(0);
   const [usedMainWallet, setUsedMainWallet] = useState(0);
   const [walletType,setWalletType]= useState(null)
-
+const [location, setLocation] = useState(null);
 
   let userInfo = useSelector((state) => state.user.userInfo ? state.user.userInfo : null);
 let walletBalance = userInfo? userInfo.mani_wallet:0
@@ -72,7 +73,7 @@ let shoppingWallet= userInfo? userInfo.shopping_wallet:0
           }
         }
         else{
-          Alert.alert("Failed", "Your order is not successfully placed!");
+          // Alert.alert("Failed", "Your order is not successfully placed!");
 
         }
       } 
@@ -141,7 +142,7 @@ let shoppingWallet= userInfo? userInfo.shopping_wallet:0
           const orderResult = await makeOrder(item, shop.client_id,type);
           if (!orderResult) {
             orderSuccess = false;
-            Alert.alert("Failed", "Your order is not successfully placed!");
+            // Alert.alert("Failed", "Your order is not successfully placed!");
             setClicked(false);
 
             break;
@@ -153,11 +154,11 @@ let shoppingWallet= userInfo? userInfo.shopping_wallet:0
           // navigation.navigate("Home");
         }
     
-      } catch (error) {
+      } 
+      catch (error) {
         console.error("Error during checkout:", error);
-  
         setClicked(false); // Re-enable the button on error
-        Alert.alert("Failed", "Your order is not successfully placed!");
+        // Alert.alert("Failed", "Your order is not successfully placed!");
   
       }
   
@@ -223,58 +224,58 @@ let shoppingWallet= userInfo? userInfo.shopping_wallet:0
     }
   }
 
-  const updateWallet = async () => {
+  // const updateWallet = async () => {
 
 
-    try {
-      const res = await axios.get("https://mahilamediplex.com/mediplex/updateShoppingWallet", {
-        params:{
-          newBalance: 100,
-          client_id: userInfo.client_id
-        }
+  //   try {
+  //     const res = await axios.get("https://mahilamediplex.com/mediplex/updateShoppingWallet", {
+  //       params:{
+  //         newBalance: 100,
+  //         client_id: userInfo.client_id
+  //       }
        
-      })
+  //     })
     
 
     
-        if(res.data.shopping_wallet){
+  //       if(res.data.shopping_wallet){
         
-         userInfo.shopping_wallet= await res.data.shopping_wallet
-        await  dispatch({ type: 'SET_USER_INFO', payload: userInfo });
+  //        userInfo.shopping_wallet= await res.data.shopping_wallet
+  //       await  dispatch({ type: 'SET_USER_INFO', payload: userInfo });
       
-      }
+  //     }
      
-    }
-    catch (err) {
-      console.log(err.message,"266")
-    }
-  }
-  const updateWallets = async () => {
+  //   }
+  //   catch (err) {
+  //     console.log(err.message,"266")
+  //   }
+  // }
+  // const updateWallets = async () => {
 
 
-    try {
-      const res = await axios.get("https://mahilamediplex.com/mediplex/updateMainWallet", {
-        params:{
-          newBalance: 100,
-          client_id: userInfo.client_id
-        }
+  //   try {
+  //     const res = await axios.get("https://mahilamediplex.com/mediplex/updateMainWallet", {
+  //       params:{
+  //         newBalance: 100,
+  //         client_id: userInfo.client_id
+  //       }
        
-      })
+  //     })
     
 
     
-        if(res.data.mani_wallet){
+  //       if(res.data.mani_wallet){
         
-         userInfo.mani_wallet= await res.data.mani_wallet
-        await  dispatch({ type: 'SET_USER_INFO', payload: userInfo });
+  //        userInfo.mani_wallet= await res.data.mani_wallet
+  //       await  dispatch({ type: 'SET_USER_INFO', payload: userInfo });
       
-      }
+  //     }
      
-    }
-    catch (err) {
-      console.log(err.message,"266")
-    }
-  }
+  //   }
+  //   catch (err) {
+  //     console.log(err.message,"266")
+  //   }
+  // }
   // updateWallet()
   // updateWallets()
   
@@ -344,13 +345,14 @@ let shoppingWallet= userInfo? userInfo.shopping_wallet:0
         lmc_id: lmcId || lmcId,
         pid: item.sale_id,
         qty: item.qty,
-        wallet_type: walletType,
+        wallet_type: type==="Wallet"?"Wallet":"Cash on Delivery",
         shoppingWallet: shoppingUsed,
         mainWallet: mainUsed,
         barcode: item.barcode,
         cby: lmcId || lmcId,
         image: item.prescription === "yes" ? `${random}${userInfo.client_id}${item.pcode}.jpg` : null,
         payment_type:type?type:"Cash",
+        location: `${location?.area},${location?.city}`,
       };
   
       const res = await axios.post("https://mahilamediplex.com/mediplex/orderDetails", payload);
@@ -370,7 +372,32 @@ let shoppingWallet= userInfo? userInfo.shopping_wallet:0
   };
   
 
+  // Fetch user location
+  const fetchLocation = async () => {
+    try {
+      const { status } = await Location.requestForegroundPermissionsAsync();
+      if (status !== "granted") {
+        setErrorMsg("Permission to access location was denied");
+        return;
+      }
 
+      const location = await Location.getCurrentPositionAsync({});
+      const reverseGeocode = await Location.reverseGeocodeAsync({
+        latitude: location.coords.latitude,
+        longitude: location.coords.longitude,
+      });
+
+      if (reverseGeocode.length > 0) {
+        const area = reverseGeocode[0].district || reverseGeocode[0].subregion;
+        const city = reverseGeocode[0].city || reverseGeocode[0].region;
+        setLocation({ area, city });
+      }
+    } catch (err) {
+      console.log("Error fetching location:", err.message);
+    }
+  };
+
+  useEffect(() => {fetchLocation()}, []);
   
   const handleIncrementProduct = (id) => {
     dispatch(handleIncrement({ id }));
@@ -553,6 +580,7 @@ let shoppingWallet= userInfo? userInfo.shopping_wallet:0
         />
         <View style={{width:width,alignItems:"center"}}>
         <Text allowFontScaling={false}  style={styles.title}>Your Cart</Text>
+      {/* {location?.area && location?.city && <Text allowFontScaling={false}  style={styles.locationTitle}>{location.area},{location.city}</Text> } */}
         </View>
    
       <Text
@@ -575,8 +603,7 @@ let shoppingWallet= userInfo? userInfo.shopping_wallet:0
             keyExtractor={(item) => item.pcode.toString()}
           />
 
-
-          <TouchableOpacity
+        <TouchableOpacity
           style={[styles.checkoutButton, { backgroundColor: clicked ? 'gray' : '#4CAF50' }]}
           onPress={handleCheckOut}
           disabled={clicked}
@@ -612,6 +639,12 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 20,
+    fontWeight: 'bold',
+    // marginBottom: 16,
+    letterSpacing:2
+  },
+  locationTitle: {
+    fontSize: 10,
     fontWeight: 'bold',
     // marginBottom: 16,
     letterSpacing:2

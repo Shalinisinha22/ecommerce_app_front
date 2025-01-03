@@ -12,6 +12,7 @@ import {
     ImageBackground,
     Dimensions,
     Pressable,
+    Keyboard
   } from "react-native";
   import React, { useState, useEffect } from "react";
   import { MaterialIcons } from "@expo/vector-icons";
@@ -21,85 +22,86 @@ import {
   import { useDispatch } from 'react-redux';
   import { setUser } from "../redux/actions/userActions";
   import axios from "axios";
-  
+  import { useForm, Controller } from 'react-hook-form';
+
   const height = Dimensions.get("screen").height;
   const width = Dimensions.get('screen').width;
   
   const RegisterScreen = ({ navigation }) => {
     const dispatch = useDispatch();
     const [hidePass, setHidePass] = useState(true);
-    const [id, setId] = useState("");
-    const [isIdFocused, setIsIdFocused] = useState(false);
+    const [name, setName] = useState("");
+    const [isNameFocused, setIsNameFocused] = useState(false);
+    const [mobile,setMobile]= useState("")
     const [password, setPassword] = useState("");
     const [error, setErr] = useState("");
     const [isFormValid, setIsFormValid] = useState(false);
     const [user, setUser] = useState("");
     const [flag, setFlag] = useState(false);
-  
+  const [isMobileFocused, setIsMobileFocused] = useState(false);
     const [isPasswordFocused, setIsPasswordFocused] = useState(false);
+
   
-    useEffect(() => {
-      validateForm();
-    }, [password, id]);
   
-    const validateForm = async () => {
-      let errors = {};
+ 
   
-      if (id == '') {
-        errors.id = "Enter ID";
-      }
+   
   
-      if (password == '') {
-        errors.password = "Enter password";
-      }
-  
-      setErr(errors);
-      setIsFormValid(Object.keys(errors).length === 0);
-    };
-  
-    const verifyUser = async () => {
-      let errors = {};
-  
-      const res = await axios.get("https://mahilamediplex.com/mediplex/login", {
-        params: {
-          userId: id,
-          password: password
-        }
-      }).then(response => {
-        console.log("131", response.data);
-        if (response.data) {
-          dispatch({ type: 'SET_USER_INFO', payload: response.data });
+    const { control, handleSubmit, formState: { errors } } = useForm({
+      defaultValues: {
+        name: '',
+        mobile: '',
+        password: '',
+      },
+    });
     
-        }
-      }).catch(error => {
-        console.error(error);
-        if (error.response && error.response.status === 404) {
-          errors.message = 'You have entered wrong credentials!';
-        }
-        errors.message = 'You have entered wrong credentials!';
-      });
+    const onSubmit = async (data) => {
+      if (!data.name || !data.mobile || !data.password) {
+        Alert.alert("Validation Error", "All fields are required.");
+        return;
+      }
+
+      try {
+        const response = await axios.post("https://mahilamediplex.com/mediplex/register", {
+          data
+        });
+     console.log(response.data.user,'68')
   
-      setErr(errors);
+        if (response.status === 201) {
+          Alert.alert("Success", "User registered successfully.");
+          setName("");
+          setMobile("");
+          setPassword("");
+          dispatch({ type: 'SET_USER_INFO', payload: response.data.user });
+
+          if(response.data?.user){
+
+          navigation.navigate("Login"); // Redirect to login screen
+        }
+      }} catch (error) {
+        if (error.response?.status === 409) {
+          Alert.alert("", "User already exists.");
+        } else {
+          Alert.alert("", "Failed to register. Please try again.");
+        }
+      } finally {
+        setLoading(false);
+      }
     };
   
-    const handleSubmit = async () => {
-      console.log(isFormValid, "formvalid");
-  
-    //   if (isFormValid) {
-    //     await verifyUser();
-    //   } else {
-    //     setFlag(true);
-    //   }
-    };
-  
+
+  const onError: SubmitErrorHandler<FormValues> = (errors, e) => {
+    setErr(errors)
+    return console.log(errors)
+  }
     return (
       <View style={{ backgroundColor: "white" }}>
-        <ImageBackground source={require("../assets/b6.jpg")} style={{ width: width, height: height, alignItems: "center", paddingTop: 20 }}>
-          <ScrollView>
+        <ImageBackground source={require("../assets/b6.jpg")} style={{ width: width, height: height, alignItems: "center", paddingTop: 10 }}>
             <View style={{ marginTop: 10, width: width, alignItems: "center" }}>
               <Image style={styles.img} source={require("../assets/logo.png")} />
             </View>
-  
+            <ScrollView keyboardShouldPersistTaps='handled'>
+
             <KeyboardAvoidingView>
               <View style={{ alignItems: "center" }}>
                 <Text allowFontScaling={false}  style={styles.heading}>Register your Account</Text>
@@ -108,34 +110,86 @@ import {
   
               <View style={{ width: width, alignItems: "center" }}>
                 <View style={{ marginTop: 20 }}>
-                  <View style={[styles.inputBoxCont, isIdFocused && styles.inputBoxFocused]}>
-                  <FontAwesome name="id-card" size={24} color="black" style={{ marginLeft: 8 }}  />
-                    <TextInput
-                      value={id}
-                      onChangeText={(text) => setId(text)}
-                      onFocus={() => setIsIdFocused(true)}
-                      onBlur={() => setIsIdFocused(false)}
-                      style={{
-                        color: "black",
-                        marginVertical: 2,
-                        width: 300,
-                        fontSize: 18,
-                      }}
-                      placeholder="Enter your ID"
+                  <View style={[styles.inputBoxCont, isNameFocused && styles.inputBoxFocused]}>
+                  <Ionicons name="person-outline" size={20} color="#C93393" style={styles.icon} />
+                                        <Controller
+                      control={control}
+                      render={({ field: { onChange, onBlur, value } }) => (
+                        <TextInput
+                        placeholder="Name"
+                        placeholderTextColor="#333"
+                        style={{
+                          color: "black",
+                          width: 300,
+                          fontSize: 14,
+                          marginVertical: 2,
+                        }} 
+                        onFocus={() => setIsNameFocused(true)}
+                        onBlur={() => setIsNameFocused(false)}
+                          onChangeText={value => onChange(value)}
+                          value={value}
+                          minLength={6} // Minimum length of 6 characters
+
+                        />
+                      )}
+                      name="name"
+                      rules={{ required: true,message:"Enter your name" }}
                     />
                   </View>
-                  {error.id && flag && <Text allowFontScaling={false}  style={{ color: "red" }}>{error.id}</Text>}
+                  {errors.name && <Text allowFontScaling={false} style={{color:"red"}}>Name is required</Text>}
+
                 </View>
+
+
+                <View>
+                  <View style={[styles.inputBoxCont, isMobileFocused && styles.inputBoxFocused]}>
+                  <Ionicons name="call-outline" size={20} color="#C93393" style={styles.icon} />
+                  <Controller
+                      control={control}
+                      render={({ field: { onChange, onBlur, value } }) => (
+                        <TextInput
+                        placeholder="Mobile Number"
+                        placeholderTextColor="#333"
+                        keyboardType="numeric"
+                        style={{
+                          color: "black",
+                          width: 300,
+                          fontSize: 14,
+                          marginVertical: 2,
+                        }} 
+                        onFocus={() => setIsMobileFocused(true)}
+                        onBlur={() => setIsMobileFocused(false)}                          onChangeText={value => onChange(value)}
+            value={value}
+            maxLength={10} // Limit input to 10 digits
+          />
+        )}
+        name="mobile"
+        rules={{
+          required: "Mobile number is required",
+                    pattern: {
+            value: /^[6-9]\d{9}$/,
+            message: "Invalid mobile number",
+          },
+        }}
+      />
+                  </View>
+
+                  {console.log(errors.mobile?.message)}
+                  {errors.mobile?.message && <Text allowFontScaling={false} style={{ color: "red" }}>{errors.mobile?.message}</Text>}
+                  </View>
   
                 <View>
                   <View style={[styles.inputBoxCont, isPasswordFocused && styles.inputBoxFocused]}>
                     {
-                      hidePass ? <Entypo name="eye-with-line" onPress={() => setHidePass(!hidePass)} size={24} color="black" style={{ marginLeft: 8 }} />
-                        : <Entypo name="eye" onPress={() => setHidePass(!hidePass)} size={24} color="black" style={{ marginLeft: 8 }} />
+                      hidePass ? <Entypo name="eye-with-line" onPress={() => setHidePass(!hidePass)} size={20} color="#C93393" style={{ marginLeft: 8 }} />
+                        : <Entypo name="eye" onPress={() => setHidePass(!hidePass)} size={20} color="#C93393" style={{ marginLeft: 8 }} />
                     }
+
+<Controller
+                      control={control}
+                      render={({ field: { onChange, onBlur, value } }) => (
                     <TextInput
-                      value={password}
-                      onChangeText={(text) => setPassword(text)}
+                    placeholder="Password"
                       onFocus={() => setIsPasswordFocused(true)}
                       onBlur={() => setIsPasswordFocused(false)}
                       secureTextEntry={hidePass ? true : false}
@@ -143,13 +197,27 @@ import {
                         color: "black",
                         marginVertical: 2,
                         width: 300,
-                        fontSize:18,
+                        fontSize:14,
                       }}
-                      placeholder="enter your Password"
-                      
+                      onChangeText={value => onChange(value)}
+                      value={value}
+                      minLength={6} // Minimum length of 6 characters
                     />
+                      )}
+                
+                  name="password"
+                  rules={{
+                    required: "Password is required",
+                    minLength: {
+                      value: 6,
+                      message: "Password must be at least 6 characters long",
+                    },
+                    message:"Enter your password"
+                  }}
+                />
+          
                   </View>
-                  {error.password && flag && <Text allowFontScaling={false}  style={{ color: "red" }}>{error.password}</Text>}
+                  {errors.password?.message  && <Text allowFontScaling={false}  style={{ color: "red" }}>{errors.password?.message}</Text>}
                 </View>
   
               
@@ -157,7 +225,7 @@ import {
                 <View style={{ marginTop: 40 }} />
   
                 <TouchableOpacity style={styles.button}
-                  onPress={handleSubmit}
+                  onPress={handleSubmit(onSubmit)}
                  >
                   <Text allowFontScaling={false} 
                     style={{
@@ -167,7 +235,7 @@ import {
                       fontWeight: "bold",
                     }}
                   >
-                    Login
+                 SIGN UP
                   </Text>
                 </TouchableOpacity>
   
@@ -175,13 +243,14 @@ import {
                   onPress={() => navigation.navigate("Login")}
                   style={{ marginTop: 15 }}
                 >
-                  <Text allowFontScaling={false}  style={{ textAlign: "center", color: "black", fontSize: 16, fontWeight: 800 }}>
+                  <Text allowFontScaling={false}  style={{ textAlign: "center", color: "black", fontSize: 12, fontWeight: 800 }}>
                     Already have an account? Sign In
                   </Text>
                 </TouchableOpacity>
               </View>
             </KeyboardAvoidingView>
-          </ScrollView>
+            </ScrollView>
+       
         </ImageBackground>
       </View>
     );
@@ -196,9 +265,9 @@ import {
       resizeMode: "contain"
     },
     heading: {
-      fontSize: 17,
+      fontSize: 15,
       fontWeight: "bold",
-      marginTop: 10,
+      marginTop: 1,
       color: "#041E42",
     },
     inputBoxCont: {
@@ -209,6 +278,7 @@ import {
       paddingVertical: 5,
       borderRadius: 5,
       marginTop: 20,
+      paddingHorizontal: 10,
     },
     inputBoxFocused: {
       borderColor: "#008000",
