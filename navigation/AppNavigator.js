@@ -34,15 +34,13 @@ import DirectMemberScreen from '../Screens/DirectMemberScreen';
 import DownlineListScreen from '../Screens/DownlineListScreen';
 import ActiveMemberScreen from '../Screens/ActiveMemberScreen';
 import MyDashboard from '../Screens/MyDashboard';
-import OrderHistory from '../Screens/OrderHistory';
-import { Swipeable } from 'react-native-gesture-handler';
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import AllProducts from '../Screens/AllProducts';
-import AllOrders from '../Screens/AllOrders';
-import PendingOrders from '../Screens/PendingOrders';
+import PendingOrders from '../Screens/AllOrders';
 import RegisterScreen from '../Screens/RegisterScreen';
-import DeliveryReport from '../Screens/DeliveryReport';
+import OrderDetails from '../Screens/OrderDetails';
+import Coupons from '../Screens/Coupons';
 
 const Stack = createStackNavigator();
 const Drawer = createDrawerNavigator();
@@ -103,6 +101,7 @@ useEffect(()=>{
             dropdownIcon: <AntDesign name="down" size={15} color="white" />,
             url: ""
         },
+        {id:2,name:"Coupons",url:"Coupons"},
         { id: 4,
             name: "Credit/Loan",
             submenu: [
@@ -158,7 +157,7 @@ useEffect(()=>{
 { id: 8, name: "Recharge Status", url: "fundRequestStatus" },
 
 // { id: 6, name: "Pending Orders", url: "pending" },
-{ id: 9, name: "Delivery Report", url: "deliveryReport" },
+// { id: 9, name: "Delivery Report", url: "deliveryReport" },
 
  { id: 7, name: "Logout", url: "" }
   
@@ -207,12 +206,12 @@ useEffect(()=>{
                 <Stack.Screen name="Downline" component={DownlineListScreen} options={{ headerShown: false }} />
                 <Stack.Screen name="ActiveMember" component={ActiveMemberScreen} options={{ headerShown: false }} />
                 <Stack.Screen name="dashboard" component={MyDashboard} options={{ headerShown: false }} />
-                <Stack.Screen name="orderHistory" component={OrderHistory} options={{ headerShown: false }} />
                 <Stack.Screen name="AllProducts" component={AllProducts} options={{ headerShown: false }} />
-                <Stack.Screen name="AllOrders" component={AllOrders} options={{ headerShown: false }} />
                 <Stack.Screen name="profile" component={Profile} options={{ headerShown: false }} />
                 <Stack.Screen name="pending" component={PendingOrders} options={{ headerShown: false }} />
-                <Stack.Screen name="deliveryReport" component={DeliveryReport} options={{ headerShown: false }} />
+                <Stack.Screen name="OrderDetails" component={OrderDetails} options={{ headerShown: false }} />
+                <Stack.Screen name="Coupons" component={Coupons} options={{ headerShown: false }} />
+
 
             </Stack.Navigator>
         );

@@ -1,4 +1,4 @@
-import { View, Text, ScrollView, Pressable, Image, FlatList, Dimensions, TouchableOpacity, StyleSheet } from 'react-native'
+import { View, Text, ScrollView, Pressable, Image, FlatList, Dimensions, TouchableOpacity, StyleSheet,ActivityIndicator } from 'react-native'
 import React from 'react'
 import { Foundation, Entypo } from '@expo/vector-icons';
 import axios from 'axios';
@@ -21,11 +21,11 @@ const Section2 = ({ navigation }) => {
   const lmcId = globalshop
   const [lmc_id, setLmc] = useState(lmcId)
   const [shopName,setShopName]= useState("")
+const [loading,setLoading]= useState(false)
 
 
 
-
-  console.log(lmcId, "26lmcId")
+  console.log(lmcId, "26lmcId",)
 
 
 
@@ -92,8 +92,9 @@ const Section2 = ({ navigation }) => {
       let filterProduct = []
       filterProduct = productArr.filter((item) => item.category_name == "Ethicals")
       // console.log("Final Product Array:", filterProduct);
-
+      setLoading(true)
       setProducts(filterProduct);
+   
 
     } catch (err) {
       console.log("Error fetching products:", err.message);
@@ -215,24 +216,22 @@ const Section2 = ({ navigation }) => {
 
 
       <View style={{ paddingRight: 10 }}>
-        {products.length != 0 ? (
+   
           <FlatList
-            data={products.slice(0, 10)}  // Limit to 10 products
+            data={!loading ? [1, 2, 3, 4]:products.slice(0, 10)}  // Limit to 10 products
             horizontal
             showsHorizontalScrollIndicator={false}
-            renderItem={({ item, index }) => (
+            renderItem={({ item, index }) => 
+              !loading ? (
+                <View style={styles.emptyBox}>
+                  <ActivityIndicator size="small" color="#999" />
+                </View>
+              )
+                :
+
               <Pressable
                 key={item.id}
-                style={{
-                  alignItems: "center",
-                  justifyContent: "center",
-                  borderWidth: 2,
-                  borderRadius: 20,
-                  padding: 12,
-                  borderColor: "#D0D0D0",
-                  marginLeft: 10,
-                  marginTop: 10,
-                }}
+                style={styles.productCard}
                 onPress={() => navigation.navigate("productInner", { item: item,shopName })}
               >
                 
@@ -262,27 +261,27 @@ const Section2 = ({ navigation }) => {
                 
                 {item.sale_image && item.sale_image.length > 0 ? (
                   <Image
-                    style={{ width: 150, height: 130, resizeMode: "contain" }}
+                    style={styles.productImage}
                     source={{ uri: `${imgUrl}/eproduct/${item.sale_image[0]}` }}
                   />
                 ) : (
                   <Image
-                    style={{ width: 150, height: 130, resizeMode: "contain" }}
+                    style={styles.productImage}
                     source={{ uri: `${imgUrl}/eproduct/${item.product_image[0]}` }}
                   />
                 )}
-                <View style={{ margin: 5 }}>
-                  <Text allowFontScaling={false} style={{ fontWeight: 600 }}>{item.name}</Text>
-                  <Text allowFontScaling={false} style={{ fontWeight: 300, fontSize: 10, textAlign: "center" }}>{item.brand_name}</Text>
+                <View style={{ marginTop: 8 }}>
+                  <Text allowFontScaling={false} style={styles.productName}>{item.name}</Text>
+                  <Text allowFontScaling={false} style={styles.productBrand}>{item.brand_name}</Text>
                   <Text
                     allowFontScaling={false}
-                    style={{ textAlign: "center", textDecorationLine: "line-through", color: "#800000", fontSize: 10 }}
+                    style={styles.productMRP}
                   >
                     Rs {item.mrp}
                   </Text>
                   <Text
                     allowFontScaling={false}
-                    style={{ fontSize: 12, fontWeight: "bold", textAlign: "center", color: "#228B22" }}
+                    style={styles.productPrice}
                   >
                     RS {item.price}
                   </Text>
@@ -292,14 +291,14 @@ const Section2 = ({ navigation }) => {
                 </View>
 
                 {isItemInCart(item.pcode) ? (
-                 <View style={{ flexDirection: "row", width: 200, justifyContent: "space-between", marginTop: 10 }}>
-                                         <TouchableOpacity onPress={() => handleDecrementProduct(item.pcode)} style={{ paddingVertical: 2, borderWidth: 1, borderColor: "#D0D0D0", paddingHorizontal: 15,backgroundColor:getQty(item.pcode)==1?"#D0D0D0":null }}>
+                 <View style={styles.cartButtons}>
+                                         <TouchableOpacity onPress={() => handleDecrementProduct(item.pcode)} style={styles.qtyButton}>
                                          <Text style={{color:getQty(item.pcode)==1?"gray":"black",fontSize:15}} allowFontScaling={false} >-</Text>
                                          </TouchableOpacity>
-                                         <TouchableOpacity style={{ paddingVertical: 2, borderWidth: 1, borderColor: "#D0D0D0", paddingHorizontal: 35 }}>
+                                         <TouchableOpacity style={styles.qtyCount}>
                                            <Text>{getQty(item.pcode)}</Text>
                                          </TouchableOpacity>
-                                         <TouchableOpacity onPress={() => handleIncrementProduct(item.pcode)} style={{ paddingVertical: 2, borderWidth: 1, borderColor: "#D0D0D0", paddingHorizontal: 15,backgroundColor:getQty(item.pcode)==item.cart_limit?"#D0D0D0":null }}>
+                                         <TouchableOpacity onPress={() => handleIncrementProduct(item.pcode)} style={styles.qtyButton}>
                      
                                            <Text style={{color:getQty(item.pcode)==item.cart_limit?"gray":"black"}} allowFontScaling={false}>+</Text>
                                            {/* {console.log(getQty(item.pcode),item)} */}
@@ -309,36 +308,27 @@ const Section2 = ({ navigation }) => {
                 (
                   <TouchableOpacity
                     onPress={() => handleCart(item, item.pcode,shopName)}
-                    style={{
-                      backgroundColor: "#228B22",
-                      paddingVertical: 10,
-                      paddingHorizontal: 20,
-                      justifyContent: "center",
-                      alignItems: "center",
-                      marginTop: 5,
-                      borderRadius: 6,
-                    }}
+                    style={styles.addToCartButton}
                   >
                     <Text
                       allowFontScaling={false}
-                      style={{
-                        textAlign: "center",
-                        color: "white",
-                        fontSize: 13,
-                        fontWeight: "bold",
-                      }}
+                      style={styles.addToCartText}
                     >
                       <Entypo name="shopping-cart" size={20} color="white" /> ADD TO CART
                     </Text>
                   </TouchableOpacity>
                 )}
               </Pressable>
-            )}
+            }
           />
-        ) : (
+         {/* : */}
+        
+    {products.length==0 && <Text style={{textAlign:"center"}}>No Products</Text>}     
+        
+        {/* (
           <Text style={{ textAlign: "center" }}>No Products Available</Text>
 
-        )}
+        )} */}
 
 
       </View>
@@ -349,7 +339,17 @@ const Section2 = ({ navigation }) => {
 }
 
 const styles = StyleSheet.create({
-
+  productCard: {
+    alignItems: "center",
+    justifyContent: "center",
+    borderWidth: 2,
+    borderRadius: 20,
+    padding: 10,
+    borderColor: "#D0D0D0",
+    marginTop: 10,
+    width: width * 0.45,
+    margin:5
+  },
 
   productImage: {
     width: "100%",
@@ -414,7 +414,16 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: "#800000",
     marginTop: 20,
-  }
+  },
+  emptyBox: {
+    width: 150,
+    height: 140,
+    backgroundColor: "#f0f0f0",
+    justifyContent: "center",
+    alignItems: "center",
+    borderRadius: 10,
+    margin: 10,
+  },
 });
 
 export default Section2

@@ -81,7 +81,6 @@ const WithdrawalScreen = ({navigation}) => {
 
      }
      else{
-
       setError("Please update your bank Details")
      }
   }

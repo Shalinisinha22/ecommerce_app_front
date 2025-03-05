@@ -1,7 +1,6 @@
 import { View, Text, StyleSheet, Dimensions, TextInput, TouchableOpacity,Image,Pressable, ScrollView } from 'react-native'
 import React, { useState, useEffect } from 'react'
 import { useForm, Controller } from "react-hook-form";
-import Header from '../Components/Header';
 import { useSelector,useDispatch } from 'react-redux';
 import RNPickerSelect from 'react-native-picker-select';
 import axios from 'axios';

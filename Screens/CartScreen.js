@@ -1,15 +1,14 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, FlatList, Image, TouchableOpacity, StyleSheet, ScrollView, Alert, Dimensions, ActivityIndicator,Modal } from 'react-native';
+import { View, Text, FlatList, Image, TouchableOpacity, StyleSheet, ScrollView, Alert, Dimensions, ActivityIndicator, Modal, TextInput, Pressable } from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
 const width = Dimensions.get('screen').width;
 import axios from 'axios';
-import { addToCart, removeFromCart, updateQty, handleIncrement, handleDecrement } from '../redux/actions/userActions';
+import { removeFromCart, handleIncrement, handleDecrement } from '../redux/actions/userActions';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { imgUrl } from '../Components/Image/ImageUrl';
 import Toast from 'react-native-toast-message';
 import * as ImagePicker from 'expo-image-picker';  // Import for image picker
-import uuid from 'react-native-uuid';
 import * as Location from 'expo-location';
 
 
@@ -19,21 +18,36 @@ const CartPage = ({ navigation }) => {
   const cart = useSelector((state) => state.cart.cart);
   const [alertVisible, setAlertVisible] = useState(false);
   const [isPopupVisible, setPopupVisible] = useState(false);
-  const [paymentType,setPaymentType]= useState("")
+  const [paymentType, setPaymentType] = useState("")
   const [usedShoppingWallet, setUsedShoppingWallet] = useState(0);
   const [usedMainWallet, setUsedMainWallet] = useState(0);
-  const [walletType,setWalletType]= useState(null)
-const [location, setLocation] = useState(null);
+  const [walletType, setWalletType] = useState(null)
+  const [location, setLocation] = useState(null);
+  const [coupon, setCoupon] = useState("");
 
   let userInfo = useSelector((state) => state.user.userInfo ? state.user.userInfo : null);
-let walletBalance = userInfo? userInfo.mani_wallet:0
-let shoppingWallet= userInfo? userInfo.shopping_wallet:0
-  const [flag,setFlag]= useState(false);
+
+  // console.log(userInfo,"userinfo")
+  let walletBalance = userInfo ? userInfo.mani_wallet : 0
+  let shoppingWallet = userInfo ? userInfo.shopping_wallet : 0
+  const [flag, setFlag] = useState(false);
   const [lmc_id, setLMCId] = useState('');
   const [totalAmt, setTotalAmt] = useState(0);
   const [prescriptionImages, setPrescriptionImages] = useState({});
-  const [clicked,setClicked]= useState(false); // State to track if checkout is processing
+  const [clicked, setClicked] = useState(false); // State to track if checkout is processing
+  const [deliveryAddress, setDeliveryAddress] = useState("");
+  const [totalAmount, setTotalAmount] = useState(0);
+  const [errorMessage, setErrorMessage] = useState(null);
+  const [responseMessage, setResponseMessage] = useState(null);
+  const [cashback, setCashback] = useState(0);
+  const [finalDiscount, setFinalDiscount] = useState(0);
+  const [allPid, setAllPid] = useState([])
 
+  useEffect(() => {
+    if (userInfo?.address) {
+      setDeliveryAddress(userInfo.address);
+    }
+  }, [userInfo?.address]);
   const getTotalAmt = () => {
     let price = 0;
     cart.forEach((item) => {
@@ -42,187 +56,239 @@ let shoppingWallet= userInfo? userInfo.shopping_wallet:0
     return price;
   };
 
+
+
+
   const handlePaymentTypeSelection = async (type) => {
-    setPaymentType(type)
+    setPaymentType(type);
     setPopupVisible(false); // Close popup after selection
 
-
-
-    const orderAmount = getTotalAmt();
-  
-  
-  
     if (type === 'Cash') {
-      const success = await proceedOrder();
-      if (success) {
+      const orderId = await proceedOrder();
+      if (orderId) {
         finalizeOrder();
       }
-    } 
-    else if (type === 'Wallet') {
-    
-        const success = await proceedOrder(type);
-        if (success) {
-          const updateShopping = await updateShoppingWallet();
-          const updateMain = await updateMainWallet();
+    } else if (type === 'Wallet') {
+      const orderId = await proceedOrder(type);
+      if (orderId) {
+        // console.log("Order ID received:", orderId);
+        const updateShopping = await updateShoppingWallet(cashback, orderId); // Ensure order_id is passed
+        // const updateMain = await updateMainWallet();
 
-          if (updateShopping || updateMain) {
-            finalizeOrder();
-          } else {
-            Alert.alert('', 'Network Issue.');
-            setClicked(false);
-          }
+        if (updateShopping || updateMain) {
+          finalizeOrder();
+        } else {
+          Alert.alert('', 'Network Issue.');
+          setClicked(false);
         }
-        else{
-          // Alert.alert("Failed", "Your order is not successfully placed!");
+      }
+    }
+  };
 
-        }
-      } 
-  }
-  
+
   const finalizeOrder = () => {
     setClicked(false); // Re-enable the button after success
     showToast();
     setAlertVisible(true); // Show custom alert
-  
+
     cart.forEach((item) => {
       dispatch(removeFromCart(item.pcode));
     });
-  
+
     setTimeout(() => {
       navigation.navigate("Home");
     }, 1500);
   };
-  
+
   const handleCheckOut = async () => {
+
+
+
+    if (getTotalAmt() < 100) {
+      Alert.alert("Order Amount", "Order amount must be greater than 100 to place an order.");
+      return;
+    }
+ 
+  
+    if (!deliveryAddress.trim()) {
+
+      Alert.alert("Delivery Address Required", "Please enter your delivery address.");
+      return;
+    }
+
+    if (!location?.area && !location?.city) {
+      Alert.alert("Location Required", "Please enable location services.");
+      fetchLocation();
+      return;
+    }
+
     setPopupVisible(true)
   };
 
-  const proceedOrder= async(type)=>{
-  
-      setClicked(true); // Disable the checkout button and show indicator
+  const proceedOrder = async (type) => {
+    setClicked(true);
+    const random = Math.floor(1000 + Math.random() * 9000);
+
+    try {
+      // Check for missing prescriptions
+      const hasPrescriptionItem = cart.filter(item => item.prescription === 'yes');
+      const hasUploadedPrescription = hasPrescriptionItem.some(item => prescriptionImages[item.pcode]);
+
+      if (hasPrescriptionItem.length > 0 && !hasUploadedPrescription) {
+        Alert.alert("Prescription Required", "Please upload at least one prescription.");
+        setClicked(false);
+        return;
+      }
+
+      // Fetch shop details
+      const shopData = await AsyncStorage.getItem('shopDetails');
+      if (!shopData) {
+        console.error("Shop details not found in AsyncStorage.");
+        setClicked(false);
+        return;
+      }
+
+      const shop = JSON.parse(shopData);
+      const orderId = `ORD${Math.floor(1000 + Math.random() * 9000)}`;
+      let orderSuccess = true;
+
+      // Upload prescriptions
+      const uploadTasks = hasPrescriptionItem.map(item =>
+        prescriptionImages[item.pcode] ? uploadImage(prescriptionImages[item.pcode], item.pcode, random) : true
+      );
+      const uploadResults = await Promise.all(uploadTasks);
+      if (uploadResults.some(result => !result)) {
+        Alert.alert("Error", "Failed to upload prescriptions.");
+        setClicked(false);
+        return;
+      }
+
+      // Place all orders
+      const allOrdersResult = await makeAllOrders(shop.client_id, type, orderId);
+      if (!allOrdersResult) {
+        Alert.alert("Error", "Failed to place all orders.");
+        setClicked(false);
+        return;
+      }
+
+      // Place individual orders
+
+      for (const item of cart) {
+
+        const orderResult = await makeOrder(item, shop.client_id, type, orderId, random);
+        if (!orderResult) {
+          orderSuccess = false;
+          break;
+        }
+      }
+
+
+      if (orderSuccess) {
+
+        showToast();
+        return orderId;
+
+      } else {
+        Alert.alert("Error", "Failed to place order.");
+      }
+    } catch (error) {
+      console.error("Error during checkout:", error);
+    } finally {
+      setClicked(false);
+    }
+  };
+
+
+  // const updateMainWallet = async () => {
+  //   const orderAmount = getTotalAmt()
+
+  //   try {
+  //     const res = await axios.get("https://mahilamediplex.com/mediplex/updateMainWallet", {
+  //       params: {
+  //         newBalance: walletBalance,
+  //         client_id: userInfo.client_id
+  //       }
+
+  //     })
+
+
+  //     // console.log(res.data.mani_wallet,155)
+
+  //     if (res.data.mani_wallet) {
+  //       // console.log(res.data.mani_wallet,"cartwallet")
+  //       userInfo.mani_wallet = await res.data.mani_wallet
+  //       dispatch({ type: 'SET_USER_INFO', payload: userInfo });
+  //       return true;
+
+  //     }
+
+  //   }
+  //   catch (err) {
+  //     console.log(err.message)
+  //     return false;
+  //   }
+  // }
+
+
+  const updateShoppingWalletLog = async (cashback, order_id) => {
+    let allPID = []
+    cart.forEach((item) => {
+      allPID.push(item.sale_id)
+    });
+    console.log(allPid)
+    const orderAmount = getTotalAmt()
+    try {
+      const res = await axios.post("https://mahilamediplex.com/mediplex/shopping-wallet-log", {
+        params: {
+          shopping_wallet: Math.round(orderAmount * 100) / 100,
+          user_id: userInfo.client_id,
+          order_id: order_id,
+          reason: "Order Products",
+          product_id: allPID.join(","),
+          status: "Debit"
+
+
+        }
+
+      })
+
+
+      if (res.data.message == "Data inserted successfully") {
+        return true;
+      }
+
+
+    }
+    catch (err) {
+      console.log(err.message)
+      return false;
+    }
+  }
+
+  const updateShoppingWallet = async (cashback, order_id) => {
+
+
+    const walletLogUpdate = await updateShoppingWalletLog(cashback, order_id);
+    if (walletLogUpdate) {
       try {
-        const hasPrescriptionItem = cart.filter(item => item.prescription === 'yes');
-    
-        const hasUploadedPrescription = hasPrescriptionItem.some(item => prescriptionImages[item.pcode]);
-    
-        if (hasPrescriptionItem.length > 0 && !hasUploadedPrescription) {
-          Alert.alert("Prescription Required", "Please upload at least one prescription.");
-          setClicked(false); // Re-enable the button if validation fails
-          return;
-        }
-
-
-
-    
-        const shopData = await AsyncStorage.getItem('shopDetails');
-        let shop = null;
-
-    
-        if (shopData) {
-          shop = JSON.parse(shopData);
-          setLMCId(shop.client_id);
-        } else {
-          console.error("Shop details not found in AsyncStorage.");
-          setClicked(false); // Re-enable the button if no shop data is found
-          return;
-        }
-    
-        let orderSuccess = true;
-    
-        for (const item of cart) {
-          if (item.prescription === 'yes' && prescriptionImages[item.pcode]) {
-            const uploadResult = await uploadImage(prescriptionImages[item.pcode], item.pcode);
-            if (!uploadResult) {
-              orderSuccess = false;
-              break;
-            }
+        const res = await axios.get("https://mahilamediplex.com/mediplex/updateShoppingWallet", {
+          params: {
+            newBalance: cashback ? shoppingWallet + cashback : shoppingWallet,
+            client_id: userInfo.client_id
           }
+        });
 
-             
-          const orderResult = await makeOrder(item, shop.client_id,type);
-          if (!orderResult) {
-            orderSuccess = false;
-            // Alert.alert("Failed", "Your order is not successfully placed!");
-            setClicked(false);
-
-            break;
-          }
-        }
-    
-        if (orderSuccess) {
-         return orderSuccess;
-          // navigation.navigate("Home");
-        }
-    
-      } 
-      catch (error) {
-        console.error("Error during checkout:", error);
-        setClicked(false); // Re-enable the button on error
-        // Alert.alert("Failed", "Your order is not successfully placed!");
-  
-      }
-  
-  }
-
-  const updateMainWallet = async () => {
-    const orderAmount= getTotalAmt()
-
-    try {
-      const res = await axios.get("https://mahilamediplex.com/mediplex/updateMainWallet", {
-        params:{
-          newBalance: walletBalance,
-          client_id: userInfo.client_id
-        }
-       
-      })
-    
-
-      // console.log(res.data.mani_wallet,155)
-    
-        if(res.data.mani_wallet){
-          // console.log(res.data.mani_wallet,"cartwallet")
-          userInfo.mani_wallet=await res.data.mani_wallet
+        if (res.data.shopping_wallet) {
+          userInfo.shopping_wallet = await res.data.shopping_wallet;
           dispatch({ type: 'SET_USER_INFO', payload: userInfo });
           return true;
-      
-      }
-     
-    }
-    catch (err) {
-      console.log(err.message)
-      return false;
-    }
-  }
-
-  const updateShoppingWallet = async () => {
-    const orderAmount= getTotalAmt()
-
-    try {
-      const res = await axios.get("https://mahilamediplex.com/mediplex/updateShoppingWallet", {
-        params:{
-          newBalance: shoppingWallet,
-          client_id: userInfo.client_id
         }
-       
-      })
-    
-
-  
-    
-        if(res.data.shopping_wallet){
-          // console.log(res.data.mani_wallet,"cartwallet")
-          userInfo.shopping_wallet=await res.data.shopping_wallet
-          dispatch({ type: 'SET_USER_INFO', payload: userInfo });
-          return true;
-      
+      } catch (err) {
+        console.log(err.message);
+        return false;
       }
-     
     }
-    catch (err) {
-      console.log(err.message)
-      return false;
-    }
-  }
+  };
 
   // const updateWallet = async () => {
 
@@ -230,73 +296,44 @@ let shoppingWallet= userInfo? userInfo.shopping_wallet:0
   //   try {
   //     const res = await axios.get("https://mahilamediplex.com/mediplex/updateShoppingWallet", {
   //       params:{
-  //         newBalance: 100,
+  //         newBalance: 500,
   //         client_id: userInfo.client_id
   //       }
-       
-  //     })
-    
 
-    
+  //     })
+
+
+
   //       if(res.data.shopping_wallet){
-        
+
   //        userInfo.shopping_wallet= await res.data.shopping_wallet
   //       await  dispatch({ type: 'SET_USER_INFO', payload: userInfo });
-      
+
+
   //     }
-     
+
   //   }
   //   catch (err) {
   //     console.log(err.message,"266")
   //   }
   // }
-  // const updateWallets = async () => {
 
-
-  //   try {
-  //     const res = await axios.get("https://mahilamediplex.com/mediplex/updateMainWallet", {
-  //       params:{
-  //         newBalance: 100,
-  //         client_id: userInfo.client_id
-  //       }
-       
-  //     })
-    
-
-    
-  //       if(res.data.mani_wallet){
-        
-  //        userInfo.mani_wallet= await res.data.mani_wallet
-  //       await  dispatch({ type: 'SET_USER_INFO', payload: userInfo });
-      
-  //     }
-     
-  //   }
-  //   catch (err) {
-  //     console.log(err.message,"266")
-  //   }
-  // }
   // updateWallet()
-  // updateWallets()
-  
-  const makeOrder = async (item, lmcId, type) => {
-    // Generate a unique order ID
-    const random = Math.floor(1000 + Math.random() * 9000);
-    const order_id = `ORD${random}`;
-  
-    console.log("Wallet Type:", walletType);
-    console.log("Used Shopping Wallet:", usedShoppingWallet);
-    console.log("Used Main Wallet:", usedMainWallet);
-    console.log("Item Price:", item.price, "Payment Type:", paymentType, type, shoppingWallet,walletBalance,remainingAmount);
-  
-    let remainingAmount = Math.round(item.price * item.qty); // Total item price
+
+
+
+  const makeAllOrders = async (lmcId, type, order_id) => {
+
+
+
+
+    let remainingAmount = Math.round((getTotalAmt() * 100) / 100); // Total item price
     let shoppingUsed = 0; // Amount deducted from shopping wallet
     let mainUsed = 0; // Amount deducted from main wallet
     let sufficientFunds = false; // Wallet balance status
     let walletType = "";
 
-    console.log(Number(walletBalance)>Number(item.price))
-  
+
     // Wallet Deduction Logic
     if (type === "Wallet") {
       if (Number(shoppingWallet) >= Number(remainingAmount)) {
@@ -305,12 +342,12 @@ let shoppingWallet= userInfo? userInfo.shopping_wallet:0
         shoppingWallet -= remainingAmount;
         walletType = "Shopping Wallet";
         sufficientFunds = true;
-      } else if (Number(shoppingWallet) > 0 && Number(shoppingWallet)  <= Number(remainingAmount)) {
+      } else if (Number(shoppingWallet) > 0 && Number(shoppingWallet) <= Number(remainingAmount)) {
         // Partially deduct from shopping wallet, rest from main wallet
         shoppingUsed = shoppingWallet;
         remainingAmount -= shoppingWallet;
         shoppingWallet = 0;
-  
+
         if (Number(walletBalance) >= Number(remainingAmount)) {
           mainUsed = remainingAmount;
           walletBalance -= remainingAmount;
@@ -319,50 +356,52 @@ let shoppingWallet= userInfo? userInfo.shopping_wallet:0
         }
 
       } else if (Number(walletBalance) >= Number(remainingAmount)) {
-        console.log(walletBalance,"walletBalance")
+        // console.log(walletBalance,"walletBalance")
         // Deduct entirely from main wallet if shopping wallet is empty or insufficient
         mainUsed = remainingAmount;
         walletBalance -= remainingAmount;
         sufficientFunds = true;
         walletType = "Main Wallet";
       }
-  
+
       if (sufficientFunds) {
         setUsedShoppingWallet(shoppingUsed); // Track shopping wallet usage
         setUsedMainWallet(mainUsed); // Track main wallet usage
-      } 
+      }
       else {
         Alert.alert('', 'You have insufficient funds in your wallet.');
         return false;
       }
     }
-  
+
     // Order Submission
     try {
-      const payload = {
+
+
+      const orderPayload = {
         uid: userInfo.client_id,
         order_id,
         lmc_id: lmcId || lmcId,
-        pid: item.sale_id,
-        qty: item.qty,
-        wallet_type: type==="Wallet"?"Wallet":"Cash on Delivery",
+        wallet_type: type === "Wallet" ? "Wallet" : "Cash on Delivery",
         shoppingWallet: shoppingUsed,
         mainWallet: mainUsed,
-        barcode: item.barcode,
         cby: lmcId || lmcId,
-        image: item.prescription === "yes" ? `${random}${userInfo.client_id}${item.pcode}.jpg` : null,
-        payment_type:type?type:"Cash",
+        payment_type: type ? type : "Cash",
         location: `${location?.area},${location?.city}`,
+        address: deliveryAddress,
+        coupon_code: responseMessage ? coupon : null,
+        coupon_value: responseMessage ? finalDiscount : null,
       };
-  
-      const res = await axios.post("https://mahilamediplex.com/mediplex/orderDetails", payload);
-  
-      console.log("Order successfully placed:", res.data);
-      if(res.data){
+
+
+      const res = await axios.post("https://mahilamediplex.com/mediplex/orderDetails", orderPayload);
+
+      // console.log("Order successfully placed:", res.data);
+      if (res.data) {
         return true;
 
       }
-      else{
+      else {
         return false;
       }
     } catch (error) {
@@ -370,7 +409,43 @@ let shoppingWallet= userInfo? userInfo.shopping_wallet:0
       return false;
     }
   };
-  
+
+  const makeOrder = async (item, lmcId, type, order_id, random) => {
+    // Generate a unique order ID
+
+
+    try {
+
+
+
+      const payload = {
+        uid: userInfo.client_id,
+        order_id,
+        pid: item.sale_id,
+        mrp: item.mrp,
+        offer_price: Math.round(((item.mrp - item.price) * 100) / 100),
+        qty: item.qty,
+        barcode: item.barcode,
+        cby: lmcId || lmcId,
+        image: item.prescription === "yes" ? `${random}${userInfo.client_id}${item.pcode}.jpg` : null,
+      };
+
+      const res = await axios.post("https://mahilamediplex.com/mediplex/orderProductDetails", payload);
+
+      // console.log("Order successfully placed:", res.data);
+      if (res.data) {
+        return true;
+
+      }
+      else {
+        return false;
+      }
+    } catch (error) {
+      console.error("Error placing order:", error.message);
+      return false;
+    }
+  };
+
 
   // Fetch user location
   const fetchLocation = async () => {
@@ -388,8 +463,8 @@ let shoppingWallet= userInfo? userInfo.shopping_wallet:0
       });
 
       if (reverseGeocode.length > 0) {
-        const area = reverseGeocode[0].district || reverseGeocode[0].subregion;
-        const city = reverseGeocode[0].city || reverseGeocode[0].region;
+        const area = await reverseGeocode[0].district || reverseGeocode[0].subregion;
+        const city =  await reverseGeocode[0].city || reverseGeocode[0].region;
         setLocation({ area, city });
       }
     } catch (err) {
@@ -397,8 +472,12 @@ let shoppingWallet= userInfo? userInfo.shopping_wallet:0
     }
   };
 
-  useEffect(() => {fetchLocation()}, []);
-  
+
+
+  useEffect(()=>{
+    fetchLocation()
+  },[])
+
   const handleIncrementProduct = (id) => {
     dispatch(handleIncrement({ id }));
   };
@@ -420,26 +499,25 @@ let shoppingWallet= userInfo? userInfo.shopping_wallet:0
       allowsEditing: true,
       quality: 1,
     });
-  
+
     if (!result.canceled) {
       setFlag(true);
       setPrescriptionImages((prevState) => ({
         ...prevState,
-        [item.pcode]: result.assets[0].uri  
+        [item.pcode]: result.assets[0].uri
       }));
       Alert.alert("Prescription Uploaded!", "Your prescription has been uploaded.");
     }
   };
 
-  const uploadImage = async (imageUri, pcode) => {
-    const random = Math.floor(1000 + Math.random() * 9000);
+  const uploadImage = async (imageUri, pcode, random) => {
     const formData = new FormData();
     formData.append('image', {
       uri: imageUri,
       type: 'image/jpeg',
-      name: `${random}${userInfo.client_id}${pcode}.jpg` 
+      name: `${random}${userInfo.client_id}${pcode}.jpg`
     });
-  
+
     try {
       const response = await axios.post('https://mahilamediplex.com/mediplex/uploadImage', formData, {
         headers: {
@@ -460,15 +538,15 @@ let shoppingWallet= userInfo? userInfo.shopping_wallet:0
   }, [cart]);
 
   const renderCartItem = ({ item }) => (
-    <View style={styles.cartItem}>
-      {/* {console.log(item.shop)} */}
+    <View key={item.id} style={styles.cartItem}>
+
       <Image
         style={{ width: 70, height: 100, resizeMode: "contain" }}
         source={{ uri: `${imgUrl}/eproduct/${item.sale_image?.[0] || item.product_image?.[0]}` }}
       />
       <View style={styles.itemDetails}>
         <Text allowFontScaling={false} style={styles.itemName}>{item.name}</Text>
-        <Text allowFontScaling={false} style={[styles.itemName,{marginTop:2}]}>{item.shop}</Text>
+        <Text allowFontScaling={false} style={[styles.itemName, { marginTop: 2 }]}>{item.shop}</Text>
 
         <View style={styles.quantityContainer}>
           <TouchableOpacity onPress={() => handleDecrementProduct(item.pcode)}>
@@ -479,7 +557,7 @@ let shoppingWallet= userInfo? userInfo.shopping_wallet:0
             <Icon name="add-circle-outline" size={24} color="black" />
           </TouchableOpacity>
         </View>
-        <Text allowFontScaling={false} style={styles.itemPrice}>RS {Math.round(item.price * item.qty)}</Text>
+        <Text allowFontScaling={false} style={styles.itemPrice}>RS {Math.round((item.price * item.qty) * 100) / 100}</Text>
       </View>
 
       {item.prescription === 'yes' && (
@@ -496,7 +574,7 @@ let shoppingWallet= userInfo? userInfo.shopping_wallet:0
               style={styles.prescriptionImage}
             />
           )}
-          {!flag && <Text allowFontScaling={false} style={{color:"red", fontSize:10}}>Prescription is required</Text>}
+          {!flag && <Text allowFontScaling={false} style={{ color: "red", fontSize: 10 }}>Prescription is required</Text>}
         </View>
       )}
 
@@ -526,100 +604,263 @@ let shoppingWallet= userInfo? userInfo.shopping_wallet:0
     </Modal>
   );
 
-  const PaymentModal=({visible,onClose})=>(
+  const PaymentModal = ({ visible, onClose }) => (
     <Modal
-    visible={isPopupVisible}
-    transparent={true}
-    animationType="slide"
-    onRequestClose={() => setPopupVisible(false)}
-  >
-    <View style={styles.modalOverlay}>
-      <View style={styles.modalContent}>
-        <Text style={styles.modalTitle}>Select Payment Type</Text>
+      visible={isPopupVisible}
+      transparent={true}
+      animationType="slide"
+      onRequestClose={() => setPopupVisible(false)}
+    >
+      <View style={styles.modalOverlay}>
+        <View style={styles.modalContent}>
+          <Text style={styles.modalTitle}>Select Payment Type</Text>
 
 
 
 
-        <TouchableOpacity style={styles.paymentOption} onPress={() => handlePaymentTypeSelection('Wallet')}>
-          <Text style={styles.paymentOptionText}>Wallet</Text>
-        </TouchableOpacity>
+          <TouchableOpacity style={styles.paymentOption} onPress={() => handlePaymentTypeSelection('Wallet')}>
+            <Text style={styles.paymentOptionText}>Wallet</Text>
+          </TouchableOpacity>
 
-        {/* <TouchableOpacity style={styles.paymentOption} onPress={() => handlePaymentTypeSelection('sWallet')}>
+          {/* <TouchableOpacity style={styles.paymentOption} onPress={() => handlePaymentTypeSelection('sWallet')}>
           <Text style={styles.paymentOptionText}>Shopping Wallet</Text>
         </TouchableOpacity> */}
 
-        <TouchableOpacity style={styles.paymentOption} onPress={() => handlePaymentTypeSelection('Cash')}>
-          <Text style={styles.paymentOptionText}>Cash on Delivery</Text>
-        </TouchableOpacity>
+          <TouchableOpacity style={styles.paymentOption} onPress={() => handlePaymentTypeSelection('Cash')}>
+            <Text style={styles.paymentOptionText}>Cash on Delivery</Text>
+          </TouchableOpacity>
 
-        <TouchableOpacity style={styles.cancelButton} onPress={() => setPopupVisible(false)}>
-          <Text style={styles.cancelButtonText}>Cancel</Text>
-        </TouchableOpacity>
+          <TouchableOpacity style={styles.cancelButton} onPress={() => setPopupVisible(false)}>
+            <Text style={styles.cancelButtonText}>Cancel</Text>
+          </TouchableOpacity>
+        </View>
       </View>
-    </View>
-  </Modal>
+    </Modal>
 
   )
 
 
+  const handleCouponApply = async (couponCode) => {
+    setResponseMessage(null);
+    setErrorMessage(null);
 
-  
+    // Validate inputs
+    if (!couponCode) {
+      setErrorMessage("Please provide coupon code.");
+      return;
+    }
+
+    try {
+      const response = await axios.post("https://mahilamediplex.com/mediplex/validateCoupon", {
+        couponCode,
+        cartValue: parseFloat(getTotalAmt()),
+      });
+
+      // console.log(response.data, "coupon")
+      setResponseMessage(response.data.message);
+
+      if (response.data.type === "cashback") {
+        const cartValue = parseFloat(getTotalAmt());
+        const discountValue = (cartValue * parseFloat(response.data.discountValue)) / 100;
+        // console.log(`Discount Applied: ${discountValue}`);
+
+        // Ensure the discount does not exceed the max discount value
+        const finalDiscount = Math.min(discountValue, parseFloat(response.data.maxDiscount));
+
+        // console.log(`Discount Applied: ${finalDiscount}`);
+        setFinalDiscount(finalDiscount);
+        setCashback(finalDiscount)
+
+        setResponseMessage(
+          `You received a cashback of ₹${finalDiscount} after successfully placing your order.`
+        );
+
+      }
+    } catch (error) {
+
+      if (error.response) {
+
+        setErrorMessage(error.response.data.error || "Something went wrong");
+        // setErrorMessage("An error occurred. Please try again.");
+      }
+    }
+  }
+
+
 
   return (
     <View style={styles.container}>
       <Text
-          allowFontScaling={false}
-          style={{
-            height: 1,
-            borderColor: "whitesmoke",
-            borderWidth: 2,
-            marginTop: 15,
-            width: width,
-            marginBottom:10
-          }}
-        />
-        <View style={{width:width,alignItems:"center"}}>
-        <Text allowFontScaling={false}  style={styles.title}>Your Cart</Text>
-      {/* {location?.area && location?.city && <Text allowFontScaling={false}  style={styles.locationTitle}>{location.area},{location.city}</Text> } */}
-        </View>
-   
+        allowFontScaling={false}
+        style={{
+          height: 1,
+          borderColor: "whitesmoke",
+          borderWidth: 2,
+          marginTop: 15,
+          width: width,
+          marginBottom: 10
+        }}
+      />
+      <View style={{ width: width, alignItems: "center" }}>
+        <Text allowFontScaling={false} style={styles.title}>Your Cart</Text>
+        {/* {location?.area && location?.city && <Text allowFontScaling={false}  style={styles.locationTitle}>{location.area},{location.city}</Text> } */}
+      </View>
+
       <Text
-          allowFontScaling={false}
-          style={{
-            height: 1,
-            borderColor: "whitesmoke",
-            borderWidth: 2,
-            marginTop: 10,
-            width: width,
-            marginBottom:25
-          }}
-        />
+        allowFontScaling={false}
+        style={{
+          height: 1,
+          borderColor: "whitesmoke",
+          borderWidth: 2,
+          marginTop: 10,
+          width: width,
+          marginBottom: 25
+        }}
+      />
       <ScrollView>
         {cart.length > 0 ? (
           <>
-          <FlatList
-            data={cart}
-            renderItem={renderCartItem}
-            keyExtractor={(item) => item.pcode.toString()}
-          />
+            <FlatList
+              data={cart}
+              renderItem={renderCartItem}
+              keyExtractor={(item) => item.pcode.toString()}
+            />
 
-        <TouchableOpacity
-          style={[styles.checkoutButton, { backgroundColor: clicked ? 'gray' : '#4CAF50' }]}
-          onPress={handleCheckOut}
-          disabled={clicked}
-        >
-          {clicked ? (
-            <ActivityIndicator size="small" color="white" />
-          ) : (
-            <Text allowFontScaling={false} style={styles.checkoutButtonText}>Checkout</Text>
-          )}
-        </TouchableOpacity>
-        </>
+            <View style={{ width: width, alignItems: "flex-end", paddingRight: 20, justifyContent: "center" }}>
+              <View style={{ marginRight: 0, flexDirection: "row" }}>
+                <Text style={{ color: "#4CAF50" }}>Total: </Text>
+                <Text style={{ color: "#4CAF50", fontWeight: 800 }}>Rs{Math.round(getTotalAmt() * 100) / 100}</Text>
+
+              </View>
+
+            </View>
+            <Text
+              allowFontScaling={false}
+              style={{
+                height: 1,
+                borderColor: "whitesmoke",
+                borderWidth: 2,
+                marginTop: 15,
+                width: width,
+                marginBottom: 10
+              }}
+            />
+
+
+
+
+
+            <Text style={{ paddingHorizontal: 20, marginTop: 10, color: "#4CAF50", fontWeight: 800, letterSpacing: 1 }}>Enter Coupon Code:</Text>
+            <View style={{
+              flexDirection: "row",
+              justifyContent: "space-between",
+              alignItems: "center",
+              margin: 20,
+              marginTop: 2,
+              borderWidth: 1,
+              padding: 8,
+              borderRadius: 5,
+              backgroundColor: "white",
+              marginBottom: 0
+            }}>
+
+
+
+
+              <TextInput
+                style={{ width: "50%", color: "black", backgroundColor: "white" }}
+                placeholder=""
+                placeholderTextColor="gray"
+                allowFontScaling={false}
+                multiline
+                numberOfLines={4}
+                onChangeText={(text) => {
+                  setCoupon(text);
+                  if (text === "") {
+                    setErrorMessage(null);
+                    setResponseMessage(null);
+                  }
+                }}
+                onBlur={() => {
+                  if (coupon === "") {
+                    setErrorMessage(null);
+                    setResponseMessage(null);
+                  }
+                }}
+                onFocus={() => {
+                  if (coupon === "") {
+                    setErrorMessage(null);
+                    setResponseMessage(null);
+                  }
+                }}
+                value={coupon}
+              />
+
+
+
+              <Pressable onPress={() => handleCouponApply(coupon)}>
+                <Text style={{ color: "#4CAF50", }}>APPLY</Text>
+              </Pressable>
+
+
+            </View>
+
+            {responseMessage && <Text style={styles.successMessage}>{responseMessage}</Text>}
+            {errorMessage && <Text style={styles.errorMessage}>{errorMessage}</Text>}
+
+
+
+
+            <Text style={{ paddingHorizontal: 20, marginTop: 10, color: "#4CAF50", fontWeight: 800, letterSpacing: 1 }}>Delivery Address:</Text>
+            <View style={{
+              flexDirection: "row",
+              justifyContent: "space-between",
+              alignItems: "center",
+              margin: 20,
+              marginTop: 2,
+              borderWidth: 1,
+              padding: 8,
+              borderRadius: 5,
+              backgroundColor: "white"
+            }}>
+
+
+
+
+              <TextInput
+                style={{ width: "80%", color: "black", backgroundColor: "white" }}
+                placeholder='Enter Delivery Address'
+                placeholderTextColor="gray"
+                allowFontScaling={false}
+                multiline
+                numberOfLines={4}
+                onChangeText={(text) => setDeliveryAddress(text)}
+                value={deliveryAddress}
+
+              />
+
+              <Image source={require("../assets/delivery.png")} style={{ width: 35, height: 45, resizeMode: "contain" }} />
+
+            </View>
+
+
+            <TouchableOpacity
+              style={[styles.checkoutButton, { backgroundColor: clicked ? 'gray' : '#4CAF50' }]}
+              onPress={handleCheckOut}
+              disabled={clicked}
+            >
+              {clicked ? (
+                <ActivityIndicator size="small" color="white" />
+              ) : (
+                <Text allowFontScaling={false} style={styles.checkoutButtonText}>Checkout</Text>
+              )}
+            </TouchableOpacity>
+          </>
         ) : (
           <Text allowFontScaling={false} style={styles.emptyText}>Your cart is empty</Text>
         )}
 
-<PaymentModal visible={isPopupVisible} onClose={() => setPopupVisible(false)} />
+        <PaymentModal visible={isPopupVisible} onClose={() => setPopupVisible(false)} />
 
 
       </ScrollView>
@@ -641,15 +882,15 @@ const styles = StyleSheet.create({
     fontSize: 20,
     fontWeight: 'bold',
     // marginBottom: 16,
-    letterSpacing:2
+    letterSpacing: 2
   },
   locationTitle: {
     fontSize: 10,
     fontWeight: 'bold',
     // marginBottom: 16,
-    letterSpacing:2
+    letterSpacing: 2
   },
- 
+
   cartItem: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -727,12 +968,12 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: 'rgba(0, 0, 0, 0.5)', 
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
   },
   alertBox: {
     width: 300,
     padding: 20,
-    backgroundColor: '#4CAF50', 
+    backgroundColor: '#4CAF50',
     borderRadius: 10,
     alignItems: 'center',
   },
@@ -740,16 +981,16 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: 'bold',
     marginBottom: 10,
-    color: '#FFFFFF', 
+    color: '#FFFFFF',
   },
   alertMessage: {
     fontSize: 16,
     textAlign: 'center',
     marginBottom: 20,
-    color: '#FFFFFF', 
+    color: '#FFFFFF',
   },
   okButton: {
-    backgroundColor: '#FFFFFF', 
+    backgroundColor: '#FFFFFF',
     paddingHorizontal: 30,
     paddingVertical: 10,
     borderRadius: 5,
@@ -802,6 +1043,22 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: 'red',
   },
-}); 
+  successMessage: {
+    color: "green",
+    marginTop: 10,
+    textAlign: "center",
+    marginBottom: 5
+  },
+  errorMessage: {
+    color: "red",
+    marginTop: 0,
+    textAlign: "center",
+    margin: 8,
+    marginBottom: 5,
+    paddingHorizontal: 10,
+    fontWeight: 800,
+    letterSpacing: 0.2
+  }
+});
 
 export default CartPage;

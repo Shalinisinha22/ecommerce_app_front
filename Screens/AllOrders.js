@@ -1,71 +1,136 @@
-import { View, Text, Dimensions, StyleSheet, FlatList, Image, Pressable, TouchableOpacity, RefreshControl,Animated,ScrollView } from 'react-native';
-import React, { useState, useEffect,useRef } from 'react';
-import axios from 'axios';
-import { Entypo } from '@expo/vector-icons';
-import { useSelector } from 'react-redux';
-import { imgUrl } from '../Components/Image/ImageUrl';
-import moment from 'moment-timezone';
-import { ActivityIndicator } from 'react-native';
+import {
+  View,
+  Text,
+  Dimensions,
+  StyleSheet,
+  FlatList,
+  Image,
+  Pressable,
+  TouchableOpacity,
+  Alert,
+  RefreshControl,
+  Animated,
+  ScrollView,
+} from "react-native";
+import React, { useState, useEffect, useRef } from "react";
+import axios from "axios";
+import { Entypo, MaterialIcons, FontAwesome } from "@expo/vector-icons";
+import { useDispatch, useSelector } from "react-redux";
+import moment from "moment-timezone";
+import Toast from "react-native-toast-message";
 
-const width = Dimensions.get('screen').width;
+const width = Dimensions.get("screen").width;
 
-const AllOrders = ({ navigation }) => {
+const PendingOrders = ({ navigation }) => {
+  const dispatch = useDispatch();
   const [orders, setOrders] = useState([]);
 
-  const userInfo = useSelector((state) => state.user.userInfo ? state.user.userInfo : null);
+  const userInfo = useSelector((state) =>
+    state.user.userInfo ? state.user.userInfo : null
+  );
 
-  const getOrders = async () => { 
+  const getOrders = async () => {
     try {
-        const res = await axios.get("https://mahilamediplex.com/mediplex/allOrders", {
-            params: {
-                uid: userInfo.client_id
-            }
-        });
+      const res = await axios.get(
+        "https://mahilamediplex.com/mediplex/allProductOrders",
+        {
+          params: {
+            uid: userInfo.client_id,
+          },
+        }
+      );
 
-      
-        let newArr= res.data
-        
-        setOrders(newArr);
+
+
+      // const newArr = res.data.filter((item) => item.status !== 2);
+      setOrders(res.data);
+      console.log(res.data[0])
     } catch (err) {
-        console.log(err.message);
+      console.error("Error fetching orders:", err.message);
     }
-};
-
+  };
 
   useEffect(() => {
     getOrders();
   }, []);
 
+  const showToast = () => {
+    Toast.show({
+      type: "success",
+      text1: "Your Order is cancelled.",
+      text2: "Your amount will reflect in your wallet after some time.",
+    });
+  };
 
-   const scrollY = useRef(new Animated.Value(0)).current;
-  
-   const [refreshing, setRefreshing] = useState(false);
-  
-    const handleRefresh = async () => {
-      setRefreshing(true);
-      getOrders()
-      setRefreshing(false);
-    };
+  const [refreshing, setRefreshing] = useState(false);
 
-  const renderRow = ({ item }) => (
+  const handleRefresh = async () => {
+    setRefreshing(true);
+    await getOrders();
+    setRefreshing(false);
+  };
 
-    <View style={styles.row}>
-      {console.log(item)}
-      <Text allowFontScaling={false} style={styles.cell}>{moment(item.order_date).format('YYYY-MM-DD')}</Text>
-      <Text allowFontScaling={false} style={styles.cell}>{item.order_id}</Text>
-      <Text allowFontScaling={false} style={styles.cell}>{item.business_name}</Text>
-      <Text allowFontScaling={false} style={styles.cell}>Rs{item.user_payable_amount}</Text>
-  
-      {/* Add a View Order button */}
-      <TouchableOpacity
-        style={styles.viewOrderButton}
-        onPress={() => navigation.navigate("orderHistory", { order_id: item.order_id,shop:item.business_name,order_date:item.order_date,delivery_date:item.delivery_new_date,payment_method:item.payment_method })}
-      >
-        <Text allowFontScaling={false} style={styles.viewOrderButtonText}>View Order</Text>
-      </TouchableOpacity>
+  const renderCard = ({ item }) => (
+    <View style={styles.card}>
+
+      <View style={styles.cardHeader}>
+        <Text style={styles.cardTitle}>
+          <Entypo name="calendar" size={16} color="#4CAF50" /> Order Date: {moment(item.cdate).format("YYYY-MM-DD")}
+        </Text>
+      </View>
+      <View style={styles.cardBody}>
+        <Text style={styles.cardText}>
+          <MaterialIcons name="store" size={16} color="#2196F3" /> <Text style={styles.boldText}>Shop:</Text> {item.business_name}
+        </Text>
+        <Text style={styles.cardText}>
+          <Entypo name="location-pin" size={16} color="#FF5722" /> <Text style={styles.boldText}>Address:</Text> {item.address}
+        </Text>
+        <Text style={styles.cardText}>
+          <FontAwesome name="credit-card" size={16} color="#9C27B0" /> <Text style={styles.boldText}>Payment Type:</Text> {item.payment_type}
+        </Text>
+        {/* <Text style={styles.cardText}>
+          <MaterialIcons name="event" size={16} color="#FFC107" /> <Text style={styles.boldText}>Delivery Date:</Text>{" "}
+          {item.delivery_date ? moment(item.delivery_date).format("YYYY-MM-DD") : "Not assigned"}
+        </Text> */}
+        <Text style={styles.cardText}>
+          <MaterialIcons
+            name="local-shipping"
+            size={16}
+            color={item.status == 1 || item.status == 2 ? "red" : "#4CAF50"}
+          />{" "}
+          <Text style={styles.boldText}>Current Status:</Text>{" "}
+          <Text
+            style={{
+              color: item.status == 1 || item.status == 2 ? "red" : item.status == 3 || item.status == 4 ? "#4CAF50" : "red",
+              // fontSize: item.status == 1 || item.status == 2 ? 12 : 15,
+
+            }}
+          >
+            {item.status == 1
+              ? "Pending"
+              : item.status == 2
+                ? "Cancelled"
+                : item.status == 3
+                  ? "Processing"
+                  : item.status == 4
+                    ? "Delivered"
+                    : "Pending"}
+          </Text>
+        </Text>
+
+      </View>
+      <View style={styles.cardFooter}>
+        <TouchableOpacity
+          onPress={() => navigation.navigate("OrderDetails", { order_id: item.order_id, deliveryStatus: item.status })}
+          style={styles.viewButton}
+        >
+          <FontAwesome name="eye" size={16} color="#FFFFFF" />
+          <Text style={styles.viewButtonText}> View Details</Text>
+        </TouchableOpacity>
+      </View>
     </View>
   );
-  
+
 
   return (
     <View style={{ flex: 1, backgroundColor: "white" }}>
@@ -74,9 +139,7 @@ const AllOrders = ({ navigation }) => {
           <Entypo name="menu" size={40} color="#155d27" />
         </TouchableOpacity>
         <View style={{ alignItems: "center", marginTop: 15 }}>
-          <Text allowFontScaling={false} style={{ color: "gray", fontSize: 15, letterSpacing: 2 }}>
-            ORDER HISTORY
-          </Text>
+          <Text style={{ color: "gray", fontSize: 15, letterSpacing: 2 }}>ALL ORDERS</Text>
         </View>
         <Pressable onPress={() => navigation.navigate("Home")}>
           <Image source={require("../assets/logo.png")} style={{ height: 80, width: 80, resizeMode: "contain" }} />
@@ -88,111 +151,80 @@ const AllOrders = ({ navigation }) => {
           height: 1,
           borderColor: "whitesmoke",
           borderWidth: 2,
-          marginTop: 8,
-          width: width
+          marginTop: 10,
+          width: width,
+          marginBottom: 25
         }}
       />
-       <Animated.ScrollView
-                    refreshControl={
-                      <RefreshControl refreshing={refreshing} onRefresh={handleRefresh} />
-                    }
-                    onScroll={Animated.event(
-                      [{ nativeEvent: { contentOffset: { y: scrollY } } }],
-                      { useNativeDriver: false }
-                    )}
-                    scrollEventThrottle={16}
-                  >
+      {orders.length == 0 && <Text style={{ textAlign: "center", color: "gray", marginTop: 50 }}>No Orders</Text>}
 
-      <View style={styles.container}>
-        <View style={styles.headerRow}>
-          <Text allowFontScaling={false} style={styles.headerCell}>Order_date</Text>
-          <Text allowFontScaling={false} style={styles.headerCell}>Order_id</Text>
-          <Text allowFontScaling={false} style={styles.headerCell}>Shop</Text>
-          <Text allowFontScaling={false} style={styles.headerCell}>Amt</Text>
-          <Text allowFontScaling={false} style={styles.headerCell}></Text>
-
-          {/* <Text allowFontScaling={false} style={styles.headerCell}>Payment Type</Text> */}
-          {/* <Text allowFontScaling={false} style={styles.headerCell}>Status</Text> */}
-
-          {/* <Text allowFontScaling={false} style={styles.headerCell}>Delivery Date</Text> */}
-        </View>
-
-        {orders.length != 0 ? (
-          <FlatList
-            data={orders}
-            renderItem={renderRow}
-            keyExtractor={(item, index) => index.toString()}
-          />
-        ) : (
-<ActivityIndicator size={'large'}>
-</ActivityIndicator>  
-        )}
-      </View>
-      </Animated.ScrollView>
+      <FlatList
+        data={orders}
+        renderItem={renderCard}
+        keyExtractor={(item, index) => index.toString()}
+        refreshControl={
+          <RefreshControl refreshing={refreshing} onRefresh={handleRefresh} />
+        }
+        contentContainerStyle={{ padding: 10 }}
+      />
+      <Toast position="top" topOffset={250} />
     </View>
   );
 };
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    padding: 10
+  card: {
+    backgroundColor: "#FFF",
+    borderRadius: 10,
+    marginVertical: 10,
+    padding: 15,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.2,
+    shadowRadius: 4,
+    elevation: 4,
   },
-  headerRow: {
-    flexDirection: 'row',
-    backgroundColor: '#ddd',
-    padding: 10
-  },
-  headerCell: {
-    flex: 1,
-    fontWeight: 'bold',
-    textAlign: 'center',
-    fontSize: 10
-  },
-  row: {
-    flexDirection: 'row',
-    padding: 10,
+  cardHeader: {
     borderBottomWidth: 1,
-    borderColor: '#ddd'
+    borderBottomColor: "#4CAF50",
+    paddingBottom: 8,
+    marginBottom: 8,
   },
-  cell: {
-    flex: 1,
-    textAlign: 'center',
-    fontSize: 8,
-    letterSpacing: 0.5
+  cardTitle: {
+    fontSize: 14,
+    fontWeight: "bold",
+    color: "#333",
   },
-  image: {
-    width: 30,
-    height: 30,
-    resizeMode: "contain"
+  cardBody: {
+    marginBottom: 10,
   },
-  statusButton: {
-    paddingVertical: 5,
-    paddingHorizontal: 18,
-    borderRadius: 5,
-    marginHorizontal: 2,
-    justifyContent: "center",
-    marginTop: 8,
-    marginBottom: 8
+  cardText: {
+    fontSize: 12,
+    color: "#555",
+    marginBottom: 10,
+    flexDirection: "row",
+    alignItems: "center",
   },
-  statusText: {
-    color: 'white',
-    textAlign: 'center',
-    fontSize: 8
+  boldText: {
+    fontWeight: "bold",
   },
-  viewOrderButton: {
-    paddingVertical: 5,
-    paddingHorizontal: 5,
-    backgroundColor: "#155d27", // Adjust the color as needed
-    borderRadius: 5,
-    marginLeft: 10,
+  cardFooter: {
+    flexDirection: "row",
+    justifyContent: "flex-end",
   },
-  viewOrderButtonText: {
-    color: "white",
-    fontSize: 8,
-    textAlign: "center",
+  viewButton: {
+    flexDirection: "row",
+    alignItems: "center",
+    backgroundColor: "#4CAF50",
+    paddingHorizontal: 12,
+    paddingVertical: 8,
+    borderRadius: 8,
   },
-  
+  viewButtonText: {
+    color: "#FFF",
+    fontSize: 12,
+    marginLeft: 5,
+  },
 });
 
-export default AllOrders;
+export default PendingOrders;

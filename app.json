@@ -1,8 +1,8 @@
 {
   "expo": {
     "name": "MahilaMediplexUser",
-    "slug": "MahilaMediplex",
-    "version": "1.0.0",
+    "slug": "mahila-mediplex",
+    "version": "8.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
@@ -15,19 +15,20 @@
       "supportsTablet": true
     },
     "android": {
+      "versionCode": 8,
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       },
-      "googleServicesFile": "./google-services.json",
-      "package": "com.zenwebmaniasolutions.MahilaMediplex"
+
+      "package": "com.mahilamediplex.MahilaMediplex"
     },
     "web": {
       "favicon": "./assets/favicon.png"
     },
     "extra": {
       "eas": {
-        "projectId": "1e22f8b2-62c9-4d64-b042-ee12b7e90710"
+        "projectId": "99d291a8-582c-4da0-b51d-f6a7636d2314"
       }
     },
     "runtimeVersion": {
@@ -36,6 +37,6 @@
     "updates": {
       "url": "https://u.expo.dev/1e22f8b2-62c9-4d64-b042-ee12b7e90710"
     },
-    "owner": "zenwebmaniasolutions"
+    "owner": "zenwebmaniasolution"
   }
 }

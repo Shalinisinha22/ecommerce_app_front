@@ -5,20 +5,19 @@ import Section2 from '../Components/Section2';
 import Section3 from '../Components/Section3';
 import Section4 from '../Components/Section4';
 import Section5 from '../Components/Section5';
-import { imgUrl } from '../Components/Image/ImageUrl';
 import Section8 from '../Components/Section8';
 import Section7 from '../Components/Section7';
 import Section6 from '../Components/Section6';
 import axios from 'axios';
 import Header from '../Components/Header';
 import { useSelector } from 'react-redux';
-import { get } from 'react-hook-form';
+
 
 const HomeScreen = ({ navigation }) => {
   const width = Dimensions.get('screen').width;
 
   const userInfo = useSelector((state) => state.user.userInfo ? state.user.userInfo : null);
-
+console.log(userInfo)
   const [wallet, setWallet] = useState(userInfo?.mani_wallet);
   const [shoppingWallet, setShoppingWallet] = useState(userInfo?.shopping_wallet);
 

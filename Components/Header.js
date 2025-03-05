@@ -21,7 +21,7 @@ const Header = ({ navigation }) => {
   const route = useRoute();
   const dispatch = useDispatch();
   let user = useSelector((state) => state.user.userInfo || null);
-  // console.log("userheader", user.image)
+  console.log("userheader", user)
   
     const userImg= useSelector((state)=> state.user.userImg?state.user.image:null)
   const cart = useSelector((state) => state.cart.cart);
@@ -215,7 +215,7 @@ const styles = StyleSheet.create({
     paddingTop: 10,
   },
   profileImageContainer: {
-    paddingTop: 7,
+    // paddingTop: 7,
   },
   profileImage: {
     width: 50,

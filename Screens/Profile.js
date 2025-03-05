@@ -12,8 +12,11 @@ import {
   Pressable,
   Dimensions,
   Image,
-  Button
+  Button,
+  RefreshControl,
+  Animated
 } from "react-native";
+import { useRef } from "react";
 import { useForm, Controller } from "react-hook-form";
 import axios from "axios";
 import Toast from "react-native-toast-message";
@@ -132,7 +135,17 @@ const dispatch= useDispatch()
     getProfileData();
   }, []);
 
-
+  const scrollY = useRef(new Animated.Value(0)).current;
+    
+     const [refreshing, setRefreshing] = useState(false);
+    
+      const handleRefresh = async () => {
+        setRefreshing(true);
+    
+        await getProfileData();
+        setRefreshing(false);
+      };
+  
 
   const uploadImage = async (imageUri) => {
     const formData = new FormData();
@@ -238,7 +251,16 @@ const dispatch= useDispatch()
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
     <SafeAreaView style={styles.safeArea}>
     <KeyboardAvoidingView behavior="padding" style={{ flex: 1 }}>
-      <ScrollView  keyboardShouldPersistTaps='handled' contentContainerStyle={styles.scrollViewContent}>
+      <Animated.ScrollView
+                               refreshControl={
+                                 <RefreshControl refreshing={refreshing} onRefresh={handleRefresh} />
+                               }
+                               onScroll={Animated.event(
+                                 [{ nativeEvent: { contentOffset: { y: scrollY } } }],
+                                 { useNativeDriver: false }
+                               )}
+                               scrollEventThrottle={16}
+                              keyboardShouldPersistTaps='handled' contentContainerStyle={styles.scrollViewContent}>
         <View style={styles.container}>
 
         <Text
@@ -710,7 +732,7 @@ const dispatch= useDispatch()
         </View>
      
  
-      </ScrollView>
+      </Animated.ScrollView>
       </KeyboardAvoidingView>
     </SafeAreaView>
     </TouchableWithoutFeedback>

@@ -24,6 +24,7 @@ import {
   import axios from "axios";
   import { useForm, Controller } from 'react-hook-form';
 
+
   const height = Dimensions.get("screen").height;
   const width = Dimensions.get('screen').width;
   
@@ -56,6 +57,8 @@ import {
     });
     
     const onSubmit = async (data) => {
+
+
       if (!data.name || !data.mobile || !data.password) {
         Alert.alert("Validation Error", "All fields are required.");
         return;

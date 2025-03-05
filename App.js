@@ -1,10 +1,10 @@
 
-import { StyleSheet, Text, View,StatusBar,Modal,Button, TouchableOpacity } from 'react-native';
+import { StyleSheet, Text, View,StatusBar,Modal,Button, TouchableOpacity, Alert } from 'react-native';
+import Constants from "expo-constants"
 import { AppNavigator } from './navigation/AppNavigator';
 import { Provider } from 'react-redux';
 import { PersistGate } from 'redux-persist/integration/react';
 import { store, persistor } from '././redux/store';
-// import { NativeBaseProvider } from 'native-base';
 import { useSelector } from 'react-redux';
 import axios from 'axios';
 import { Picker } from '@react-native-picker/picker';
@@ -13,6 +13,8 @@ import { useDispatch } from 'react-redux';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Toast from 'react-native-toast-message';
 import { ShopProvider } from './Components/ShopContext';
+
+
 export default function App() {
 
 // AsyncStorage.clear()
@@ -23,7 +25,7 @@ const [selectedShopClientId,setselectedShopClientId]= useState('');
 
 const getShop= async()=>{
   const res = JSON.parse(await AsyncStorage.getItem('shopDetails'));
-  // console.log("Shop Details APP:", res);
+
 
  
 
@@ -63,6 +65,9 @@ await AsyncStorage.setItem("shopDetails",JSON.stringify(selectedShopType))
     setModalVisible(false);
   }
 };
+
+
+
 
 
   return (

@@ -1,8 +1,7 @@
-import { View, Text, Image, TouchableOpacity, ScrollView, Dimensions,Button,Alert,Pressable } from 'react-native'
+import { View, Text, Image, TouchableOpacity, ScrollView, Dimensions, Button, Alert, Pressable } from 'react-native'
 import React, { useState, useEffect } from 'react'
 import axios from 'axios'
 import { imgUrl } from '../Components/Image/ImageUrl'
-import { useRoute } from '@react-navigation/native'
 import { useSelector } from 'react-redux'
 import { TextInput } from 'react-native-gesture-handler'
 import * as ImagePicker from 'expo-image-picker';
@@ -11,20 +10,20 @@ import { useForm, Controller } from 'react-hook-form'
 
 const width = Dimensions.get('screen').width
 
-const FundRequestScreen = ({navigation}) => {
+const FundRequestScreen = ({ navigation }) => {
 
 
 
     const userInfo = useSelector((state) => state.user.userInfo ? state.user.userInfo : null)
-   
-
     console.log(userInfo)
     const [bankDetails, setBankDetails] = useState(null)
     const [transaction_id, setTransaction_id] = useState("")
     const [paymentSlip, setPaymentSlip] = useState(null)
-    const [paymentSlipName,setPaymentSlipName] = useState(null)
-    const [amt,setAmt]= useState("")
-    const [err,setErr]= useState("")
+    const [paymentSlipName, setPaymentSlipName] = useState(null)
+    const [amt, setAmt] = useState("")
+    const [err, setErr] = useState("")
+
+    const [coupon, setCoupon] = useState(null)
     const getBankDetails = async () => {
         try {
             const res = await axios.get("https://mahilamediplex.com/mediplex/bankDetails")
@@ -69,31 +68,32 @@ const FundRequestScreen = ({navigation}) => {
     const uploadImage = async (imageUri) => {
         const formData = new FormData();
         formData.append('image', {
-          uri: imageUri,
-          type: 'image/jpeg',
-          name:paymentSlipName
+            uri: imageUri,
+            type: 'image/jpeg',
+            name: paymentSlipName
         });
-    
-    
+
+
         try {
-          const response = await axios.post('https://mahilamediplex.com/mediplex/uploadImage', formData, {
-            headers: {
-               'Content-Type': 'multipart/form-data',
-            },
-            params: {
-              imgName: "slip",
-            }, });
-         
-    
-         
+            const response = await axios.post('https://mahilamediplex.com/mediplex/uploadImage', formData, {
+                headers: {
+                    'Content-Type': 'multipart/form-data',
+                },
+                params: {
+                    imgName: "slip",
+                },
+            });
+
+
+
         } catch (error) {
-          console.error('Upload failed:', error);
+            console.error('Upload failed:', error);
         }
     };
 
     const handleSubmit = async () => {
         let errors = {};
-        
+
         if (!transaction_id) {
             errors.transaction_id = "Transaction ID is required.";
         }
@@ -103,7 +103,7 @@ const FundRequestScreen = ({navigation}) => {
         if (!amt) {
             errors.amt = "Amount is required.";
         }
-    
+
         if (Object.keys(errors).length > 0) {
             setErr(errors);
             setTimeout(() => {
@@ -111,9 +111,9 @@ const FundRequestScreen = ({navigation}) => {
             }, 3000);
             return;
         }
-    
+
         await uploadImage(paymentSlip);
-    
+
         try {
             const res = await axios.post("https://mahilamediplex.com/mediplex/fund-request", {
                 name: userInfo.client_entry_name,
@@ -136,29 +136,29 @@ const FundRequestScreen = ({navigation}) => {
             console.error("Error submitting fund request:", err.message);
         }
     };
-    
-    
 
-    
+
+
+
     return (
         <View style={{ flex: 1, backgroundColor: "#fff" }}>
-            
-<View style={{flexDirection:"row",alignItems:"center",justifyContent:"space-around"}}>
-        <TouchableOpacity onPress={() => navigation.openDrawer()} style={{ paddingTop: 0,paddingLeft:0}}>
-<Entypo name="menu" size={40} color="#155d27" />
-   
-            </TouchableOpacity>
 
-         <View style={{ alignItems: "center", marginTop: 10 }}>
-           <Text allowFontScaling={false} style={{ color: "#9e0059", fontSize: 15,letterSpacing:2 }}>
-        FUND REQUEST
-           </Text>
-         </View>
-         <Pressable onPress={()=>navigation.navigate("Home")}>
-              <Image source={require("../assets/logo.png")} style={{ height: 80, width: 80, resizeMode: "contain" }} />
-            </Pressable> 
-                     </View>
-         {/* <Text
+            <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-around" }}>
+                <TouchableOpacity onPress={() => navigation.openDrawer()} style={{ paddingTop: 0, paddingLeft: 0 }}>
+                    <Entypo name="menu" size={40} color="#155d27" />
+
+                </TouchableOpacity>
+
+                <View style={{ alignItems: "center", marginTop: 10 }}>
+                    <Text allowFontScaling={false} style={{ color: "#9e0059", fontSize: 15, letterSpacing: 2 }}>
+                        FUND REQUEST
+                    </Text>
+                </View>
+                <Pressable onPress={() => navigation.navigate("Home")}>
+                    <Image source={require("../assets/logo.png")} style={{ height: 80, width: 80, resizeMode: "contain" }} />
+                </Pressable>
+            </View>
+            {/* <Text
      allowFontScaling={false}
      style={{
        height: 1,
@@ -183,10 +183,6 @@ const FundRequestScreen = ({navigation}) => {
                 </View>
             }
 
-
-
-
-
             <Text
                 allowFontScaling={false}
                 style={{
@@ -197,7 +193,7 @@ const FundRequestScreen = ({navigation}) => {
                 }}
             />
 
-            <ScrollView  keyboardShouldPersistTaps='handled' >
+            <ScrollView keyboardShouldPersistTaps='handled' >
                 <View style={{ width: width, marginTop: 20, padding: 10 }}>
                     {
                         bankDetails != null &&
@@ -264,67 +260,67 @@ const FundRequestScreen = ({navigation}) => {
                             <Text allowFontScaling={false} style={{ fontWeight: 'bold' }}>{userInfo.client_id}</Text>
                         </View>
 
-                        <View style={{ width: width * 0.95, backgroundColor: "#f0f0f0", paddingVertical: 14, paddingHorizontal: 5, flexDirection: "row", gap: 15, marginTop: 0,alignItems:"center" }}>
+                        <View style={{ width: width * 0.95, backgroundColor: "#f0f0f0", paddingVertical: 14, paddingHorizontal: 5, flexDirection: "row", gap: 15, marginTop: 0, alignItems: "center" }}>
                             <Text allowFontScaling={false} style={{ color: "gray" }}>Paid Amt. :</Text>
                             <TextInput keyboardType='numeric' style={{
                                 marginVertical: 5,
                                 width: 150,
                                 fontSize: 18,
-                                fontWeight:"bold"
+                                fontWeight: "bold"
                             }} value={amt} onChangeText={(text) => setAmt(text)} ></TextInput>
                         </View>
-                        {err.amt && <Text allowFontScaling={false} style={{color:"red",fontSize:10,marginBottom:5}}>{err.amt}</Text>}
+                        {err.amt && <Text allowFontScaling={false} style={{ color: "red", fontSize: 10, marginBottom: 5 }}>{err.amt}</Text>}
 
-                        <View style={{ width: width * 0.95, backgroundColor: "#D0D0D0", paddingVertical: 14, paddingHorizontal: 5, flexDirection: "row", gap: 15, alignItems: "center",flexWrap:"wrap" }}>
+                        <View style={{ width: width * 0.95, backgroundColor: "#D0D0D0", paddingVertical: 14, paddingHorizontal: 5, flexDirection: "row", gap: 15, alignItems: "center", flexWrap: "wrap" }}>
                             <Text allowFontScaling={false} style={{ color: "gray" }}>Transaction_id :</Text>
                             <TextInput style={{
                                 marginVertical: 5,
                                 width: 150,
                                 fontSize: 18,
-                                fontWeight:"bold"
+                                fontWeight: "bold"
                             }} value={transaction_id} onChangeText={(text) => setTransaction_id(text)} ></TextInput>
                         </View>
-                        {err.transaction_id && <Text allowFontScaling={false} style={{color:"red",fontSize:10,marginBottom:5}}>{err.transaction_id}</Text>}
-                        <View style={{ width: width * 0.95, backgroundColor: "#f0f0f0", paddingVertical: 14, paddingHorizontal: 5, flexDirection: "row", gap: 15, alignItems: "center",flexWrap:"wrap" }}>
+                        {err.transaction_id && <Text allowFontScaling={false} style={{ color: "red", fontSize: 10, marginBottom: 5 }}>{err.transaction_id}</Text>}
+                        <View style={{ width: width * 0.95, backgroundColor: "#f0f0f0", paddingVertical: 14, paddingHorizontal: 5, flexDirection: "row", gap: 15, alignItems: "center", flexWrap: "wrap" }}>
                             <Text allowFontScaling={false} style={{ color: "gray" }}>Payment Slip :</Text>
-                        
+
                             <View>
                                 {paymentSlip && <Image source={{ uri: paymentSlip }} style={{ width: 200, height: 200 }} />}
                                 <Button title="Choose File" color="#155d27" onPress={pickImage} />
                             </View>
                         </View>
-                        {err.paymentSlip && <Text allowFontScaling={false} style={{color:"red",fontSize:10,marginBottom:5}}>{err.paymentSlip}</Text>}
+                        {err.paymentSlip && <Text allowFontScaling={false} style={{ color: "red", fontSize: 10, marginBottom: 5 }}>{err.paymentSlip}</Text>}
 
                     </View>
                 }
-                <View style={{width:width,alignItems:"center",marginBottom:20}}>
-                <TouchableOpacity
+                <View style={{ width: width, alignItems: "center", marginBottom: 20 }}>
+                    <TouchableOpacity
 
-style={{
-backgroundColor: "#9e0059",
-paddingVertical: 15,
-paddingHorizontal:20,
-justifyContent: "center",
-alignItems: "center",
-marginTop: 1,
-borderRadius: 6,
-marginTop:5,
-width:300
+                        style={{
+                            backgroundColor: "#9e0059",
+                            paddingVertical: 15,
+                            paddingHorizontal: 20,
+                            justifyContent: "center",
+                            alignItems: "center",
+                            marginTop: 1,
+                            borderRadius: 6,
+                            marginTop: 5,
+                            width: 300
 
 
-}}
-onPress={()=>handleSubmit()}
->
-<Text allowFontScaling={false}
-style={{
-textAlign: "center",
-color: "white",
-fontSize: 13,
-fontWeight: "bold",
-}}
-> Submit
-</Text>
-</TouchableOpacity>
+                        }}
+                        onPress={() => handleSubmit()}
+                    >
+                        <Text allowFontScaling={false}
+                            style={{
+                                textAlign: "center",
+                                color: "white",
+                                fontSize: 13,
+                                fontWeight: "bold",
+                            }}
+                        > Submit
+                        </Text>
+                    </TouchableOpacity>
                 </View>
 
             </ScrollView>

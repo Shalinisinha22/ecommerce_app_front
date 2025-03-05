@@ -2,8 +2,6 @@ import { View, Text, ScrollView,Pressable, Image, FlatList,Dimensions, Touchable
 import React from 'react'
 import { Foundation,Entypo } from '@expo/vector-icons';
 import axios from 'axios';
-const width = Dimensions.get('screen').width
-import AsyncStorage from '@react-native-async-storage/async-storage'
 import { useState, useEffect } from 'react';
 import { imgUrl } from '../Components/Image/ImageUrl';
 

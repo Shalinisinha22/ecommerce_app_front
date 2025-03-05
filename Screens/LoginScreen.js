@@ -13,13 +13,10 @@ import {
   Dimensions,
   Pressable,
 } from "react-native";
-import React, { useState, useEffect } from "react";
-import { MaterialIcons } from "@expo/vector-icons";
-import { AntDesign } from "@expo/vector-icons";
-import { Ionicons, FontAwesome } from "@expo/vector-icons";
-import { Fontisto, Entypo } from '@expo/vector-icons';
+import React, { useState } from "react";
+import { Ionicons } from "@expo/vector-icons";
 import { useDispatch } from 'react-redux';
-import { setUser } from "../redux/actions/userActions";
+import { Entypo } from "@expo/vector-icons";
 import axios from "axios";
 import { useForm, Controller } from "react-hook-form";
 
@@ -29,13 +26,10 @@ const width = Dimensions.get('screen').width;
 const LoginScreen = ({ navigation }) => {
   const dispatch = useDispatch();
   const [hidePass, setHidePass] = useState(true);
-  const [id, setId] = useState("");
-  const [isNameFocused, setIsNameFocused] = useState(false);
-  const [password, setPassword] = useState("");
+
   const [error, setErr] = useState("");
-  const [isFormValid, setIsFormValid] = useState(false);
-  const [user, setUser] = useState("");
-  const [flag, setFlag] = useState(false);
+
+  const [isMobileFocused, setIsMobileFocused] = useState(false);
 
   const [isPasswordFocused, setIsPasswordFocused] = useState(false);
 
@@ -43,7 +37,7 @@ const LoginScreen = ({ navigation }) => {
 
   const { control, handleSubmit, formState: { errors } } = useForm({
     defaultValues: {
-      name: '',  
+      mobile: '',  
       password: '',
     },
   });
@@ -52,7 +46,7 @@ const LoginScreen = ({ navigation }) => {
     console.log(data);
   
     // Validate input fields
-    if (!data.name || !data.password) {
+    if (!data.mobile || !data.password) {
       Alert.alert("Validation Error", "All fields are required.");
       return;
     }
@@ -60,7 +54,7 @@ const LoginScreen = ({ navigation }) => {
     try {
       // Make a GET request with query parameters
       const response = await axios.get("https://mahilamediplex.com/mediplex/userlogin", {
-        params: { name: data.name, password: data.password },
+        params: { mobile: data.mobile, password: data.password },
       });
   
       // Check the response status
@@ -102,34 +96,41 @@ const LoginScreen = ({ navigation }) => {
 
             <View style={{ width: width, alignItems: "center" }}>
               <View style={{ marginTop: 20 }}>
-                <View style={[styles.inputBoxCont, isNameFocused && styles.inputBoxFocused]}>
-                  <Ionicons name="person-outline" size={20} color="#C93393" style={styles.icon} />
-                  <Controller
-                    control={control}
-                    render={({ field: { onChange, onBlur, value } }) => (
-                      <TextInput
-                        placeholder="Name"
-                        placeholderTextColor="#333"
-                        style={{
-                          color: "black",
-                          width: 300,
-                          fontSize: 14,
-                          marginVertical: 2,
-                        }}
-                        onFocus={() => setIsNameFocused(true)}
-                        onBlur={() => setIsNameFocused(false)}
-                        onChangeText={value => onChange(value)}
-                        value={value}
-                      
-
-                      />
-                    )}
-                    name="name"
-                    rules={{ required: true, message: "Enter your name" }}
-                  />
-                </View>
-                {errors.name && <Text allowFontScaling={false} style={{ color: "red" }}>Name is required</Text>}
-              </View>
+                 <View style={[styles.inputBoxCont, isMobileFocused && styles.inputBoxFocused]}>
+                                <Ionicons name="call-outline" size={20} color="#C93393" style={styles.icon} />
+                                <Controller
+                                    control={control}
+                                    render={({ field: { onChange, onBlur, value } }) => (
+                                      <TextInput
+                                      placeholder="Mobile Number"
+                                      placeholderTextColor="#333"
+                                      keyboardType="numeric"
+                                      style={{
+                                        color: "black",
+                                        width: 300,
+                                        fontSize: 14,
+                                        marginVertical: 2,
+                                      }} 
+                                      onFocus={() => setIsMobileFocused(true)}
+                                      onBlur={() => setIsMobileFocused(false)}                          onChangeText={value => onChange(value)}
+                          value={value}
+                          maxLength={10} // Limit input to 10 digits
+                        />
+                      )}
+                      name="mobile"
+                      rules={{
+                        required: "Mobile number is required",
+                                  pattern: {
+                          value: /^[6-9]\d{9}$/,
+                          message: "Invalid mobile number",
+                        },
+                      }}
+                    />
+                                </View>
+              
+                                {errors.mobile?.message && <Text allowFontScaling={false} style={{ color: "red" }}>{errors.mobile?.message}</Text>}
+                                </View>
+            
 
               <View>
                 <View style={[styles.inputBoxCont, isPasswordFocused && styles.inputBoxFocused]}>
@@ -169,7 +170,7 @@ const LoginScreen = ({ navigation }) => {
                 {errors.password?.message && <Text allowFontScaling={false} style={{ color: "red" }}>{errors.password?.message}</Text>}
               </View>
 
-
+              </View>
 
               <View style={{ marginTop: 40 }} />
 
@@ -196,7 +197,7 @@ const LoginScreen = ({ navigation }) => {
                   Don't have an account? Sign Up
                 </Text>
               </TouchableOpacity>
-            </View>
+        
           </KeyboardAvoidingView>
         </ScrollView>
       </ImageBackground>

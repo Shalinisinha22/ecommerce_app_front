@@ -1,4 +1,4 @@
-import { View, Text, Dimensions,ImageBackground,Image } from 'react-native'
+import { View, Text, Dimensions,ImageBackground,Image,StyleSheet } from 'react-native'
 import React,{useState,useEffect} from 'react'
 import axios from 'axios'
 const width= Dimensions.get('screen').width
@@ -31,5 +31,6 @@ const Section3 = () => {
 
   )
 }
+
 
 export default Section3
