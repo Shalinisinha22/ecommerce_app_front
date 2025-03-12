@@ -163,7 +163,7 @@ const ProductInnerScreen = ({ navigation }) => {
 
 
     <View style={{ flex: 1, backgroundColor: "#fff" }}>
-      {console.log(bannerImage)}
+      {/* {console.log(bannerImage)} */}
 
       <View style={{ width: width, alignItems: "center" }}>
         <Header navigation={navigation}></Header>

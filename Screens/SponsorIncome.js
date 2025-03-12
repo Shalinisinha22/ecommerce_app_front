@@ -18,7 +18,7 @@ const SponsorIncome= ({navigation}) => {
         }
        }) 
 
-       console.log("17",res.data)
+      //  console.log("17",res.data)
        setAllSponsorIncome(res.data)
     }
     catch(err){

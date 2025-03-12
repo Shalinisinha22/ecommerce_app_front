@@ -25,106 +25,118 @@ const [loading,setLoading]= useState(false)
 
 
 
-  console.log(lmcId, "26lmcId",)
+  // console.log(lmcId, "26lmcId",)
 
 
 
-  const getProductsId = async (shop) => {
+  // const getProductsId = async (shop) => {
+  //   const id = JSON.parse(await AsyncStorage.getItem('shopDetails'))
+
+
+  //   setShopName(id?id.business_name:lmcId.business_name)
+
+
+  //   try {
+  //     const res = await axios.get("https://mahilamediplex.com/mediplex/getProductId", {
+  //       params: { client_id: lmcId ? lmcId.client_id : id.client_id }
+  //     });
+
+
+  //     // console.log("47", res.data)
+
+  //     if (res.data.length == 0) {
+  //       getDefaultShop()
+  //     }
+  //     else {
+  //       const pidArr = res.data.map(item => item.pid);
+  //       // console.log("PID Array:", pidArr);
+
+  //       setProductId(pidArr);
+  //       await getProducts(pidArr);
+
+  //     }
+
+
+
+
+  //   } catch (err) {
+  //     console.log("Error fetching product IDs:", err.message);
+  //   }
+  // }
+
+  // const getProducts = async (pidArr) => {
+  //   try {
+  //     const productPromises = pidArr.map(pid =>
+  //       axios.get("https://mahilamediplex.com/mediplex/products", {
+  //         params: { product_id: pid }
+  //       })
+  //     );
+
+  //     const responses = await Promise.all(productPromises);
+
+  //     const productArr = responses.map(res => {
+  //       const data = res.data;
+
+  //       return data.map(item => {
+  //         if (item.sale_image) {
+  //           item.sale_image = JSON.parse(item.sale_image);
+  //         }
+  //         if (item.product_image) {
+  //           item.product_image = JSON.parse(item.product_image);
+  //         }
+  //         return item;
+  //       });
+  //     }).flat();
+
+  //     let filterProduct = []
+  //     filterProduct = productArr.filter((item) => item.category_name == "Ethicals")
+  //     setLoading(true)
+  //     setProducts(filterProduct);
+   
+
+  //   } catch (err) {
+  //     console.log("Error fetching products:", err.message);
+  //   }
+  // }
+
+
+
+  const getCategoryProducts = async()=>{
     const id = JSON.parse(await AsyncStorage.getItem('shopDetails'))
-    console.log(id, "36", lmcId)
 
 
     setShopName(id?id.business_name:lmcId.business_name)
-
-
-    try {
-      const res = await axios.get("https://mahilamediplex.com/mediplex/getProductId", {
-        params: { client_id: lmcId ? lmcId.client_id : id.client_id }
-      });
-
-
-      // console.log("47", res.data)
-
-      if (res.data.length == 0) {
-        getDefaultShop()
-      }
-      else {
-        const pidArr = res.data.map(item => item.pid);
-        // console.log("PID Array:", pidArr);
-
-        setProductId(pidArr);
-        await getProducts(pidArr);
-
-      }
-
-
-
-
-    } catch (err) {
-      console.log("Error fetching product IDs:", err.message);
-    }
-  }
-
-  const getProducts = async (pidArr) => {
-    try {
-      const productPromises = pidArr.map(pid =>
-        axios.get("https://mahilamediplex.com/mediplex/products", {
-          params: { product_id: pid }
+    try{
+      const res = await axios.get(
+        "https://mahilamediplex.com/mediplex/categoryProducts",
+        {
+          params: {
+            category: "CAT0001",
+            client_id: lmcId ? lmcId.client_id : id.client_id,
+          },
         })
-      );
 
-      const responses = await Promise.all(productPromises);
-
-      const productArr = responses.map(res => {
-        const data = res.data;
-
-        return data.map(item => {
-          if (item.sale_image) {
-            item.sale_image = JSON.parse(item.sale_image);
-          }
-          if (item.product_image) {
-            item.product_image = JSON.parse(item.product_image);
-          }
-          return item;
-        });
-      }).flat(); // Flatten the array if `res.data` contains arrays of products
-
-      let filterProduct = []
-      filterProduct = productArr.filter((item) => item.category_name == "Ethicals")
-      // console.log("Final Product Array:", filterProduct);
-      setLoading(true)
-      setProducts(filterProduct);
-   
-
-    } catch (err) {
-      console.log("Error fetching products:", err.message);
+        const formattedData = res.data.map((item) => ({
+          ...item,
+          product_image: item.product_image ? JSON.parse(item.product_image) : [], 
+          sale_image: item.sale_image ? JSON.parse(item.sale_image) : [], 
+        }));
+  
+        setProducts(formattedData);
+        setLoading(true)
     }
-  }
-
-
-
-
-  useEffect(() => {
-    getProductsId()
-  }, [lmcId])
-
-
-  const getDefaultShop = async () => {
-    try {
-      const res = await axios.get("https://mahilamediplex.com/mediplex/defaultShops")
-      const data = res.data
-      // console.log("105",data,data)
-
-      if (data[0].client_id) {
-        getProductsId(data[0].client_id)
-        await AsyncStorage.setItem("shopDetails", JSON.stringify(data[0]))
-      }
-
-    }
-    catch (err) {
+    catch(err){
       console.log(err.message)
     }
   }
+
+
+  useEffect(() => {
+    getCategoryProducts()
+  }, [lmcId])
+
+
+  
 
 
 
@@ -134,10 +146,7 @@ const [loading,setLoading]= useState(false)
 
 
   const cart = useSelector((state) => state.cart.cart);
-  // console.log("cart redux",cart)
   const dispatch = useDispatch();
-
-
 
 
 
@@ -167,10 +176,7 @@ const [loading,setLoading]= useState(false)
   }
 
 
-  const removeFromCart = (id) => {
-
-
-  }
+ 
 
   const handleIncrementProduct = (id) => {
 

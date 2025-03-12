@@ -15,7 +15,7 @@ const FundRequestScreen = ({ navigation }) => {
 
 
     const userInfo = useSelector((state) => state.user.userInfo ? state.user.userInfo : null)
-    console.log(userInfo)
+    // console.log(userInfo)
     const [bankDetails, setBankDetails] = useState(null)
     const [transaction_id, setTransaction_id] = useState("")
     const [paymentSlip, setPaymentSlip] = useState(null)
@@ -51,7 +51,7 @@ const FundRequestScreen = ({ navigation }) => {
             quality: 1,
         });
 
-        console.log(result);
+        // console.log(result);
 
         if (!result.canceled) {
             const uriParts = result.assets[0].uri.split('/');

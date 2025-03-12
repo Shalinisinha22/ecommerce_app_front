@@ -65,13 +65,13 @@ const KycScreen = ({navigation}) => {
           break;
       }
     } else {
-      console.log('Image picking was canceled or failed.');
+      // console.log('Image picking was canceled or failed.');
     }
   };
 
   const uploadImage = async (imageUri, imgName,imgDetail) => {
     if (!imageUri || !imgName || !imgDetail) {
-      console.error('Image URI or name is missing.');
+      // console.error('Image URI or name is missing.');
       return;
     }
 
@@ -97,7 +97,7 @@ const KycScreen = ({navigation}) => {
       );
       
 
-      console.log('Upload success:', response.data);
+      // console.log('Upload success:', response.data);
     } catch (error) {
       console.error('Upload failed:', error);
     }
@@ -130,7 +130,7 @@ const KycScreen = ({navigation}) => {
         client_id: userInfo,
       });
 
-console.log("kyc",res.data)
+// console.log("kyc",res.data)
 
       if (res.data == "Profile updated successfully") {
         // Show success toast when profile update is successful
@@ -159,12 +159,12 @@ console.log("kyc",res.data)
   
 
   const getKYCData = async () => {
-    console.log(userInfo);
+    // console.log(userInfo);
     try {
       const res = await axios.get("https://mahilamediplex.com/mediplex/getKYCData", {
         params: { client_id: userInfo },
       });
-      console.log(res.data);
+      // console.log(res.data);
       const data = res.data[0];
       setAf(data.adhaar_front_image);
       setAb(data.adhaar_back_image);

@@ -1,6 +1,5 @@
 
 import { StyleSheet, Text, View,StatusBar,Modal,Button, TouchableOpacity, Alert } from 'react-native';
-import Constants from "expo-constants"
 import { AppNavigator } from './navigation/AppNavigator';
 import { Provider } from 'react-redux';
 import { PersistGate } from 'redux-persist/integration/react';
@@ -25,23 +24,15 @@ const [selectedShopClientId,setselectedShopClientId]= useState('');
 
 const getShop= async()=>{
   const res = JSON.parse(await AsyncStorage.getItem('shopDetails'));
-
-
- 
-
   if(res){
-    // console.log("res.cliient_id",res.client_id)
-
-
+    return;
   }
   else{
     try{
       const resp= await axios.get("https://mahilamediplex.com/mediplex/defaultShops")
      
       const data= resp.data
-  
-      // console.log(data[0],"272 app")
-    
+      
       await AsyncStorage.setItem("shopDetails",JSON.stringify(data[0]))
     }
     catch(err){
@@ -57,14 +48,7 @@ useEffect(()=>{
 },[])
 
 
-const handleSelectShopType = async() => {
 
-  if (selectedShopType) {
-// console.log("selectedshop",selectedShopType)
-await AsyncStorage.setItem("shopDetails",JSON.stringify(selectedShopType))
-    setModalVisible(false);
-  }
-};
 
 
 

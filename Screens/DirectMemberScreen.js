@@ -39,7 +39,7 @@ const DirectMemberScreen = ({navigation}) => {
       });
 
 
-      console.log(rightArray,leftArray)
+      // console.log(rightArray,leftArray)
       setLeftUserArray(leftArray);
       setRightUserArray(rightArray);
     } catch (err) {

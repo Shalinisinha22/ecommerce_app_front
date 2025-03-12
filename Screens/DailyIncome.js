@@ -18,7 +18,7 @@ const DailyIncome= ({navigation}) => {
         }
        }) 
 
-       console.log("17",res.data)
+      //  console.log("17",res.data)
        setAllDailyIncome(res.data)
     }
     catch(err){

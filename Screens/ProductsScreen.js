@@ -44,7 +44,7 @@ const ProductsScreen = ({ navigation }) => {
   }
 
   const handleSelectShopType = (item) => {
-    console.log("clicked")
+    // console.log("clicked")
     // setCurrentPage((prev)=> prev * 0)
     if (item) {
       // console.log(shop.client_id,item)
@@ -75,53 +75,104 @@ const ProductsScreen = ({ navigation }) => {
     }
   }
 
-  const getProductsId = (client_id, callback) => {
-    AsyncStorage.getItem('shopDetails')
-      .then((id) => {
-        const shop = JSON.parse(id);
+  // const getProductsId = (client_id, callback) => {
+  //   AsyncStorage.getItem('shopDetails')
+  //     .then((id) => {
+  //       const shop = JSON.parse(id);
       
-        setShopName(shop.business_name);
-        return axios.get("https://mahilamediplex.com/mediplex/getProductId", {
-          params: { client_id: client_id || shop.client_id }
-        });
-      })
-      .then(async(res) => {
-        const pidArr = res.data.map(item => item.pid);
-        await getProducts(pidArr);
-        // callback(pidArr);
-      })
-      .catch((err) => console.error("Error fetching product IDs:", err.message));
-  };
+  //       setShopName(shop.business_name);
+  //       return axios.get("https://mahilamediplex.com/mediplex/getProductId", {
+  //         params: { client_id: client_id || shop.client_id }
+  //       });
+  //     })
+  //     .then(async(res) => {
+  //       const pidArr = res.data.map(item => item.pid);
+  //       await getProducts(pidArr);
+  //       // callback(pidArr);
+  //     })
+  //     .catch((err) => console.error("Error fetching product IDs:", err.message));
+  // };
   
-  const getProducts = async (pidArr) => {
+  // const getProducts = async (pidArr) => {
+  //   try {
+  //     const productPromises = pidArr.map(pid =>
+  //       axios.get("https://mahilamediplex.com/mediplex/products", {
+  //         params: { product_id: pid }
+  //       })
+  //     );
+
+  //     const responses = await Promise.all(productPromises);
+  //     const productArr = responses.map(res => {
+  //       const data = res.data;
+  //       return data.map(item => {
+  //         if (item.sale_image) {
+  //           item.sale_image = JSON.parse(item.sale_image);
+  //         }
+  //         if (item.product_image) {
+  //           item.product_image = JSON.parse(item.product_image);
+  //         }
+  //         return item;
+  //       });
+  //     }).flat();
+
+
+  //     // console.log(productArr,"91")
+  //     setProducts(productArr);
+  //   } catch (err) {
+  //     console.error("Error fetching products:", err.message);
+  //   }
+  // };
+
+
+  const getAllProducts = async () => {
     try {
-      const productPromises = pidArr.map(pid =>
-        axios.get("https://mahilamediplex.com/mediplex/products", {
-          params: { product_id: pid }
-        })
+      const id = await AsyncStorage.getItem('shopDetails');
+      if (!id) {
+        console.log("No shop details found in AsyncStorage");
+        return;
+      }
+  
+      const shop = JSON.parse(id);
+      setShopName(shop.business_name);
+  
+      const res = await axios.get(
+        "https://mahilamediplex.com/mediplex/allProducts",
+        {
+          params: { client_id: shop.client_id }
+        }
       );
-
-      const responses = await Promise.all(productPromises);
-      const productArr = responses.map(res => {
-        const data = res.data;
-        return data.map(item => {
-          if (item.sale_image) {
-            item.sale_image = JSON.parse(item.sale_image);
-          }
-          if (item.product_image) {
-            item.product_image = JSON.parse(item.product_image);
-          }
-          return item;
-        });
-      }).flat();
-
-
-      // console.log(productArr,"91")
-      setProducts(productArr);
+  
+      const formattedData = res.data.map((item) => {
+        let productImages = [];
+        let saleImages = [];
+  
+        try {
+          productImages = item.product_image ? JSON.parse(item.product_image) : [];
+        } catch (error) {
+          console.error("Error parsing product_image:", error.message);
+        }
+  
+        try {
+          saleImages = item.sale_image ? JSON.parse(item.sale_image) : [];
+        } catch (error) {
+          console.error("Error parsing sale_image:", error.message);
+        }
+  
+        return {
+          ...item,
+          product_image: productImages,
+          sale_image: saleImages
+        };
+      });
+  
+      setProducts(formattedData);
+      // setLoading(true);
     } catch (err) {
       console.error("Error fetching products:", err.message);
     }
   };
+  
+
 
   const isItemInCart = (id) => {
     return cart.some((product) => product.pcode === id);
@@ -156,9 +207,10 @@ const ProductsScreen = ({ navigation }) => {
   
 
   useEffect(() => {
-    getProductsId(shopId, getProducts);
+    // getProductsId(shopId, getProducts);
+    getAllProducts(shopId)
 if(shop){
-    console.log(shop)
+    // console.log(shop)
     //   dispatch(setShopType(shop));
    }
   }, [shopId]);

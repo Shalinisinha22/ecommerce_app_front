@@ -22,7 +22,7 @@ const UpdatePasswordScreen = ({navigation}) => {
 
 
   const onSubmit = async (data) => {
-    console.log(data)
+    // console.log(data)
     let err = {}
 
 
@@ -32,7 +32,7 @@ const UpdatePasswordScreen = ({navigation}) => {
         const res = await axios.post("https://mahilamediplex.com/mediplex/change-password",
           { oldPassword: oldPass, newPassword: newPass, client_id: userInfo })
 
-        console.log(res.status)
+        // console.log(res.status)
      
          if (res.status == 200) {
            reset()

@@ -43,7 +43,7 @@ const LoginScreen = ({ navigation }) => {
   });
 
   const onSubmit = async (data) => {
-    console.log(data);
+    // console.log(data);
   
     // Validate input fields
     if (!data.mobile || !data.password) {
@@ -60,16 +60,16 @@ const LoginScreen = ({ navigation }) => {
       // Check the response status
       if (response.status === 200) {
         const userData = response.data;
-        Alert.alert("Success", `Welcome, ${userData.client_entry_name}`);
+        // Alert.alert("Success", `Welcome, ${userData.client_entry_name}`);
         dispatch({ type: "SET_USER_INFO", payload: userData });
       } else if (response.status === 404) {
-        Alert.alert("Error", "User not found.");
+        Alert.alert("Login Failed", "User not found.");
       } else {
-        Alert.alert("Error", "Login failed.");
+        Alert.alert("Network Error", "Login failed.");
       }
     } catch (error) {
-      console.error("Error during login:", error);
-      Alert.alert("Error", "An error occurred. Please try again later.");
+      // console.error("Error during login:", error);
+      Alert.alert("Network Error", "An error occurred. Please try again later.");
     }
   };
   

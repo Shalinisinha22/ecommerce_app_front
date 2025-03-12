@@ -110,7 +110,7 @@ const dispatch= useDispatch()
         },
       });
 
-      console.log(res.data[0])
+      // console.log(res.data[0])
 
       if (res.data) {
         const initialProfile = res.data[0];
@@ -175,9 +175,9 @@ const dispatch= useDispatch()
 
   const handleProfileUpdate = () => {
     // Dismiss the keyboard first
-    console.log("Button Pressed - Preparing to dismiss keyboard");
+    // console.log("Button Pressed - Preparing to dismiss keyboard");
     Keyboard.dismiss();
-    console.log("called")
+    // console.log("called")
 
     // Add a small delay before calling handleSubmit to ensure keyboard is fully closed
     setTimeout(() => {
@@ -228,7 +228,7 @@ const dispatch= useDispatch()
   //   }
 
     if(editableProfileImage){
-      console.log(userData)
+      // console.log(userData)
       // console.log(imageName,editableProfileImage)
       userData.image= editableProfileImage
       dispatch({ type: 'SET_USER_IMAGE', payload:editableProfileImage });

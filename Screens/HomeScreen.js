@@ -17,13 +17,13 @@ const HomeScreen = ({ navigation }) => {
   const width = Dimensions.get('screen').width;
 
   const userInfo = useSelector((state) => state.user.userInfo ? state.user.userInfo : null);
-console.log(userInfo)
+// console.log(userInfo)
   const [wallet, setWallet] = useState(userInfo?.mani_wallet);
   const [shoppingWallet, setShoppingWallet] = useState(userInfo?.shopping_wallet);
 
 
   const getWallet = async () => {
-    console.log(userInfo)
+    // console.log(userInfo)
     if (userInfo?.mani_wallet) {
       setWallet(userInfo.mani_wallet);
     
@@ -53,9 +53,9 @@ console.log(userInfo)
       })
     
       const data = res.data
-      console.log("header hme",data[0])
+      // console.log("header hme",data[0])
       if(data[0].mani_wallet || data[0].shopping_wallet){
-        console.log(data[0],"wallet")
+        // console.log(data[0],"wallet")
         setWallet(Math.round(userInfo?.mani_wallet || 0) + Math.round(userInfo?.shopping_wallet || 0))
         userInfo.mani_wallet= data[0].mani_wallet
         userInfo.shopping_wallet= data[0].shopping_wallet
@@ -88,7 +88,7 @@ console.log(userInfo)
       if (res.status !== 200) {
         dispatch(removeFromCart(item.pcode));
       } else {
-        console.log("verifyCart successful");
+        // console.log("verifyCart successful");
       }
     } catch (err) {
       console.log("Error in verifyCart:", err.message);

@@ -235,7 +235,7 @@ const CartPage = ({ navigation }) => {
     cart.forEach((item) => {
       allPID.push(item.sale_id)
     });
-    console.log(allPid)
+    // console.log(allPid)
     const orderAmount = getTotalAmt()
     try {
       const res = await axios.post("https://mahilamediplex.com/mediplex/shopping-wallet-log", {

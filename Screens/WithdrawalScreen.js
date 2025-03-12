@@ -12,11 +12,11 @@ const WithdrawalScreen = ({navigation}) => {
   const [amt,setAmt]= useState(0)
   const { control, handleSubmit, setValue, formState: { errors } } = useForm();
   const user= useSelector((state)=>state.user.userInfo?state.user.userInfo:null)
-  console.log(user,"withdraw")
+  // console.log(user,"withdraw")
   const [error,setError]= useState("")
   const [withdrawData,setWithdrawData]= useState([])
 
-  console.log("userwithdraw",user.mani_wallet)
+  // console.log("userwithdraw",user.mani_wallet)
 
   const showToast = () => {
     Toast.show({
@@ -58,10 +58,10 @@ const WithdrawalScreen = ({navigation}) => {
               total:amt
             })
 
-            console.log(res.status)
+            // console.log(res.status)
 
             if(res.status==200){
-              console.log("updated",res.data.result)
+              // console.log("updated",res.data.result)
               setAmt("")
               showToast()
              getWithdrawData()
@@ -94,7 +94,7 @@ const WithdrawalScreen = ({navigation}) => {
           client_id:user.client_id
         }
       })
-      console.log(withdrawRes.data)
+      // console.log(withdrawRes.data)
       setWithdrawData(withdrawRes.data)
     }
     catch(err){

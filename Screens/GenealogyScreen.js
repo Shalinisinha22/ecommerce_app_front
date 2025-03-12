@@ -20,7 +20,7 @@ const userInfo = useSelector((state) => (state.user.userInfo ? state.user.userIn
     try {
       const res = await axios.get('https://mahilamediplex.com/mediplex/clientAccountLog');
       const network = JSON.parse(res.data[0].network);
-      console.log(network,"13");
+      // console.log(network,"13");
 
 
    
@@ -45,7 +45,7 @@ const userInfo = useSelector((state) => (state.user.userInfo ? state.user.userIn
         }
       }
       
-      console.log("First Root Node:", rootNode);
+      // console.log("First Root Node:", rootNode);
       // setRootNode(rootNode)
       // getClientName(rootNode)
       setRootNode(userInfo.client_id)
@@ -63,7 +63,7 @@ const userInfo = useSelector((state) => (state.user.userInfo ? state.user.userIn
 
 const getClientName= async(name)=>{
 
-  console.log(name,"name")
+  // console.log(name,"name")
 
 try{
     const res= await axios.get("https://mahilamediplex.com/mediplex/clientName",{
@@ -73,7 +73,7 @@ try{
             rightChild:""
         }
     })
-    console.log(res.data,"68")
+    // console.log(res.data,"68")
 setRootNodeName(res.data.length!=0?res.data[0].first_name:"")
 }
 catch(err){
@@ -211,7 +211,7 @@ const onSubmit= async()=>{
        width:Dimensions.get('screen').width
      }}
    />
-   {console.log("rootnodename",rootNodeName)}
+   {/* {console.log("rootnodename",rootNodeName)} */}
 
         {clients && (
           <Node node={rootNode} data={clients} name={rootNodeName!=""?rootNodeName:""} type={"root"} /> // Pass both node key and data

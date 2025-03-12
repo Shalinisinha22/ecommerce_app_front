@@ -68,7 +68,7 @@ import {
         const response = await axios.post("https://mahilamediplex.com/mediplex/register", {
           data
         });
-     console.log(response.data.user,'68')
+    //  console.log(response.data.user,'68')
   
         if (response.status === 201) {
           Alert.alert("Success", "User registered successfully.");
@@ -177,7 +177,7 @@ import {
       />
                   </View>
 
-                  {console.log(errors.mobile?.message)}
+                  {/* {console.log(errors.mobile?.message)} */}
                   {errors.mobile?.message && <Text allowFontScaling={false} style={{ color: "red" }}>{errors.mobile?.message}</Text>}
                   </View>
   

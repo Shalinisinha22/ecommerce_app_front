@@ -15,7 +15,7 @@ const PaymentScreen = ({navigation}) => {
     const route = useRoute()
 
     const userInfo = useSelector((state) => state.user.userInfo ? state.user.userInfo : null)
-    console.log(userInfo.first_name, userInfo.mobile, userInfo.client_id, route.params.price)
+    // console.log(userInfo.first_name, userInfo.mobile, userInfo.client_id, route.params.price)
     const [bankDetails, setBankDetails] = useState(null)
     const [transaction_id, setTransaction_id] = useState(null)
     const [paymentSlip, setPaymentSlip] = useState(null)
@@ -26,7 +26,7 @@ const PaymentScreen = ({navigation}) => {
             const res = await axios.get("https://mahilamediplex.com/mediplex/bankDetails")
             const data = res.data
 
-            console.log(data)
+            // console.log(data)
             setBankDetails(data)
 
         }
@@ -48,7 +48,7 @@ const PaymentScreen = ({navigation}) => {
             quality: 1,
         });
 
-        console.log(result);
+        // console.log(result);
 
         if (!result.canceled) {
             const uriParts = result.assets[0].uri.split('/');
@@ -91,7 +91,7 @@ const PaymentScreen = ({navigation}) => {
      
         let errors = {};
 
-        console.log(transaction_id,"94",paymentSlip)
+        // console.log(transaction_id,"94",paymentSlip)
     
         if (transaction_id == null || paymentSlip == null) {
                errors.transaction_id= transaction_id==null ?"Required":""
@@ -117,7 +117,7 @@ const PaymentScreen = ({navigation}) => {
             setErr("")
             await uploadImage(paymentSlip);
 
-            console.log(transaction_id)
+            // console.log(transaction_id)
     
             try {
                 const res = await axios.post("https://mahilamediplex.com/mediplex/fund-request", {
@@ -130,7 +130,7 @@ const PaymentScreen = ({navigation}) => {
                     txt_no: transaction_id,
                     package: route.params.package,
                 });
-                console.log(res.data)
+                // console.log(res.data)
     
                 if (res.data.message === "Data inserted successfully") {
                     // Alert.alert("Success");
@@ -274,7 +274,7 @@ const PaymentScreen = ({navigation}) => {
                         
                         </View>
 
-                        {console.log(err)}
+                        {/* {console.log(err)} */}
                         
                         {err.transaction_id && <Text allowFontScaling={false}style={{color:"red",fontSize:10,marginBottom:5}}>{err.transaction_id}</Text>}
                         <View style={{ width: width * 0.95, backgroundColor: "#f0f0f0", paddingVertical: 14, paddingHorizontal: 5, flexDirection: "row", gap: 15, alignItems: "center",flexWrap:"wrap" }}>

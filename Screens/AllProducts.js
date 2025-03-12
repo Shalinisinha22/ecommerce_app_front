@@ -59,7 +59,6 @@ const AllProducts = ({ navigation }) => {
   return (
     <View style={{ flex: 1, backgroundColor: "#fff", paddingTop: 0 }}>
       <Header navigation={navigation}></Header>
-      {console.log(no_of_pages, products.length)}
 
 
       <ScrollView>
@@ -153,7 +152,7 @@ const AllProducts = ({ navigation }) => {
               )}
             />
 
-            <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "center", width: width, marginTop: 10 }}>
+            <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "center", width: width,marginTop:5 }}>
               <TouchableOpacity onPress={() => goToPrev()} style={[styles.paginationButton, { backgroundColor: currPage == 0 ? "#D0D0D0" : "#228B22" }]}><Text style={{ color: "white" }}>Prev</Text></TouchableOpacity>
               <Pressable style={styles.currPageButton}><Text style={{ color: "white", fontWeight: "bold" }}>{currPage + 1}</Text></Pressable>
               <TouchableOpacity onPress={() => goToNext()} style={[styles.paginationButton, { backgroundColor: currPage == no_of_pages - 1 ? "#D0D0D0" : "#228B22" }]}><Text style={{ color: "white" }}>Next</Text></TouchableOpacity>

@@ -40,8 +40,8 @@ const DownlineListScreen = ({navigation}) => {
       traverseLeft(startNode);
       traverseRight(startNode);
   
-      console.log("Left Array:", leftArray);
-      console.log("Right Array:", rightArray);
+      // console.log("Left Array:", leftArray);
+      // console.log("Right Array:", rightArray);
   
       // Fetch data for left users
       const leftUserPromises = leftArray.map(item => 
@@ -49,7 +49,7 @@ const DownlineListScreen = ({navigation}) => {
           params: { client_id:item }
         })
         .then(response => {
-          console.log(`Response for left user ${item}:`, response.data);
+          // console.log(`Response for left user ${item}:`, response.data);
           return response.data[0];
         })
         .catch(error => {
@@ -60,7 +60,7 @@ const DownlineListScreen = ({navigation}) => {
       const leftUserResponses = await Promise.all(leftUserPromises);
       const leftUsers = leftUserResponses.filter(Boolean);
       setLeftUserArray(leftUsers);
-      console.log("Left User Array:", leftUsers);
+      // console.log("Left User Array:", leftUsers);
   
       // Fetch data for right users
       const rightUserPromises = rightArray.map(item => 
@@ -68,7 +68,7 @@ const DownlineListScreen = ({navigation}) => {
           params: { client_id: item }
         })
         .then(response => {
-          console.log(`Response for right user ${item}:`, response.data);
+          // console.log(`Response for right user ${item}:`, response.data);
           return response.data[0];
         })
         .catch(error => {
@@ -79,7 +79,7 @@ const DownlineListScreen = ({navigation}) => {
       const rightUserResponses = await Promise.all(rightUserPromises);
       const rightUsers = rightUserResponses.filter(Boolean);
       setRightUserArray(rightUsers);
-      console.log("Right User Array:", rightUsers);
+      // console.log("Right User Array:", rightUsers);
   
     } catch (err) {
       console.log('Error fetching direct member data:', err.message);
@@ -100,7 +100,7 @@ const DownlineListScreen = ({navigation}) => {
   );
 
   const renderTable = (data, title, searchValue, setSearchValue) => {
-    console.log("Rendering", title, "Table with data:", data);
+    // console.log("Rendering", title, "Table with data:", data);
     return (
       <View style={{ marginBottom: 20, marginTop: 30 }}>
         <Text allowFontScaling={false} style={{ fontWeight: 'bold', fontSize: 18, marginBottom: 10, marginLeft: 10 }}>{title}</Text>

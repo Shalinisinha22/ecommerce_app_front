@@ -21,7 +21,7 @@ const FundRequestStatus = ({navigation}) => {
         }
       });
 
-      console.log("17", res.data);
+      // console.log("17", res.data);
       setAllFundsRequest(res.data);
     } catch (err) {
       console.log(err.message);

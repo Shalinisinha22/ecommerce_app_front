@@ -12,7 +12,7 @@ const Wallet = ({navigation}) => {
   const user= useSelector((state)=>state.user.userInfo?state.user.userInfo:null)
  
 
-  console.log("userwallet",user.mani_wallet)
+  // console.log("userwallet",user.mani_wallet)
 
 
   const [wallet, setWallet] = useState(user?.mani_wallet);

@@ -97,7 +97,7 @@ const OrderDetails = ({ navigation }) => {
   const cancelOrders = async (item) => {
 
     const updateWalletLog = await updateShoppingWalletLog(item)
-    console.log("update", updateWalletLog)
+    // console.log("update", updateWalletLog)
     if (updateWalletLog) {
       try {
         const res = await axios.post(
@@ -111,7 +111,7 @@ const OrderDetails = ({ navigation }) => {
           }
         );
 
-        console.log(res.data)
+        // console.log(res.data)
         if (res.status === 200) {
           const { added_main_wallet, added_shopping_wallet } = res.data;
 
@@ -128,13 +128,13 @@ const OrderDetails = ({ navigation }) => {
 
           const updatedOrder = await getOrders();
 
-          console.log(updatedOrder, "updated")
+          // console.log(updatedOrder, "updated")
           if (updatedOrder.length == 0) {
             const res1 = await axios.post("https://mahilamediplex.com/mediplex/updateOrderDetails", {
               user_id: userInfo.client_id,
               order_id: item.order_id
             })
-            console.log(res1.data)
+            // console.log(res1.data)
             if (res1.data) {
               Toast.show({
                 type: "success",

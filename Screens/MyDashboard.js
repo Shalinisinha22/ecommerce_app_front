@@ -10,7 +10,7 @@ const MyDashboard = ({ navigation }) => {
 
 
   const user = useSelector((state) => state.user.userInfo ? state.user.userInfo : null)
-  console.log(user)
+  // console.log(user)
 
   const [wallet, setWallet] = useState(user?.mani_wallet);
   const [shoppingWallet, setShoppingWallet] = useState(user?.shopping_wallet);
