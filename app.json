@@ -2,7 +2,7 @@
   "expo": {
     "name": "MahilaMediplexUser",
     "slug": "mahila-mediplex",
-    "version": "8.0.0",
+    "version": "10.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
@@ -15,7 +15,7 @@
       "supportsTablet": true
     },
     "android": {
-      "versionCode": 8,
+      "versionCode": 10,
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"

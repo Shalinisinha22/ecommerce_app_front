@@ -194,7 +194,7 @@ const FundRequestScreen = ({ navigation }) => {
             />
 
             <ScrollView keyboardShouldPersistTaps='handled' >
-                <View style={{ width: width, marginTop: 20, padding: 10 }}>
+                {/* <View style={{ width: width, marginTop: 20, padding: 10 }}>
                     {
                         bankDetails != null &&
                         <>
@@ -220,7 +220,7 @@ const FundRequestScreen = ({ navigation }) => {
                         </>
                     }
 
-                </View>
+                </View> */}
 
                 {bankDetails != null &&
                     <>

@@ -117,8 +117,9 @@ const CartPage = ({ navigation }) => {
     }
 
     if (!location?.area && !location?.city) {
-      Alert.alert("Location Required", "Please enable location services.");
-      fetchLocation();
+    await fetchLocation();
+    Alert.alert("Location Required", "Please enable location services.");
+
       return;
     }
 
