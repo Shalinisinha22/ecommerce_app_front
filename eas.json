@@ -3,18 +3,21 @@
     "release": {
       "android": {
         "buildType": "app-bundle"
+
       },
       "channel": "release"
     },
     "preview": {
       "android": {
         "buildType": "apk"
+
       },
       "channel": "preview"
     },
     "preview2": {
       "android": {
         "gradleCommand": ":app:assembleRelease"
+
       },
       "channel": "preview2"
     },

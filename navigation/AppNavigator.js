@@ -41,6 +41,7 @@ import PendingOrders from '../Screens/AllOrders';
 import RegisterScreen from '../Screens/RegisterScreen';
 import OrderDetails from '../Screens/OrderDetails';
 import Coupons from '../Screens/Coupons';
+import { clearUserInfo } from '../redux/actions/userActions';
 
 const Stack = createStackNavigator();
 const Drawer = createDrawerNavigator();
@@ -60,9 +61,12 @@ useEffect(()=>{
 
 
      const verifyUser= async()=>{
+        if(!userInfo?.client_id){
+       return;
+        }
         const res= await axios.get("https://mahilamediplex.com/mediplex/verify",{
             params:{
-                client_id:userInfo.client_id
+                client_id:userInfo?.client_id
             }
         })
 
@@ -78,9 +82,12 @@ useEffect(()=>{
 
      useEffect(()=>{
         if(userInfo?.client_id){
-            verifyUser()
+            setTimeout(()=>{
+                verifyUser()
+
+            },200)
         }
-     },[userInfo,verify])
+     },[userInfo])
 
     const drawerMenu = [
 
@@ -164,11 +171,19 @@ useEffect(()=>{
     ];
 
 
+
+
     const dispatch = useDispatch();
-    const handleLogout = () => {
-    dispatch({ type: 'CLEAR_USER_INFO' });
+    const handleLogout = async() => {
+     await AsyncStorage.removeItem("shopDetails")
+   await dispatch(clearUserInfo())
+     dispatch({type:"EMPTY_CART"})
+ 
+    // Alert.alert(userInfo?.client_id)  
+
+   };
    
-  };
+// console.log(userInfo)
 
     function MainStackNavigator() {
         return (

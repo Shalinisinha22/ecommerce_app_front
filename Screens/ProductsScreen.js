@@ -289,6 +289,9 @@ if(shop){
                       style={styles.productCard}
                       onPress={() => navigation.navigate("productInner", { item, shopName })}
                     >
+                      {
+                        // console.log(item)
+                      }
                       <TouchableOpacity
                         style={{
                           position: "absolute",

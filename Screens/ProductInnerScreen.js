@@ -221,7 +221,8 @@ const ProductInnerScreen = ({ navigation }) => {
 
      
         <View style={{ marginTop: 15, paddingLeft: 20, width: width * 0.9 }}>
-          <Text allowFontScaling={false} style={{ fontSize: 16, fontWeight: 700 }}>{route.params.item.name}</Text>
+          {console.log(route.params?.item)}
+          <Text allowFontScaling={false} style={{ fontSize: 16, fontWeight: 700 }}>{route.params?.item?.name || route.params?.item?.product_name}</Text>
 
           <Text allowFontScaling={false} style={{ fontSize: 12, color: "gray", marginTop: 5 }}>Manufactured by {route.params.item.brand_name}</Text>
           <Text allowFontScaling={false} style={{ textDecorationLine: "line-through", color: "gray", fontSize: 10, marginTop: 10 }}>RS {route.params.item.mrp}</Text>

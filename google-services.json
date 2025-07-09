@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "373977770200",
+    "project_id": "mahila-mediplex-9abee",
+    "storage_bucket": "mahila-mediplex-9abee.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:373977770200:android:94164a5e5953541595cfad",
+        "android_client_info": {
+          "package_name": "com.mahilamediplex.MahilaMediplex"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAhf_LoUxTI85NL0h_VcWJQYLMqR1godo4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

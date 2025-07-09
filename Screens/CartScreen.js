@@ -23,6 +23,10 @@ const CartPage = ({ navigation }) => {
   const [usedMainWallet, setUsedMainWallet] = useState(0);
   const [walletType, setWalletType] = useState(null)
   const [location, setLocation] = useState(null);
+  const [locationLoading, setLocationLoading] = useState(true);
+
+
+
   const [coupon, setCoupon] = useState("");
 
   let userInfo = useSelector((state) => state.user.userInfo ? state.user.userInfo : null);
@@ -117,11 +121,14 @@ const CartPage = ({ navigation }) => {
     }
 
     if (!location?.area && !location?.city) {
-    await fetchLocation();
-    Alert.alert("Location Required", "Please enable location services.");
-
+      await fetchLocation(); 
+    
+      if (!location?.area && !location?.city) {
+        Alert.alert("Location Required", "Please enable location services.");
+      }
       return;
     }
+    
 
     setPopupVisible(true)
   };
@@ -133,6 +140,7 @@ const CartPage = ({ navigation }) => {
     try {
       // Check for missing prescriptions
       const hasPrescriptionItem = cart.filter(item => item.prescription === 'yes');
+      
       const hasUploadedPrescription = hasPrescriptionItem.some(item => prescriptionImages[item.pcode]);
 
       if (hasPrescriptionItem.length > 0 && !hasUploadedPrescription) {
@@ -451,33 +459,35 @@ const CartPage = ({ navigation }) => {
   // Fetch user location
   const fetchLocation = async () => {
     try {
+      setLocationLoading(true); // Show loader
       const { status } = await Location.requestForegroundPermissionsAsync();
       if (status !== "granted") {
         setErrorMsg("Permission to access location was denied");
+        setLocationLoading(false);
         return;
       }
-
-      const location = await Location.getCurrentPositionAsync({});
-      const reverseGeocode = await Location.reverseGeocodeAsync({
-        latitude: location.coords.latitude,
-        longitude: location.coords.longitude,
+  
+      const location = await Location.getCurrentPositionAsync({
+        accuracy: Location.Accuracy.High, // Improve speed
       });
-
+  
+      const reverseGeocode = await Location.reverseGeocodeAsync(location.coords);
+      
       if (reverseGeocode.length > 0) {
-        const area = await reverseGeocode[0].district || reverseGeocode[0].subregion;
-        const city =  await reverseGeocode[0].city || reverseGeocode[0].region;
+        const area = reverseGeocode[0].district || reverseGeocode[0].subregion;
+        const city = reverseGeocode[0].city || reverseGeocode[0].region;
         setLocation({ area, city });
       }
     } catch (err) {
       console.log("Error fetching location:", err.message);
+    } finally {
+      setLocationLoading(false); // Hide loader
     }
   };
-
-
-
-  useEffect(()=>{
-    fetchLocation()
-  },[])
+  
+  useEffect(() => {
+    fetchLocation();
+  }, []);
 
   const handleIncrementProduct = (id) => {
     dispatch(handleIncrement({ id }));
@@ -546,16 +556,16 @@ const CartPage = ({ navigation }) => {
         source={{ uri: `${imgUrl}/eproduct/${item.sale_image?.[0] || item.product_image?.[0]}` }}
       />
       <View style={styles.itemDetails}>
-        <Text allowFontScaling={false} style={styles.itemName}>{item.name}</Text>
+        <Text allowFontScaling={false} style={styles.itemName}>{item.name || item.product_name}</Text>
         <Text allowFontScaling={false} style={[styles.itemName, { marginTop: 2 }]}>{item.shop}</Text>
 
         <View style={styles.quantityContainer}>
-          <TouchableOpacity onPress={() => handleDecrementProduct(item.pcode)}>
+          <TouchableOpacity  onPress={() => handleDecrementProduct(item.pcode)}>
             <Icon name="remove-circle-outline" size={24} color="black" />
           </TouchableOpacity>
           <Text allowFontScaling={false} style={styles.quantity}>{item.qty}</Text>
-          <TouchableOpacity onPress={() => handleIncrementProduct(item.pcode)}>
-            <Icon name="add-circle-outline" size={24} color="black" />
+          <TouchableOpacity disabled={item.qty==item.cart_limit} onPress={() => handleIncrementProduct(item.pcode)}>
+            <Icon name="add-circle-outline" size={24} color={item.qty!=item.cart_limit?"black":"gray"} />
           </TouchableOpacity>
         </View>
         <Text allowFontScaling={false} style={styles.itemPrice}>RS {Math.round((item.price * item.qty) * 100) / 100}</Text>
@@ -844,8 +854,8 @@ const CartPage = ({ navigation }) => {
 
             </View>
 
-
-            <TouchableOpacity
+{/* shaline checkout without processig... */}
+            {/* <TouchableOpacity
               style={[styles.checkoutButton, { backgroundColor: clicked ? 'gray' : '#4CAF50' }]}
               onPress={handleCheckOut}
               disabled={clicked}
@@ -855,7 +865,34 @@ const CartPage = ({ navigation }) => {
               ) : (
                 <Text allowFontScaling={false} style={styles.checkoutButtonText}>Checkout</Text>
               )}
-            </TouchableOpacity>
+            </TouchableOpacity> */}
+
+            {/* nishant checkout with processig... */}
+            <TouchableOpacity
+  style={[styles.checkoutButton, { backgroundColor: clicked ? 'gray' : '#4CAF50' }]}
+  onPress={handleCheckOut}
+  disabled={clicked}
+>
+  {clicked ? (
+    <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10 }}>
+      <ActivityIndicator size="small" color="white" />
+      <Text
+        allowFontScaling={false}
+        style={[styles.checkoutButtonText, { backgroundColor: 'transparent', color: 'white' }]}
+      >
+        Processing...
+      </Text>
+    </View>
+  ) : (
+    <Text
+      allowFontScaling={false}
+      style={[styles.checkoutButtonText, { color: 'white' }]}
+    >
+      Checkout
+    </Text>
+  )}
+</TouchableOpacity>
+
           </>
         ) : (
           <Text allowFontScaling={false} style={styles.emptyText}>Your cart is empty</Text>

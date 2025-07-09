@@ -72,7 +72,8 @@ const initialCartState = {
               : product
           ),
         };
-  
+        case 'EMPTY_CART':
+          return { ...initialCartState}; 
       default:
         return state;
     }
